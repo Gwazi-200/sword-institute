@@ -78,6 +78,7 @@ body.dark-theme {
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -176,8 +177,8 @@ body::after {
     align-items: center;
     padding: 0.75rem 2rem;
     background: var(--pearl-glass);
-    backdrop-filter: blur(20px) saturate(200%);
     -webkit-backdrop-filter: blur(20px) saturate(200%);
+    backdrop-filter: blur(20px) saturate(200%);
     border-bottom: 1px solid var(--pearl-border);
     box-shadow: var(--shadow-glass);
     transition: all 0.4s ease;
@@ -364,8 +365,8 @@ body.dark-theme .hero-badge {
    ============================================================ */
 .glass-card {
     background: var(--pearl-glass);
-    backdrop-filter: blur(22px) saturate(180%);
     -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
     border: 1px solid var(--pearl-border);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-glass);
@@ -429,8 +430,8 @@ body.dark-theme .hero-badge {
     padding: 0.9rem 1.4rem;
     border-radius: 16px;
     background: var(--pearl-glass);
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border: 1px solid var(--pearl-border);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     font-weight: 500;
@@ -497,8 +498,8 @@ body.dark-theme .hero-badge {
     width: 100%;
     padding: 0.75rem 1rem;
     background: var(--pearl-glass);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     border: 1.5px solid var(--pearl-border);
     border-radius: var(--radius-input);
     font-size: var(--font-base);
@@ -822,8 +823,8 @@ footer {
     z-index: 1;
     padding: 1.5rem 2rem;
     background: var(--pearl-glass);
-    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border-top: 1px solid var(--pearl-border);
 }
 
