@@ -448,7 +448,7 @@ function setupEventListeners() {
 
     // Level filters
     if (levelFilters?.length) {
-        levelFilters.forEach(btn => {
+        levelFilters?.forEach(btn => {
             btn.addEventListener('click', () => {
                 levelFilters.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
@@ -458,9 +458,10 @@ function setupEventListeners() {
         });
     }
 
+
     // Feature filters (toggle)
     if (featureFilters?.length) {
-        featureFilters.forEach(btn => {
+        featureFilters?.forEach(btn => {
             btn.addEventListener('click', () => {
                 const feature = btn.dataset.feature;
                 const idx = filters.features.indexOf(feature);
@@ -475,6 +476,7 @@ function setupEventListeners() {
             });
         });
     }
+
 
     // Sort
     sortSelect?.addEventListener('change', (e) => {
@@ -513,12 +515,13 @@ function setupEventListeners() {
         document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
         document.querySelector('.category-card[data-category="all"]')?.classList.add('active');
 
-        levelFilters.forEach(b => b.classList.remove('active'));
+        levelFilters?.forEach(b => b.classList.remove('active'));
         document.querySelector('#levelFilters .filter-chip[data-level="all"]')?.classList.add('active');
 
-        featureFilters.forEach(b => b.classList.remove('active'));
+        featureFilters?.forEach(b => b.classList.remove('active'));
 
         applyFilters();
+
     });
 
     // Retry
