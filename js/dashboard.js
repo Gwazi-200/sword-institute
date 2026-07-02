@@ -1,6 +1,6 @@
 ﻿// dashboard.js – Sword Institute LMS
 // ES Module – imports auth from firebase.js
-import { auth } from './firebase.js';
+import { auth } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 // Wait for DOM
@@ -30,22 +30,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Populate user info (name, email, avatar)
 function populateUserInfo(user) {
-    const displayName = user.displayName || 'Student';
-    const email = user.email || 'student@sword.institute';
-    const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=7C3AED&color=fff&size=80`;
+    const displayName = user?.displayName || 'Student';
+    const email = user?.email || 'student@sword.institute';
+    const photoURL = user?.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=7C3AED&color=fff&size=80`;
 
     // Update all name placeholders
-    document.querySelectorAll('#studentNameHeader, #studentNameHero, #profileName').forEach(el => el.textContent = displayName);
-    document.getElementById('profileEmail').textContent = email;
-    document.getElementById('profileAvatar').src = photoURL;
-    document.getElementById('studentAvatar').src = photoURL;
+    document.querySelectorAll('#studentNameHeader, #studentNameHero, #profileName').forEach(el => {
+        if (el) el.textContent = displayName;
+    });
+
+    const profileEmail = document.getElementById('profileEmail');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const studentAvatar = document.getElementById('studentAvatar');
+    const profileCountry = document.getElementById('profileCountry');
+    const profileGoal = document.getElementById('profileGoal');
+    const profileLevel = document.getElementById('profileLevel');
+
+    if (profileEmail) profileEmail.textContent = email;
+    if (profileAvatar) profileAvatar.src = photoURL;
+    if (studentAvatar) studentAvatar.src = photoURL;
 
     // Set additional profile placeholders (could be from Firestore later)
     // For now, static values
-    document.getElementById('profileCountry').textContent = 'Kenya';
-    document.getElementById('profileGoal').textContent = 'Master AI for Social Good';
-    document.getElementById('profileLevel').textContent = 'Gold Warrior';
+    if (profileCountry) profileCountry.textContent = 'Kenya';
+    if (profileGoal) profileGoal.textContent = 'Master AI for Social Good';
+    if (profileLevel) profileLevel.textContent = 'Gold Warrior';
 }
+
 
 // Initialize dashboard (load courses, announcements, AI mentor, etc.)
 function initDashboard() {
@@ -99,16 +110,24 @@ function initDashboard() {
     ];
 
     let mentorIndex = 0;
+    const mentorGreetingEl = document.getElementById('mentorGreeting');
+    const mentorMessageEl = document.getElementById('mentorMessage');
+    const mentorTipEl = document.getElementById('mentorTip');
+    const mentorAdviceEl = document.getElementById('mentorAdvice');
+    const mentorQuoteEl = document.getElementById('mentorQuote');
+
     function rotateMentor() {
         const msg = mentorMessages[mentorIndex % mentorMessages.length];
-        document.getElementById('mentorGreeting').textContent = msg.greeting;
-        document.getElementById('mentorMessage').textContent = msg.message;
-        document.getElementById('mentorTip').textContent = msg.tip;
-        document.getElementById('mentorAdvice').textContent = msg.advice;
-        document.getElementById('mentorQuote').textContent = msg.quote;
+        if (mentorGreetingEl) mentorGreetingEl.textContent = msg.greeting;
+        if (mentorMessageEl) mentorMessageEl.textContent = msg.message;
+        if (mentorTipEl) mentorTipEl.textContent = msg.tip;
+        if (mentorAdviceEl) mentorAdviceEl.textContent = msg.advice;
+        if (mentorQuoteEl) mentorQuoteEl.textContent = msg.quote;
         mentorIndex++;
     }
+
     rotateMentor();
+
     setInterval(rotateMentor, 10000); // rotate every 10 seconds
 
     // --- Animate progress bars (optional) ---
