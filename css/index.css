@@ -1,0 +1,664 @@
+/* ==========================================================
+   SWORD INSTITUTE LMS
+   Premium Homepage
+   index.css
+   Section 1 - Foundation
+   Version 1.0
+========================================================== */
+
+/* ==========================================================
+   CSS VARIABLES
+========================================================== */
+
+:root{
+
+    --primary:#5B5CEB;
+    --primary-dark:#4B46D8;
+    --secondary:#7C3AED;
+    --accent:#F59E0B;
+
+    --text:#1F2937;
+    --text-light:#6B7280;
+
+    --white:#ffffff;
+    --background:#F6F8FC;
+
+    --glass:rgba(255,255,255,.68);
+    --glass-border:rgba(255,255,255,.30);
+
+    --shadow-lg:0 20px 50px rgba(0,0,0,.12);
+    --shadow-md:0 10px 30px rgba(0,0,0,.08);
+
+    --radius:18px;
+
+    --transition:.35s ease;
+
+    --max-width:1280px;
+
+}
+
+/* ==========================================================
+   RESET
+========================================================== */
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    font-family:"Poppins",sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    overflow-x:hidden;
+
+}
+
+/* ==========================================================
+   CONTAINER
+========================================================== */
+
+.container{
+
+    width:min(92%,var(--max-width));
+
+    margin:auto;
+
+}
+
+/* ==========================================================
+   LINKS
+========================================================== */
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+ul{
+
+    list-style:none;
+
+}
+
+/* ==========================================================
+   BACKGROUND BLOBS
+========================================================== */
+
+.background{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-2;
+
+    overflow:hidden;
+
+}
+
+.blob{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(90px);
+
+    opacity:.55;
+
+    animation:floatBlob 14s infinite ease-in-out;
+
+}
+
+.blob1{
+
+    width:450px;
+    height:450px;
+
+    background:#7C3AED;
+
+    top:-150px;
+    left:-120px;
+
+}
+
+.blob2{
+
+    width:500px;
+    height:500px;
+
+    background:#5B5CEB;
+
+    right:-180px;
+    top:100px;
+
+}
+
+.blob3{
+
+    width:380px;
+    height:380px;
+
+    background:#F59E0B;
+
+    bottom:-150px;
+    left:35%;
+
+}
+
+@keyframes floatBlob{
+
+    0%{
+
+        transform:translateY(0) scale(1);
+
+    }
+
+    50%{
+
+        transform:translateY(-45px) scale(1.08);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================================
+   NAVBAR
+========================================================== */
+
+.navbar{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+    backdrop-filter:blur(20px);
+
+    background:rgba(255,255,255,.75);
+
+    border-bottom:1px solid rgba(255,255,255,.30);
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+}
+
+.navbar .container{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 0;
+
+}
+
+.logo{
+
+    font-size:1.5rem;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+nav ul{
+
+    display:flex;
+
+    gap:28px;
+
+}
+
+nav a{
+
+    color:var(--text);
+
+    font-weight:500;
+
+    transition:var(--transition);
+
+}
+
+nav a:hover{
+
+    color:var(--primary);
+
+}
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.nav-buttons{
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+.btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:14px 28px;
+
+    border-radius:50px;
+
+    font-weight:600;
+
+    transition:var(--transition);
+
+    cursor:pointer;
+
+}
+
+.btn-primary{
+
+    background:linear-gradient(135deg,#5B5CEB,#7C3AED);
+
+    color:#fff;
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 18px 40px rgba(91,92,235,.35);
+
+}
+
+.btn-outline{
+
+    border:2px solid var(--primary);
+
+    color:var(--primary);
+
+    background:transparent;
+
+}
+
+.btn-outline:hover{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+.btn-dashboard{
+
+    display:none;
+
+    background:#10B981;
+
+    color:#fff;
+
+}
+
+.btn-large{
+
+    padding:18px 40px;
+
+    font-size:1rem;
+
+}
+
+/* ==========================================================
+   HERO
+========================================================== */
+
+.hero{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:80px 0;
+
+}
+
+.hero-grid{
+
+    display:grid;
+
+    grid-template-columns:1.2fr .8fr;
+
+    gap:70px;
+
+    align-items:center;
+
+}
+
+.badge{
+
+    display:inline-block;
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    background:rgba(91,92,235,.10);
+
+    color:var(--primary);
+
+    margin-bottom:24px;
+
+    font-weight:600;
+
+}
+
+.hero h1{
+
+    font-size:4rem;
+
+    line-height:1.15;
+
+    margin-bottom:25px;
+
+}
+
+.hero h1 span{
+
+    color:var(--primary);
+
+}
+
+.hero p{
+
+    color:var(--text-light);
+
+    line-height:1.9;
+
+    margin-bottom:35px;
+
+    font-size:1.05rem;
+
+}
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+
+}
+
+.hero-features{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+
+    margin-top:45px;
+
+    color:var(--text);
+
+    font-weight:600;
+
+}
+
+/* ==========================================================
+   AI MENTOR CARD
+========================================================== */
+
+.mentor-card{
+
+    background:var(--glass);
+
+    border:1px solid var(--glass-border);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:var(--shadow-lg);
+
+    transition:var(--transition);
+
+}
+
+.mentor-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.mentor-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    margin-bottom:30px;
+
+}
+
+.mentor-avatar{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:2rem;
+
+    background:linear-gradient(135deg,#5B5CEB,#7C3AED);
+
+    color:#fff;
+
+}
+
+.mentor-message h2{
+
+    color:var(--primary);
+
+    margin:12px 0;
+
+}
+
+.mentor-tip{
+
+    background:#EEF2FF;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    margin:20px 0;
+
+    line-height:1.6;
+
+}
+
+.mentor-button{
+
+    width:100%;
+
+}
+
+/* ==========================================================
+   SCROLL INDICATOR
+========================================================== */
+
+.scroll-indicator{
+
+    position:absolute;
+
+    bottom:35px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:2rem;
+
+    animation:bounce 1.6s infinite;
+
+}
+
+@keyframes bounce{
+
+    0%,100%{
+
+        transform:translate(-50%,0);
+
+    }
+
+    50%{
+
+        transform:translate(-50%,12px);
+
+    }
+
+}
+
+/* ==========================================================
+   PLACEHOLDER SECTION
+========================================================== */
+
+.coming-next{
+
+    padding:120px 0;
+
+    text-align:center;
+
+}
+
+.coming-next h2{
+
+    font-size:2.5rem;
+
+    margin-bottom:18px;
+
+}
+
+.coming-next p{
+
+    color:var(--text-light);
+
+    max-width:700px;
+
+    margin:auto;
+
+    line-height:1.8;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+.hero-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+.hero{
+
+    padding-top:120px;
+
+}
+
+nav{
+
+    display:none;
+
+}
+
+.hero h1{
+
+    font-size:2.8rem;
+
+}
+
+.hero-features{
+
+    grid-template-columns:1fr;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.hero-buttons{
+
+    flex-direction:column;
+
+}
+
+.btn{
+
+    width:100%;
+
+}
+
+.hero h1{
+
+    font-size:2.3rem;
+
+}
+
+.logo{
+
+    font-size:1.2rem;
+
+}
+
+}
