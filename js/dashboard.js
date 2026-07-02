@@ -13,6 +13,10 @@ const logoutButton = document.getElementById('logout-button');
 const navLogin = document.getElementById('nav-login');
 const navLogout = document.getElementById('nav-logout');
 const viewCourses = document.getElementById('view-courses');
+const mentorForm = document.getElementById('mentor-form');
+const mentorInput = document.getElementById('mentor-input');
+const mentorMessages = document.getElementById('mentor-messages');
+const mentorChips = document.querySelectorAll('.mentor-chip');
 
 const COURSES = [
     { id: 1, icon: '🌐', title: 'AI for Everyday Leadership', duration: '12 Weeks', progress: 35, category: 'Leadership' },
@@ -131,6 +135,70 @@ function renderCourses(student) {
     coursesContainer.innerHTML = personalizedCourses.join('');
 }
 
+function createMessage(text, type = 'bot') {
+    const message = document.createElement('div');
+    message.className = `message ${type}`;
+    message.innerHTML = `<strong>${type === 'bot' ? 'Mentor' : 'You'}</strong><p>${text}</p>`;
+    return message;
+}
+
+function appendMessage(text, type = 'bot') {
+    if (!mentorMessages) return;
+    mentorMessages.appendChild(createMessage(text, type));
+    mentorMessages.scrollTop = mentorMessages.scrollHeight;
+}
+
+function getMentorReply(message) {
+    const lower = message.toLowerCase();
+
+    if (lower.includes('plan') || lower.includes('week')) {
+        return 'A strong weekly plan is to focus on one skill at a time, review notes once a day, and finish with one small action that builds momentum.';
+    }
+
+    if (lower.includes('lead') || lower.includes('leadership')) {
+        return 'Leadership grows through practice. Start by communicating clearly, listening carefully, and taking one thoughtful action that helps your team or community.';
+    }
+
+    if (lower.includes('community') || lower.includes('care')) {
+        return 'Community-focused work benefits from empathy and consistency. Choose one local need and turn it into a small, practical step this week.';
+    }
+
+    if (lower.includes('ai')) {
+        return 'AI is most useful when paired with responsibility. Focus on the goal, verify the result, and apply it ethically for real-world impact.';
+    }
+
+    if (lower.includes('study') || lower.includes('learn')) {
+        return 'A simple study rhythm is 25 minutes of focused attention, 5 minutes of review, and one short reflection on what you understood.';
+    }
+
+    return 'That is a thoughtful goal. I recommend breaking it into one small milestone, then reviewing your progress after a focused practice session.';
+}
+
+function initMentorPanel() {
+    if (!mentorForm || !mentorInput) return;
+
+    mentorForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const input = mentorInput.value.trim();
+        if (!input) return;
+
+        appendMessage(input, 'user');
+        mentorInput.value = '';
+
+        window.setTimeout(() => {
+            appendMessage(getMentorReply(input), 'bot');
+        }, 350);
+    });
+
+    mentorChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+            const prompt = chip.dataset.prompt || chip.textContent.trim();
+            mentorInput.value = prompt;
+            mentorInput.focus();
+        });
+    });
+}
+
 function setAuthVisibility(loggedIn) {
     if (navLogin) navLogin.style.display = loggedIn ? 'none' : 'inline-flex';
     if (navLogout) navLogout.classList.toggle('hidden', !loggedIn);
@@ -158,6 +226,7 @@ async function init() {
     renderStats(student);
     renderFocus(student);
     renderCourses(student);
+    initMentorPanel();
     setAuthVisibility(true);
 
     initAuthListener((user) => {

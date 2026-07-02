@@ -52,6 +52,30 @@
                     <div class="focus-pill" id="focus-pill">AI Foundations</div>
                 </div>
             </section>
+            <section class="mentor-panel" aria-labelledby="mentor-title">
+                <div class="mentor-panel-header">
+                    <div>
+                        <p class="eyebrow">AI Mentor</p>
+                        <h3 id="mentor-title">Your personal learning guide</h3>
+                    </div>
+                    <div class="mentor-status">Online</div>
+                </div>
+                <div class="mentor-messages" id="mentor-messages">
+                    <div class="message bot">
+                        <strong>Mentor</strong>
+                        <p>Welcome back. I can help you plan your next lesson, explain a concept, or suggest a study path.</p>
+                    </div>
+                </div>
+                <div class="mentor-quick-actions" role="list">
+                    <button type="button" class="mentor-chip" data-prompt="Help me plan my week">Plan my week</button>
+                    <button type="button" class="mentor-chip" data-prompt="Explain leadership in simple terms">Leadership help</button>
+                    <button type="button" class="mentor-chip" data-prompt="How can I stay motivated in AI learning?">Stay motivated</button>
+                </div>
+                <form class="mentor-form" id="mentor-form">
+                    <input type="text" id="mentor-input" placeholder="Ask your mentor..." aria-label="Ask the AI mentor" />
+                    <button type="submit" class="btn-sm enrolled">Send</button>
+                </form>
+            </section>
             <section class="section-inner">
                 <h3 class="section-subheading">Welcome back, <span id="student-name">Warrior</span></h3>
                 <div class="course-grid" id="dashboard-courses"></div>
