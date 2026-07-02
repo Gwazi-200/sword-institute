@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sword Institute | Forging Digital Warriors</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/index.css">
+
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- BACKGROUND -->
+<!-- ========================= -->
+
+<div class="background">
+
+    <div class="blob blob1"></div>
+
+    <div class="blob blob2"></div>
+
+    <div class="blob blob3"></div>
+
+</div>
+
+<!-- ========================= -->
+<!-- NAVBAR -->
+<!-- ========================= -->
+
+<header class="navbar">
+
+    <div class="container">
+
+        <a href="#" class="logo">
+
+            ⚔ Sword Institute
+
+        </a>
+
+        <nav>
+
+            <ul>
+
+                <li><a href="#">Home</a></li>
+
+                <li><a href="#programmes">Programmes</a></li>
+
+                <li><a href="#mentor">AI Mentor</a></li>
+
+                <li><a href="#about">About</a></li>
+
+                <li><a href="#contact">Contact</a></li>
+
+            </ul>
+
+        </nav>
+
+        <div class="nav-buttons">
+
+            <a href="login.html" class="btn btn-outline">
+
+                Login
+
+            </a>
+
+            <a href="register.html" class="btn btn-primary">
+
+                Register
+
+            </a>
+
+            <!-- Hidden until user logs in -->
+
+            <a href="student/dashboard.html"
+
+               id="dashboardButton"
+
+               class="btn btn-dashboard">
+
+               Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ========================= -->
+<!-- HERO -->
+<!-- ========================= -->
+
+<section class="hero">
+
+<div class="container hero-grid">
+
+<div class="hero-left">
+
+<span class="badge">
+
+Future Ready Learning Platform
+
+</span>
+
+<h1>
+
+Forging
+
+<span>Digital Warriors</span>
+
+for Social Good
+
+</h1>
+
+<p>
+
+Sword Institute empowers learners through practical education in
+
+Communication Skills,
+
+Leadership,
+
+Administration,
+
+Entrepreneurship,
+
+Community Development,
+
+Child Welfare,
+
+Psychosocial Support,
+
+AI Basic Education,
+
+and Home Based Care.
+
+</p>
+
+<div class="hero-buttons">
+
+<a href="register.html"
+
+class="btn btn-primary btn-large">
+
+Start Learning
+
+</a>
+
+<a href="#programmes"
+
+class="btn btn-outline btn-large">
+
+Explore Programmes
+
+</a>
+
+</div>
+
+<div class="hero-features">
+
+<div>
+
+✔ Professional Certificates
+
+</div>
+
+<div>
+
+✔ AI Mentor
+
+</div>
+
+<div>
+
+✔ Learn Anywhere
+
+</div>
+
+<div>
+
+✔ Self-Paced
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- AI MENTOR CARD -->
+<!-- ========================= -->
+
+<div class="mentor-card">
+
+<div class="mentor-header">
+
+<div class="mentor-avatar">
+
+🤖
+
+</div>
+
+<div>
+
+<h3>
+
+AI Mentor
+
+</h3>
+
+<p>
+
+Online
+
+</p>
+
+</div>
+
+</div>
+
+<div class="mentor-message">
+
+<h4>
+
+Good Evening Michael 👋
+
+</h4>
+
+<p>
+
+Today's Mission
+
+</p>
+
+<h2>
+
+Communication Skills
+
+</h2>
+
+<p>
+
+Estimated Time
+
+<strong>
+
+18 Minutes
+
+</strong>
+
+</p>
+
+<p>
+
+Reward
+
+<strong>
+
++100 XP
+
+</strong>
+
+</p>
+
+<div class="mentor-tip">
+
+💡
+
+Communication begins with listening.
+
+Practice active listening today.
+
+</div>
+
+<a href="student/dashboard.html"
+
+class="btn btn-primary mentor-button">
+
+Continue Mission →
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- SCROLL INDICATOR -->
+<!-- ========================= -->
+<!-- ==========================================================
+     SECTION: STATISTICS
+=========================================================== -->
+
+<section class="stats animate" id="statistics">
+
+    <div class="container">
+
+        <section class="programmes animate" id="programmes">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>Featured Professional Programmes</h2>
+
+            <p>
+                Learn practical skills designed for today's workforce,
+                NGOs, community organisations and future leaders.
+            </p>
+
+        </div>
+
+        <div id="featuredCourses" class="programme-grid">
+
+            <!-- Featured courses will be loaded dynamically from Firestore -->
+
+            <div class="loading-courses">
+
+                <div class="loader"></div>
+
+                <p>Loading Professional Programmes...</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+        <<div id="featuredCourses" class="programme-grid">
+
+    <!-- Featured courses will be loaded dynamically from Firestore -->
+
+    <div class="loading-courses">
+
+        <div class="loader"></div>
+
+        <p>Loading Professional Programmes...</p>
+
+    </div>
+
+</div>
+
+            <!-- Communication -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Professional Skills
+
+                    </span>
+
+                    <h3>Communication Skills</h3>
+
+                    <p>
+
+                        Master professional communication,
+                        presentation,
+                        negotiation and interpersonal skills
+                        for workplace excellence.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- Administration -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Leadership
+
+                    </span>
+
+                    <h3>Administration & Management</h3>
+
+                    <p>
+
+                        Build leadership,
+                        planning,
+                        budgeting,
+                        governance
+                        and organisational management skills.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- Entrepreneurship -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Business
+
+                    </span>
+
+                    <h3>Entrepreneurship</h3>
+
+                    <p>
+
+                        Transform innovative ideas
+                        into sustainable businesses
+                        with practical entrepreneurial strategies.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- Community -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Community Development
+
+                    </span>
+
+                    <h3>Community Based Organisations</h3>
+
+                    <p>
+
+                        Learn project planning,
+                        governance,
+                        mobilisation,
+                        monitoring
+                        and donor engagement.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- AI -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        AI Education
+
+                    </span>
+
+                    <h3>AI Basic Education</h3>
+
+                    <p>
+
+                        Learn responsible AI,
+                        productivity tools,
+                        prompt engineering
+                        and digital transformation.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- Child -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Child Protection
+
+                    </span>
+
+                    <h3>Child Welfare Programmes</h3>
+
+                    <p>
+
+                        Understand safeguarding,
+                        advocacy,
+                        child rights
+                        and community interventions.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- HBC -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Wellbeing
+
+                    </span>
+
+                    <h3>Home Based Care</h3>
+
+                    <p>
+
+                        Gain practical knowledge
+                        in home care,
+                        patient support
+                        and community healthcare.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            <!-- Psycho -->
+
+            <article class="programme-card">
+
+                <div class="programme-image"></div>
+
+                <div class="programme-content">
+
+                    <span class="tag">
+
+                        Wellbeing
+
+                    </span>
+
+                    <h3>Psychosocial Support</h3>
+
+                    <p>
+
+                        Develop counselling,
+                        emotional support
+                        and resilience-building skills
+                        for individuals and communities.
+
+                    </p>
+
+                    <div class="programme-footer">
+
+                        <strong>Certificate Included</strong>
+
+                        <a href="register.html" class="btn btn-primary">
+
+                            Enrol
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+<div class="scroll-indicator">
+
+↓
+
+</div>
+
+<!-- ========================= -->
+<!-- NEXT SECTION PLACEHOLDER -->
+<!-- ========================= -->
+
+<section class="coming-next">
+
+<div class="container">
+
+<h2>
+
+Statistics Section Coming Next
+
+</h2>
+
+<p>
+
+In Part 2 we'll add:
+
+Animated Counters,
+
+Featured Programmes,
+
+Professional Cards,
+
+and Firestore Integration.
+
+</p>
+
+</div>
+
+</section>
+
+<script type="module" src="js/index.js"></script>
+<script type="module" src="js/homeCourses.js"></script>
+</body>
+</html>
