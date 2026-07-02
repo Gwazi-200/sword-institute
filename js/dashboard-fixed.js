@@ -221,18 +221,11 @@ function initMentorUI(student) {
 }
 
 function setAuthVisibility() {
-    // dashboard.html does not have nav-login/nav-logout elements.
-    // It only has the logout link with id="logout-btn".
-    // Keep this guard-only (no DOM assumptions) to avoid crashes.
-    if (navLogout) {
-        navLogout.classList.toggle('hidden', false);
-    }
-    // If you later add a login element, toggle it here.
-
-    // dashboard.html uses logout link id="logout-btn".
-    // Ensure it's visible and bound.
+    // dashboard.html has logout link ONLY: #logout-btn
+    // Avoid toggling nav-login/nav-logout (not present) to prevent UI inconsistencies.
     attachLogoutHandler();
 }
+
 
 
 function attachLogoutHandler() {

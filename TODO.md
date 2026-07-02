@@ -7,7 +7,8 @@
 - [x] Added `js/dashboard-fixed.js` as reference/legacy patch.
 
 - [x] Wire AI mentor panel logic to the correct IDs/classes used in `dashboard.html` (with guards).
-- [ ] Fix auth visibility toggling to match what `dashboard.html` actually contains (e.g., `nav-logout`).
+- [x] Fix auth visibility toggling to match what `dashboard.html` actually contains (e.g., `nav-logout`).
 - [ ] Verify dashboard loads without JS console errors (manual browser check).
+
 
 
