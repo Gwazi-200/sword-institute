@@ -1,253 +1,129 @@
-﻿import { initAuthListener, getCurrentUser, logoutUser, getUserProfile } from './auth.js';
+﻿// dashboard.js – Sword Institute LMS
+// ES Module – imports auth from firebase.js
+import { auth } from './firebase.js';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
-const studentName = document.getElementById('student-name');
-const profileName = document.getElementById('profile-name');
-const profileEmail = document.getElementById('profile-email');
-const profileCountry = document.getElementById('profile-country');
-const profileGoal = document.getElementById('profile-goal');
-const statsContainer = document.getElementById('dashboard-stats');
-const coursesContainer = document.getElementById('dashboard-courses');
-const focusSummary = document.getElementById('focus-summary');
-const focusPill = document.getElementById('focus-pill');
-const logoutButton = document.getElementById('logout-button');
-const navLogin = document.getElementById('nav-login');
-const navLogout = document.getElementById('nav-logout');
-const viewCourses = document.getElementById('view-courses');
-const mentorForm = document.getElementById('mentor-form');
-const mentorInput = document.getElementById('mentor-input');
-const mentorMessages = document.getElementById('mentor-messages');
-const mentorChips = document.querySelectorAll('.mentor-chip');
-
-const COURSES = [
-    { id: 1, icon: '🌐', title: 'AI for Everyday Leadership', duration: '12 Weeks', progress: 35, category: 'Leadership' },
-    { id: 2, icon: '🐍', title: 'Python for Social Impact', duration: '10 Weeks', progress: 20, category: 'AI Education' },
-    { id: 3, icon: '🧠', title: 'Communication & Community Care', duration: '14 Weeks', progress: 10, category: 'Community Development' }
-];
-
-function normalizeStudent(rawStudent) {
-    if (!rawStudent) return null;
-
-    const profile = typeof rawStudent === 'string' ? JSON.parse(rawStudent) : rawStudent;
-    const fullName = profile.fullName || profile.name || profile.displayName || profile.email?.split('@')[0] || 'Warrior';
-
-    return {
-        uid: profile.uid || profile.id || '',
-        email: profile.email || '',
-        name: fullName,
-        phone: profile.phone || '',
-        country: profile.country || '',
-        goal: profile.goal || profile.preferences?.preferredTime || profile.studyGoal || 'career growth',
-        daily: profile.daily || profile.preferences?.dailyStudyGoal || 30,
-        learningStreak: profile.learningStreak || 3,
-        progress: profile.progress || 0,
-        completedCourses: profile.coursesCompleted || 0,
-        certificateCount: profile.certificateCount || 0,
-        currentCourse: profile.currentCourse || 'AI Foundations',
-        created: profile.createdAt?.seconds ? new Date(profile.createdAt.seconds * 1000).toISOString() : profile.created || new Date().toISOString()
-    };
-}
-
-async function loadStudent() {
-    const storedData = localStorage.getItem('sword_student');
-    if (storedData) {
-        try {
-            const parsed = normalizeStudent(JSON.parse(storedData));
-            if (parsed) return parsed;
-        } catch {
-            localStorage.removeItem('sword_student');
-        }
-    }
-
-    const current = getCurrentUser();
-    if (current?.uid) {
-        try {
-            const profile = await getUserProfile(current.uid);
-            const merged = normalizeStudent({ ...current, ...profile });
-            if (merged) {
-                localStorage.setItem('sword_student', JSON.stringify(merged));
-                return merged;
-            }
-        } catch (error) {
-            console.warn('Unable to load Firestore profile:', error);
-        }
-
-        return normalizeStudent({
-            uid: current.uid,
-            email: current.email,
-            fullName: current.fullName || current.displayName || current.email?.split('@')[0],
-            country: current.country || '',
-            phone: current.phone || '',
-            preferences: current.preferences || {}
-        });
-    }
-
-    return null;
-}
-
-function renderProfile(student) {
-    if (!student) return;
-    studentName.textContent = student.name || 'Warrior';
-    profileName.textContent = student.name || '—';
-    profileEmail.textContent = student.email || '—';
-    profileCountry.textContent = student.country || '—';
-    profileGoal.textContent = student.goal || '—';
-}
-
-function renderStats(student) {
-    if (!statsContainer) return;
-    const enrolledCount = COURSES.length;
-    const streak = student?.learningStreak || 3;
-    const totalHours = Math.max(6, Math.round((student?.progress || 0) / 10) + 6);
-    const badges = student?.certificateCount || 4;
-
-    statsContainer.innerHTML = `
-        <div class="stat-pill"><div class="number">${enrolledCount}</div><div class="label">Enrolled</div></div>
-        <div class="stat-pill"><div class="number">${streak}</div><div class="label">Day Streak</div></div>
-        <div class="stat-pill"><div class="number">${totalHours}h</div><div class="label">Study Time</div></div>
-        <div class="stat-pill"><div class="number">${badges}</div><div class="label">Badges</div></div>
-    `;
-}
-
-function renderFocus(student) {
-    if (!focusSummary || !focusPill) return;
-    const nextStep = student?.currentCourse || 'AI Foundations';
-    const dailyGoal = student?.daily || 30;
-    focusSummary.textContent = `Continue ${nextStep.toLowerCase()} and aim for ${dailyGoal} minutes of focused study today.`;
-    focusPill.textContent = nextStep;
-}
-
-function renderCourses(student) {
-    if (!coursesContainer) return;
-
-    const personalizedCourses = COURSES.map((course, index) => {
-        const progress = Math.min(100, Math.max(course.progress, (student?.progress || 0) / 3 + index * 5));
-        return `
-            <div class="course-card">
-                <div class="icon">${course.icon}</div>
-                <h3>${course.title}</h3>
-                <p class="course-desc">${course.category} • ${course.duration} • ${Math.round(progress)}% complete</p>
-                <div class="progress-bar"><div class="fill" style="width:${Math.round(progress)}%"></div></div>
-                <button type="button" class="btn-sm enrolled">Continue</button>
-            </div>
-        `;
-    });
-
-    coursesContainer.innerHTML = personalizedCourses.join('');
-}
-
-function createMessage(text, type = 'bot') {
-    const message = document.createElement('div');
-    message.className = `message ${type}`;
-    message.innerHTML = `<strong>${type === 'bot' ? 'Mentor' : 'You'}</strong><p>${text}</p>`;
-    return message;
-}
-
-function appendMessage(text, type = 'bot') {
-    if (!mentorMessages) return;
-    mentorMessages.appendChild(createMessage(text, type));
-    mentorMessages.scrollTop = mentorMessages.scrollHeight;
-}
-
-function getMentorReply(message) {
-    const lower = message.toLowerCase();
-
-    if (lower.includes('plan') || lower.includes('week')) {
-        return 'A strong weekly plan is to focus on one skill at a time, review notes once a day, and finish with one small action that builds momentum.';
-    }
-
-    if (lower.includes('lead') || lower.includes('leadership')) {
-        return 'Leadership grows through practice. Start by communicating clearly, listening carefully, and taking one thoughtful action that helps your team or community.';
-    }
-
-    if (lower.includes('community') || lower.includes('care')) {
-        return 'Community-focused work benefits from empathy and consistency. Choose one local need and turn it into a small, practical step this week.';
-    }
-
-    if (lower.includes('ai')) {
-        return 'AI is most useful when paired with responsibility. Focus on the goal, verify the result, and apply it ethically for real-world impact.';
-    }
-
-    if (lower.includes('study') || lower.includes('learn')) {
-        return 'A simple study rhythm is 25 minutes of focused attention, 5 minutes of review, and one short reflection on what you understood.';
-    }
-
-    return 'That is a thoughtful goal. I recommend breaking it into one small milestone, then reviewing your progress after a focused practice session.';
-}
-
-function initMentorPanel() {
-    if (!mentorForm || !mentorInput) return;
-
-    mentorForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const input = mentorInput.value.trim();
-        if (!input) return;
-
-        appendMessage(input, 'user');
-        mentorInput.value = '';
-
-        window.setTimeout(() => {
-            appendMessage(getMentorReply(input), 'bot');
-        }, 350);
-    });
-
-    mentorChips.forEach((chip) => {
-        chip.addEventListener('click', () => {
-            const prompt = chip.dataset.prompt || chip.textContent.trim();
-            mentorInput.value = prompt;
-            mentorInput.focus();
-        });
-    });
-}
-
-function setAuthVisibility(loggedIn) {
-    if (navLogin) navLogin.style.display = loggedIn ? 'none' : 'inline-flex';
-    if (navLogout) navLogout.classList.toggle('hidden', !loggedIn);
-}
-
-async function signOut() {
-    try {
-        await logoutUser();
-    } catch (error) {
-        console.warn('Logout failed, clearing local session anyway.');
-    } finally {
-        localStorage.removeItem('sword_student');
-        window.location.href = './login.html';
-    }
-}
-
-async function init() {
-    const student = await loadStudent();
-    if (!student) {
-        window.location.href = './login.html';
-        return;
-    }
-
-    renderProfile(student);
-    renderStats(student);
-    renderFocus(student);
-    renderCourses(student);
-    initMentorPanel();
-    setAuthVisibility(true);
-
-    initAuthListener((user) => {
+// Wait for DOM
+document.addEventListener('DOMContentLoaded', () => {
+    // Auth listener
+    onAuthStateChanged(auth, (user) => {
         if (!user) {
-            signOut();
+            // Redirect to login if not authenticated
+            window.location.href = 'login.html';
+            return;
         }
+        // User is logged in – populate dashboard
+        populateUserInfo(user);
+        initDashboard();
     });
 
-    if (logoutButton) {
-        logoutButton.addEventListener('click', signOut);
-    }
-
-    if (viewCourses) {
-        viewCourses.addEventListener('click', () => {
-            window.location.href = './courses.html';
+    // Logout handler
+    document.getElementById('logout-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            console.error('Logout error:', error);
         });
-    }
+    });
+});
+
+// Populate user info (name, email, avatar)
+function populateUserInfo(user) {
+    const displayName = user.displayName || 'Student';
+    const email = user.email || 'student@sword.institute';
+    const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=7C3AED&color=fff&size=80`;
+
+    // Update all name placeholders
+    document.querySelectorAll('#studentNameHeader, #studentNameHero, #profileName').forEach(el => el.textContent = displayName);
+    document.getElementById('profileEmail').textContent = email;
+    document.getElementById('profileAvatar').src = photoURL;
+    document.getElementById('studentAvatar').src = photoURL;
+
+    // Set additional profile placeholders (could be from Firestore later)
+    // For now, static values
+    document.getElementById('profileCountry').textContent = 'Kenya';
+    document.getElementById('profileGoal').textContent = 'Master AI for Social Good';
+    document.getElementById('profileLevel').textContent = 'Gold Warrior';
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
+// Initialize dashboard (load courses, announcements, AI mentor, etc.)
+function initDashboard() {
+    // Set current date
+    const now = new Date();
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+    // --- Courses data ---
+    const courses = [
+        { title: 'Communication Skills', category: 'Soft Skills', duration: '3h', difficulty: 'Beginner', progress: 75, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=Communication' },
+        { title: 'Administration & Management', category: 'Business', duration: '4h', difficulty: 'Intermediate', progress: 40, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=Admin' },
+        { title: 'Entrepreneurship', category: 'Business', duration: '2.5h', difficulty: 'Beginner', progress: 90, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=Entrepreneurship' },
+        { title: 'Community Based Organisations', category: 'Development', duration: '3h', difficulty: 'Intermediate', progress: 65, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=CBO' },
+        { title: 'AI Basic Education', category: 'Technology', duration: '5h', difficulty: 'Advanced', progress: 25, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=AI+Basic' },
+        { title: 'Child Welfare Programmes', category: 'Social Work', duration: '4h', difficulty: 'Intermediate', progress: 55, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=Child+Welfare' },
+        { title: 'Psychosocial Support', category: 'Mental Health', duration: '3.5h', difficulty: 'Beginner', progress: 30, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=Psychosocial' },
+        { title: 'Home Based Care', category: 'Health', duration: '2h', difficulty: 'Beginner', progress: 80, image: 'https://placehold.co/400x200/7C3AED/FFFFFF?text=Home+Care' }
+    ];
+
+    const coursesGrid = document.getElementById('coursesGrid');
+    coursesGrid.innerHTML = '';
+    courses.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'course-card glass';
+        card.innerHTML = `
+            <img src="${c.image}" alt="${c.title}" loading="lazy" />
+            <h3>${c.title}</h3>
+            <div class="meta"><span>${c.category}</span><span>${c.duration}</span><span>${c.difficulty}</span></div>
+            <div class="progress-wrap">
+                <progress value="${c.progress}" max="100"></progress>
+                <span>${c.progress}%</span>
+            </div>
+            <button class="btn-continue" data-course="${c.title}">Continue Learning</button>
+        `;
+        coursesGrid.appendChild(card);
+    });
+
+    // Add event listeners to continue buttons (optional)
+    document.querySelectorAll('.btn-continue').forEach(btn => {
+        btn.addEventListener('click', function() {
+            alert(`Resuming: ${this.dataset.course}`);
+        });
+    });
+
+    // --- AI Mentor Messages Rotation ---
+    const mentorMessages = [
+        { greeting: 'Hello, Warrior!', message: 'You are making incredible progress.', tip: '💡 Focus on one concept at a time.', advice: '📈 Consider learning Python for AI.', quote: '“The future belongs to those who learn more.”' },
+        { greeting: 'Good day, Champion!', message: 'Keep up the momentum!', tip: '💡 Practice coding daily.', advice: '📈 Attend AI workshops to network.', quote: '“Education is the most powerful weapon.”' },
+        { greeting: 'Hey, Leader!', message: 'Your dedication is inspiring.', tip: '💡 Teach others to reinforce learning.', advice: '📈 Explore open-source AI projects.', quote: '“Success is not final; failure is not fatal.”' },
+        { greeting: 'Greetings, Visionary!', message: 'You are on the path to mastery.', tip: '💡 Set weekly learning goals.', advice: '📈 Build a portfolio of projects.', quote: '“The only limit is your imagination.”' },
+    ];
+
+    let mentorIndex = 0;
+    function rotateMentor() {
+        const msg = mentorMessages[mentorIndex % mentorMessages.length];
+        document.getElementById('mentorGreeting').textContent = msg.greeting;
+        document.getElementById('mentorMessage').textContent = msg.message;
+        document.getElementById('mentorTip').textContent = msg.tip;
+        document.getElementById('mentorAdvice').textContent = msg.advice;
+        document.getElementById('mentorQuote').textContent = msg.quote;
+        mentorIndex++;
+    }
+    rotateMentor();
+    setInterval(rotateMentor, 10000); // rotate every 10 seconds
+
+    // --- Animate progress bars (optional) ---
+    // The progress elements already have values; we can add a fade-in effect via CSS.
+    // We can also animate the circular progress – but we set it statically in HTML.
+
+    // --- Sidebar toggle for mobile ---
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.querySelector('.sidebar');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+    }
+
+    // Additional: set hero stats, etc. (placeholders already)
+    // Could fetch from Firestore later.
 }
