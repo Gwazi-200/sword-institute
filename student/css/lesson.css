@@ -1,0 +1,144 @@
+/*=========================================================
+    SWORD INSTITUTE LMS
+    Lesson Page
+    Version 1.0
+=========================================================*/
+
+/* ===========================
+   GOOGLE FONT
+=========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ===========================
+   CSS VARIABLES
+=========================== */
+
+:root{
+
+--primary:#5B5CEB;
+--secondary:#7C3AED;
+--accent:#8B5CF6;
+
+--success:#22C55E;
+--warning:#F59E0B;
+--danger:#EF4444;
+
+--background:#F6F8FC;
+
+--card:#FFFFFF;
+
+--glass:rgba(255,255,255,.45);
+
+--glass-border:rgba(255,255,255,.35);
+
+--text:#1F2937;
+
+--muted:#6B7280;
+
+--shadow:
+0 10px 35px rgba(0,0,0,.08);
+
+--radius:22px;
+
+}
+
+/* ===========================
+RESET
+=========================== */
+
+*{
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+}
+
+html{
+
+scroll-behavior:smooth;
+
+}
+
+body{
+
+font-family:'Poppins',sans-serif;
+
+background:linear-gradient(
+135deg,
+#EEF2FF,
+#F8FAFC,
+#F3E8FF);
+
+color:var(--text);
+
+min-height:100vh;
+
+}
+
+/* ===========================
+LINKS
+=========================== */
+
+a{
+
+text-decoration:none;
+
+color:inherit;
+
+}
+
+/* ===========================
+BUTTONS
+=========================== */
+
+button{
+
+cursor:pointer;
+
+font-family:inherit;
+
+border:none;
+
+transition:.3s;
+
+}
+
+/* ===========================
+IMAGES
+=========================== */
+
+img{
+
+max-width:100%;
+
+display:block;
+
+}
+
+/* ===========================
+SCROLLBAR
+=========================== */
+
+::-webkit-scrollbar{
+
+width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:var(--primary);
+
+border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:#ECECEC;
+
+}
