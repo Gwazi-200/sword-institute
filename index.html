@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#8B00FF" />
     <title>SWORD Institute — Student Success Engine</title>
 
@@ -265,6 +265,10 @@
             width: 100%;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
         .theme-btn {
             background: var(--pearl-glass);
             backdrop-filter: blur(8px);
@@ -335,6 +339,93 @@
         .glass-card:hover {
             border-color: var(--violet-primary);
             box-shadow: var(--shadow-gold);
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .ai-coach .header h3 {
+            margin: 0;
+        }
+
+        .ai-coach .header span {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            display: block;
+        }
+
+        .section-subheading {
+            margin-top: 1.5rem;
+        }
+
+        .achievements-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-card {
+            max-width: 600px;
+            margin: 1.5rem 0;
+        }
+
+        .mt-1 {
+            margin-top: 1rem;
+        }
+
+        .empty-state {
+            opacity: 0.6;
+            text-align: center;
+            width: 100%;
+        }
+
+        .course-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            flex: 1;
+        }
+
+        .course-card .fill {
+            width: 0%;
+            height: 10px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--gold-primary), var(--violet-primary));
+            transition: width 0.4s ease;
+        }
+
+        .btn-sm.enrolled {
+            border-color: var(--gold-primary);
+            color: var(--gold-primary);
+        }
+
+        .achievement-pill {
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            border: 1px solid var(--pearl-border);
+            opacity: 0.4;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .achievement-pill.earned {
+            border-color: var(--gold-primary);
+            opacity: 1;
         }
 
         .btn-primary {
@@ -823,13 +914,13 @@
             <span></span>
         </button>
 
-        <ul class="nav-links" id="navLinks" role="menubar">
-            <li role="none"><a role="menuitem" data-page="home" class="active">Home</a></li>
-            <li role="none"><a role="menuitem" data-page="dashboard">Dashboard</a></li>
-            <li role="none"><a role="menuitem" data-page="courses">Courses</a></li>
-            <li role="none"><a role="menuitem" data-page="profile">Profile</a></li>
-            <li role="none"><a role="menuitem" id="nav-login" data-page="login">Log In</a></li>
-            <li role="none"><a role="menuitem" id="nav-logout" style="display:none;">Log Out</a></li>
+        <ul class="nav-links" id="navLinks">
+            <li role="none"><a data-page="home" class="active">Home</a></li>
+            <li role="none"><a data-page="dashboard">Dashboard</a></li>
+            <li role="none"><a data-page="courses">Courses</a></li>
+            <li role="none"><a data-page="profile">Profile</a></li>
+            <li role="none"><a id="nav-login" data-page="login">Log In</a></li>
+            <li role="none"><a id="nav-logout" class="hidden">Log Out</a></li>
             <li role="none"><button id="mobile-theme-toggle" class="theme-btn mobile-theme-btn">🌙 Dark</button></li>
         </ul>
 
@@ -851,7 +942,7 @@
                     <label for="auth-password">Password</label>
                     <input type="password" id="auth-password" class="input-glass" placeholder="Min 6 characters" required minlength="6" />
                 </div>
-                <div id="auth-profile-fields" style="display:none;">
+                <div id="auth-profile-fields" class="hidden">
                     <div class="form-group">
                         <label for="auth-name">Full Name</label>
                         <input type="text" id="auth-name" class="input-glass" placeholder="Your full name" />
@@ -900,7 +991,7 @@
                 </div>
             </div>
             <!-- stats, features etc can be dynamically loaded, but we keep it simple here -->
-            <div style="max-width:1200px;margin:0 auto;padding:0 1rem;">
+            <div class="section-inner">
                 <div class="stat-grid" id="landing-stats">
                     <!-- populated by JS -->
                 </div>
@@ -932,19 +1023,19 @@
             </div>
 
             <!-- Continue Learning -->
-            <h3 style="margin-top:1.5rem;">Continue Learning</h3>
+            <h3 class="section-subheading">Continue Learning</h3>
             <div class="course-grid" id="continue-learning"></div>
 
             <!-- Achievements -->
-            <h3 style="margin-top:1.5rem;">🏆 Recent Achievements</h3>
-            <div id="achievements-container" style="display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:0.5rem;"></div>
+            <h3 class="section-subheading">🏆 Recent Achievements</h3>
+            <div id="achievements-container" class="achievements-grid"></div>
         </section>
 
         <!-- ===== COURSES ===== -->
         <section class="page-section" id="page-courses">
             <h2 class="section-title"><span class="gold">✦</span> All Programs <span class="gold">✦</span></h2>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:1.5rem 0;">
-                <input type="text" id="course-search" class="input-glass" style="flex:1;min-width:200px;" placeholder="Search courses..." />
+            <div class="search-row">
+                <input type="text" id="course-search" class="input-glass search-input" placeholder="Search courses..." />
                 <button class="btn-secondary" id="course-search-btn">🔍 Search</button>
             </div>
             <div class="course-grid" id="all-courses"></div>
@@ -953,7 +1044,7 @@
         <!-- ===== PROFILE ===== -->
         <section class="page-section" id="page-profile">
             <h2 class="section-title"><span class="violet">👤</span> Your Profile</h2>
-            <div class="glass-card" style="max-width:600px;margin:1.5rem 0;">
+            <div class="glass-card profile-card">
                 <div id="profile-display">
                     <p><strong>Name:</strong> <span id="profile-name">—</span></p>
                     <p><strong>Email:</strong> <span id="profile-email">—</span></p>
@@ -962,7 +1053,7 @@
                     <p><strong>Learning Streak:</strong> <span id="profile-streak">0</span> days</p>
                     <p><strong>Total Study Time:</strong> <span id="profile-time">0</span> min</p>
                 </div>
-                <button class="btn-secondary" id="profile-edit" style="margin-top:1rem;">✏️ Edit Profile</button>
+                <button class="btn-secondary mt-1" id="profile-edit">✏️ Edit Profile</button>
             </div>
         </section>
 
@@ -1154,8 +1245,7 @@
                 const { showProgress = false, showEnroll = true, enrolledIds = [], progressMap = {} } = options;
 
                 if (!courses || courses.length === 0) {
-                    container.innerHTML = `<p style="opacity:0.6;text-align:center;width:100%;">No courses found.</p>`;
-                    return;
+                    container.innerHTML = `<p class="empty-state">No courses found.</p>`;
                 }
 
                 container.innerHTML = courses.map(c => {
@@ -1170,13 +1260,19 @@
                                 <span>⭐ ${c.rating}</span>
                             </div>
                             <div class="tags">${c.tags.map(t => `<span>#${t}</span>`).join('')}</div>
-                            <p style="font-size:0.9rem;opacity:0.8;flex:1;">${c.description}</p>
-                            ${showProgress ? `<div class="progress-bar"><div class="fill" style="width:${prog}%;"></div></div>` : ''}
-                            ${showEnroll ? (isEnrolled ? `<button class="btn-sm" style="border-color:var(--gold-primary);color:var(--gold-primary);" disabled>✅ Enrolled</button>` : `<button class="btn-sm enroll-btn" data-id="${c.id}">Enroll Now</button>`) : ''}
+                            <p class="course-desc">${c.description}</p>
+                            ${showProgress ? `<div class="progress-bar"><div class="fill" data-progress="${prog}"></div></div>` : ''}
+                            ${showEnroll ? (isEnrolled ? `<button class="btn-sm enrolled" disabled>✅ Enrolled</button>` : `<button class="btn-sm enroll-btn" data-id="${c.id}">Enroll Now</button>`) : ''}
                             ${!showEnroll && isEnrolled ? `<button class="btn-sm" data-id="${c.id}" data-continue>Continue →</button>` : ''}
                         </div>
                     `;
                 }).join('');
+
+                // Update progress bar widths after injection
+                container.querySelectorAll('.progress-bar .fill').forEach(fill => {
+                    const percent = Number(fill.dataset.progress) || 0;
+                    fill.style.width = `${percent}%`;
+                });
 
                 // bind enroll buttons
                 container.querySelectorAll('.enroll-btn').forEach(btn => {
@@ -1219,7 +1315,7 @@
                 const all = APP.achievements;
                 container.innerHTML = all.map(a => {
                     const has = earned.includes(a.id);
-                    return `<span style="padding:0.3rem 1rem;border-radius:40px;border:1px solid ${has ? 'var(--gold-primary)' : 'var(--pearl-border)'};opacity:${has ? 1 : 0.4};">
+                    return `<span class="achievement-pill ${has ? 'earned' : ''}">
                         ${has ? a.icon : '🔒'} ${a.label}
                     </span>`;
                 }).join('');
@@ -1428,7 +1524,8 @@
             function openModal(register = false) {
                 isRegister = register;
                 modal.classList.add('visible');
-                document.getElementById('auth-profile-fields').style.display = register ? 'block' : 'none';
+                const profileFields = document.getElementById('auth-profile-fields');
+                profileFields.classList.toggle('hidden', !register);
                 authSubmit.textContent = register ? 'Register' : 'Log In';
                 authTitle.textContent = register ? 'Create Account' : 'Log In';
                 authSwitchText.innerHTML = register ?
