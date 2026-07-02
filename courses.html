@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute — Courses</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./css/auth.css" />
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <a href="#courses-section" class="skip-link">Skip to courses</a>
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <a href="./index.html" class="logo" aria-label="Sword Institute Home">
+            <span class="sword-icon">⚔</span>
+            <span class="sword-text">Sword</span>
+            <span class="institute">Institute</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./login.html" id="nav-login">Log In</a></li>
+        </ul>
+    </nav>
+    <main class="auth-container" id="courses-section">
+        <div class="glass-card auth-card">
+            <div class="auth-header">
+                <div class="auth-icon" aria-hidden="true">📚</div>
+                <h2>Explore Courses</h2>
+                <p class="auth-subtitle">Find your next learning path and join the Sword Institute community.</p>
+            </div>
+            <div class="form-group">
+                <label for="course-search">Search courses</label>
+                <input type="search" id="course-search" class="input-glass" placeholder="Try 'AI', 'Python', or 'Web'" />
+            </div>
+            <button type="button" class="btn-primary" id="search-button">Search</button>
+            <div class="section-inner" style="margin-top: 1.5rem;">
+                <div class="course-grid" id="courses-grid"></div>
+            </div>
+        </div>
+    </main>
+    <footer role="contentinfo">
+        <div class="footer-content">
+            <p>© 2026 Sword Institute — Your next lesson awaits.</p>
+            <div class="footer-links">
+                <a href="./index.html">Home</a>
+                <a href="./dashboard.html">Dashboard</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </footer>
+    <script type="module" src="./js/courses.js"></script>
+</body>
+</html>

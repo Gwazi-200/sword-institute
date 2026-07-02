@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute — Log In</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./css/auth.css" />
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <a href="#login-form" class="skip-link">Skip to login form</a>
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <a href="./index.html" class="logo" aria-label="Sword Institute Home">
+            <span class="sword-icon">⚔</span>
+            <span class="sword-text">Sword</span>
+            <span class="institute">Institute</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./courses.html">Courses</a></li>
+            <li><a href="./register.html">Register</a></li>
+        </ul>
+    </nav>
+    <main class="auth-container" id="login-form">
+        <div class="glass-card auth-card">
+            <div class="auth-header">
+                <div class="auth-icon" aria-hidden="true">⚔</div>
+                <h2>Log In to Sword Institute</h2>
+                <p class="auth-subtitle">Access your courses, progress, and learning dashboard.</p>
+            </div>
+            <div id="toast-container" role="alert" aria-live="polite"></div>
+            <form id="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="input-glass" placeholder="you@example.com" required autocomplete="email" />
+                    <span class="form-error" id="login-email-error" role="alert"></span>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="input-glass" placeholder="Enter your password" required autocomplete="current-password" />
+                    <span class="form-error" id="login-password-error" role="alert"></span>
+                </div>
+                <button type="submit" class="btn-primary" id="login-submit">Log In</button>
+            </form>
+            <div class="auth-footer">
+                <p>New here? <a href="./register.html">Create an account</a></p>
+                <p><a href="./index.html">Back to home</a></p>
+            </div>
+        </div>
+    </main>
+    <footer role="contentinfo">
+        <div class="footer-content">
+            <p>© 2026 Sword Institute — Built for digital learners.</p>
+            <div class="footer-links">
+                <a href="./index.html">Home</a>
+                <a href="./courses.html">Courses</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </footer>
+    <script type="module" src="./js/login.js"></script>
+</body>
+</html>

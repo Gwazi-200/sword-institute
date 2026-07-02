@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute — Dashboard</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./css/auth.css" />
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <a href="#dashboard" class="skip-link">Skip to dashboard content</a>
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <a href="./index.html" class="logo" aria-label="Sword Institute Home">
+            <span class="sword-icon">⚔</span>
+            <span class="sword-text">Sword</span>
+            <span class="institute">Institute</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./courses.html">Courses</a></li>
+            <li><a href="./login.html" id="nav-login">Log In</a></li>
+            <li><button id="nav-logout" class="btn-secondary hidden">Log Out</button></li>
+        </ul>
+    </nav>
+    <main class="auth-container" id="dashboard">
+        <div class="glass-card auth-card">
+            <div class="auth-header">
+                <div class="auth-icon" aria-hidden="true">🛡️</div>
+                <h2>Your Student Dashboard</h2>
+                <p class="auth-subtitle">Track your progress, view enrolled courses, and continue learning.</p>
+            </div>
+            <div id="toast-container" role="alert" aria-live="polite"></div>
+            <section class="dashboard-stats">
+                <div class="stat-grid" id="dashboard-stats"></div>
+            </section>
+            <section class="section-inner">
+                <h3 class="section-subheading">Welcome back, <span id="student-name">Warrior</span></h3>
+                <div class="course-grid" id="dashboard-courses"></div>
+            </section>
+            <section class="glass-card profile-card">
+                <h3>Profile Summary</h3>
+                <p><strong>Name:</strong> <span id="profile-name">—</span></p>
+                <p><strong>Email:</strong> <span id="profile-email">—</span></p>
+                <p><strong>Country:</strong> <span id="profile-country">—</span></p>
+                <p><strong>Study Goal:</strong> <span id="profile-goal">—</span></p>
+                <div class="actions" style="margin-top: 1rem;">
+                    <button type="button" class="btn-primary" id="view-courses">Browse Courses</button>
+                    <button type="button" class="btn-secondary" id="logout-button">Log Out</button>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer role="contentinfo">
+        <div class="footer-content">
+            <p>© 2026 Sword Institute — Your learning journey continues.</p>
+            <div class="footer-links">
+                <a href="./index.html">Home</a>
+                <a href="./courses.html">Courses</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </footer>
+    <script type="module" src="./js/dashboard.js"></script>
+</body>
+</html>
