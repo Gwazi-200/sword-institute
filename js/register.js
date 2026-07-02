@@ -107,17 +107,31 @@ function validateField(fieldId) {
  * Validate all fields
  */
 function validateAll() {
-    const fieldIds = ['fullName', 'email', 'phone', 'country', 'password', 'confirmPassword', 'terms'];
+    const fieldIds = [
+        'fullName',
+        'email',
+        'phone',
+        'country',
+        'password',
+        'confirmPassword',
+        'terms'
+    ];
+
     let allValid = true;
-    
+
     fieldIds.forEach(id => {
-        if (!validateField(id)) {
+        const valid = validateField(id);
+        console.log(id, valid);
+
+        if (!valid) {
             allValid = false;
         }
     });
-    
-    // Enable/disable submit button
+
     submitBtn.disabled = !allValid;
+
+    console.log("Overall valid:", allValid);
+
     return allValid;
 }
 
@@ -194,6 +208,8 @@ if (confirmToggle) {
  * Handle form submission
  */
 form.addEventListener('submit', async (e) => {
+    console.log("🚀 Submit button clicked");
+    
     e.preventDefault();
     
     // Clear old toasts
@@ -226,17 +242,23 @@ form.addEventListener('submit', async (e) => {
     setFormDisabled(form, true);
     
     try {
-        // Register user with Firebase
-        const result = await registerUser(userData, { sendVerification: true });
-        
-        console.log('✅ Registration complete. User:', result.email);
-        
-        // Store session data
-        sessionStorage.setItem('sword_user', JSON.stringify({
-            uid: result.uid,
-            email: result.email,
-            fullName: result.fullName
-        }));
+        //// Register user with Firebase
+console.log("🚀 About to call registerUser");
+
+const result = await registerUser(userData, {
+    sendVerification: true
+});
+
+console.log("✅ registerUser returned:", result);
+
+console.log('✅ Registration complete. User:', result.email);
+
+// Store session data
+sessionStorage.setItem('sword_user', JSON.stringify({
+    uid: result.uid,
+    email: result.email,
+    fullName: result.fullName
+}));
         
         // Show success toast
         showToast('🎉 Account created successfully! Redirecting to dashboard...', 'success', 3000);

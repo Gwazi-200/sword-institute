@@ -57,112 +57,172 @@ let authListeners = [];
 // ============================================================
 
 /**
- * Register a new student user
- * 
- * @param {Object} userData - User registration data
- * @param {string} userData.email - User's email address
- * @param {string} userData.password - User's password
- * @param {string} userData.fullName - User's full name
- * @param {string} userData.phone - User's phone number
- * @param {string} userData.country - User's country
- * @param {Object} options - Additional options
- * @param {boolean} options.sendVerification - Send email verification
- * @returns {Promise<Object>} Created user object
+ * Register a new user
+ *
+ * @param {Object} userData
+ * @param {Object} options
+ * @returns {Promise<Object>}
  */
 export async function registerUser(userData, options = { sendVerification: true }) {
-    const { email, password, fullName, phone, country } = userData;
 
+    console.log("🔥 registerUser() started");
+    console.log("📦 User data:", userData);
+
+    const {
+        email,
+        password,
+        fullName,
+        phone,
+        country
+    } = userData;
+
+    // -------------------------------------------------------
+    // Validate required fields
+    // -------------------------------------------------------
     if (!email || !password || !fullName) {
-        throw new Error('Email, password, and full name are required.');
+        throw new Error("Email, password and full name are required.");
     }
 
-    console.log('📝 Creating Firebase account for:', email);
+    console.log("📝 Creating Firebase account for:", email);
 
     try {
-        // Step 1: Create user with Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        console.log('✅ Authentication successful. UID:', user.uid);
 
-        // Step 2: Update profile with display name
+        // =====================================================
+        // STEP 1 - CREATE FIREBASE AUTH ACCOUNT
+        // =====================================================
+
+        console.log("🔥 Creating Firebase Authentication account...");
+
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        console.log("✅ Firebase Authentication account created.");
+
+        const user = userCredential.user;
+
+        console.log("✅ Authentication successful.");
+        console.log("UID:", user.uid);
+
+        // =====================================================
+        // STEP 2 - UPDATE PROFILE
+        // =====================================================
+
+        console.log("🔥 Updating display name...");
+
         await firebaseUpdateProfile(user, {
             displayName: fullName
         });
-        console.log('✅ Profile updated with display name.');
 
-        // Step 3: Send email verification
+        console.log("✅ Display name updated.");
+
+        // =====================================================
+        // STEP 3 - SEND EMAIL VERIFICATION
+        // =====================================================
+
         if (options.sendVerification) {
+
+            console.log("🔥 Sending verification email...");
+
             try {
+
                 await sendEmailVerification(user);
-                console.log('✅ Verification email sent.');
+
+                console.log("✅ Verification email sent.");
+
             } catch (verifyError) {
-                console.warn('⚠️ Email verification failed:', verifyError);
+
+                console.warn("⚠ Verification email failed.");
+                console.error(verifyError);
+
             }
+
         }
 
-        // Step 4: Create Firestore student document
+        // =====================================================
+        // STEP 4 - CREATE FIRESTORE DOCUMENT
+        // =====================================================
+
         const studentData = {
+
             uid: user.uid,
-            fullName: fullName,
-            email: email,
-            phone: phone || '',
-            country: country || '',
-            role: 'student',
-            status: 'active',
+
+            fullName,
+
+            email,
+
+            phone: phone || "",
+
+            country: country || "",
+
+            role: "student",
+
+            status: "active",
+
             createdAt: serverTimestamp(),
+
             lastLogin: serverTimestamp(),
+
             learningStreak: 0,
+
             progress: 0,
+
             coursesCompleted: 0,
-            currentCourse: '',
+
+            currentCourse: "",
+
             certificateCount: 0,
-            photoURL: '',
+
+            photoURL: "",
+
             preferences: {
                 dailyStudyGoal: 30,
-                preferredTime: '',
+                preferredTime: "",
                 notifications: true
             }
+
         };
 
-        await setDoc(doc(db, 'students', user.uid), studentData);
-        console.log('✅ Firestore student document created.');
+        console.log("🔥 Writing Firestore document...");
 
-        // Step 5: Set current user
-        currentUser = {
+        await setDoc(
+            doc(db, "students", user.uid),
+            studentData
+        );
+
+        console.log("✅ Firestore document created.");
+
+        // =====================================================
+        // STEP 5 - RETURN USER
+        // =====================================================
+
+        return {
+
             uid: user.uid,
-            email: user.email,
-            fullName: fullName,
-            phone: phone || '',
-            country: country || '',
-            ...studentData
-        };
 
-        return currentUser;
+            email: user.email,
+
+            fullName,
+
+            phone,
+
+            country,
+
+            emailVerified: user.emailVerified
+
+        };
 
     } catch (error) {
-        console.error('❌ Registration error:', error);
-        
-        if (error.code === 'auth/email-already-in-use') {
-            throw new Error('This email is already registered. Please log in.');
-        }
-        if (error.code === 'auth/invalid-email') {
-            throw new Error('Invalid email address format.');
-        }
-        if (error.code === 'auth/weak-password') {
-            throw new Error('Password is too weak. Please choose a stronger password.');
-        }
-        if (error.code === 'auth/network-request-failed') {
-            throw new Error('Network error. Please check your connection and try again.');
-        }
-        if (error.code === 'auth/too-many-requests') {
-            throw new Error('Too many attempts. Please wait a moment and try again.');
-        }
-        if (error.code === 'auth/operation-not-allowed') {
-            throw new Error('Registration is currently disabled. Please contact support.');
-        }
-        
-        throw new Error(error.message || 'Registration failed. Please try again.');
+
+        console.error("❌ registerUser() failed.");
+        console.error(error);
+
+        throw error;
+
     }
+
 }
 
 // ============================================================

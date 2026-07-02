@@ -23,8 +23,8 @@ const firebaseConfig = {
     authDomain: "sword-institute.firebaseapp.com",
     projectId: "sword-institute",
     storageBucket: "sword-institute.firebasestorage.app",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abcdef1234567890"
+    messagingSenderId: "478896038426",
+    appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
 };
 
 // ============================================================
