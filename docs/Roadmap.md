@@ -1,74 +1,115 @@
 # Sword Institute Roadmap
 
 ## Overview
-This roadmap outlines the phased implementation of Sword Institute as an AI-powered learning platform that combines education, leadership development, and social impact.
+This roadmap organizes Sword Institute’s development into seven strategic phases. Each phase focuses on a core capability required to deliver a production-ready learning platform that supports AI education, leadership, community impact, and institutional growth.
 
-## Phase 1 - Foundation
-Objective: Establish the core platform experience and governance structure.
+## Phase 1 - Authentication
+Objective: Establish secure access and account management for all users.
 
-Planned activities:
-- Finalize the public landing experience and authentication flow
-- Implement dashboard and course browsing experiences
-- Create the foundational documentation set for product, architecture, and deployment
-- Configure Firebase authentication and Firestore integration
+Milestones:
+- Complete sign-up, sign-in, and password recovery flows
+- Implement Firebase Authentication integration
+- Create user profile creation and role assignment
+- Add protected routes for authenticated learners
+- Validate access rules for students, instructors, and administrators
 
-Success indicators:
-- Users can register, log in, and access a personalized dashboard
-- Course content is visible and organized for learners
-- The platform includes a clear documentation baseline for future development
+Deliverables:
+- Registration and login experience
+- Account recovery and session handling
+- Secure profile creation in Firestore
 
-## Phase 2 - Learning Experience
-Objective: Deliver a strong course delivery experience.
+## Phase 2 - Dashboard
+Objective: Deliver the learner’s central workspace.
 
-Planned activities:
-- Add richer course pages with structured modules and lesson content
-- Introduce learner progress tracking and completion status
-- Improve navigation between home, dashboard, and course views
-- Add support for content categories such as AI education, leadership, entrepreneurship, and community development
+Milestones:
+- Build a personalized dashboard for returning users
+- Display course progress, learning streaks, and upcoming tasks
+- Add profile summary and learning focus modules
+- Connect dashboard data to Firebase-backed learner records
+- Improve responsive behavior for desktop and mobile experiences
 
-Success indicators:
-- Learners can progress through courses in a clear and intuitive flow
-- Tracking data is available for assessment and reporting
-- The experience feels complete for both new and returning users
+Deliverables:
+- Learner dashboard experience
+- Progress overview and course tracking summary
+- Personalization layer for learner guidance
 
-## Phase 3 - AI and Personalization
-Objective: Expand the platform with intelligent support features.
+## Phase 3 - Course System
+Objective: Create a complete course delivery experience.
 
-Planned activities:
-- Introduce AI-guided mentoring and learning assistance
-- Implement personalized recommendations based on learner behavior
-- Add smart prompts for study planning, reflection, and next-step guidance
-- Begin analytics reporting for engagement and learning outcomes
+Milestones:
+- Build a course catalog with categories and filters
+- Create course detail pages with lesson structure
+- Add lesson progression and completion tracking
+- Support course enrollment and progress updates
+- Connect course content to Firestore collections
 
-Success indicators:
-- Learners receive relevant support throughout the learning journey
-- AI mentoring enhances rather than replaces human instruction
-- The system provides actionable insights to educators and administrators
+Deliverables:
+- Course listing and enrollment flow
+- Structured lesson delivery experience
+- Learner progress tracking within courses
 
-## Phase 4 - Community and Social Impact
-Objective: Align the platform with Sword Institute’s mission and public purpose.
+## Phase 4 - AI Mentor
+Objective: Introduce intelligent learner support.
 
-Planned activities:
-- Add content pathways for leadership, administration, psychosocial support, and home-based care
-- Create community-driven learning modules with real-world relevance
-- Support partnerships with organizations focused on child welfare and social development
-- Expand reporting and outcomes measurement for impact-based initiatives
+Milestones:
+- Add an AI mentor interface to the dashboard
+- Support guided prompts for study planning and concept clarification
+- Provide contextual learner assistance for courses and goals
+- Log mentor interactions in Firestore
+- Refine the AI experience based on user feedback
 
-Success indicators:
-- The platform demonstrates clear alignment with its social mission
-- Learners can engage in content that supports both personal growth and community contribution
-- Impact-focused programs are visible and structured for adoption
+Deliverables:
+- AI mentor chat or prompt-based assistant
+- Learner guidance experience
+- Interaction history for future personalization
 
-## Phase 5 - Scale and Sustainability
-Objective: Prepare the platform for growth and long-term sustainability.
+## Phase 5 - Certificates
+Objective: Recognize learner achievement and completion.
 
-Planned activities:
-- Improve performance, reliability, and maintainability
-- Expand deployment options and operational readiness
-- Introduce governance for content quality and platform updates
-- Establish a long-term roadmap for regional and institutional expansion
+Milestones:
+- Implement completion criteria for courses and milestones
+- Generate certificate records for successful learners
+- Create a certificate view and downloadable experience
+- Link certificates to learner progress and achievements
+- Prepare certificate data for future verification workflows
 
-Success indicators:
-- The platform is stable, maintainable, and easy to extend
-- New features can be added with minimal disruption
-- Sword Institute can scale its services responsibly and effectively
+Deliverables:
+- Achievement and completion tracking
+- Certificate issuance workflow
+- Learner certificate dashboard
+
+## Phase 6 - Community
+Objective: Build social engagement and community-centered learning experiences.
+
+Milestones:
+- Add announcements and community updates
+- Create learner-facing discussion or engagement features
+- Introduce badges and milestone recognition
+- Support peer and mentor interaction pathways
+- Align community features with Sword Institute’s social impact mission
+
+Deliverables:
+- Announcement system
+- Community engagement modules
+- Achievement and recognition experience
+
+## Phase 7 - Administration Portal
+Objective: Provide staff and administrative tools for managing the platform.
+
+Milestones:
+- Build an admin dashboard for monitoring learners and content
+- Support course and lesson management workflows
+- Provide announcement and notification controls
+- Enable user management and reporting tools
+- Prepare administrative controls for future scaling and institutional use
+
+Deliverables:
+- Admin management interface
+- Content and learner oversight tools
+- Operational reporting and moderation controls
+
+## Delivery Approach
+- Prioritize a working MVP in the early phases
+- Validate each phase through testing and browser-based review
+- Ensure that each phase remains aligned with accessibility, responsiveness, and security requirements
+- Refine the platform iteratively based on learner and staff feedback
