@@ -1,734 +1,1151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute | Sacred Code & Digital Alchemy</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
 
-<title>Sword Institute | Forging Digital Warriors</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        /* ---------- ROOT: PEARLESCENT + VIOLET + GOLD ---------- */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        :root {
+            --pearl-light: #FCFAF5;
+            --pearl-mid: #F5F2EB;
+            --pearl-shadow: #E8E2D8;
 
-<link rel="stylesheet" href="css/index.css">
+            --violet-deep: #8B00FF;
+            --violet-glow: rgba(139, 0, 255, 0.12);
+            --violet-soft: #A855F7;
+            --violet-dark: #3B0764;
 
+            --gold-radiant: #FFD700;
+            --gold-soft: #FDE68A;
+            --gold-glow: rgba(255, 215, 0, 0.2);
+
+            --text-primary: #1E1029;
+            --text-secondary: #4B3A5C;
+            --text-muted: #7A6A8A;
+
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --glass-shadow: 0 8px 32px rgba(139, 0, 255, 0.06);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Main iOS Glass Container */
+        .app-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            padding: 20px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating Light Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--violet-deep);
+            top: -150px;
+            right: -100px;
+            opacity: 0.1;
+        }
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: var(--gold-radiant);
+            bottom: -100px;
+            left: -100px;
+            opacity: 0.12;
+        }
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--violet-soft);
+            top: 40%;
+            left: 60%;
+            opacity: 0.08;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ---------- GLASS CARD ---------- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .glass-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(139, 0, 255, 0.2);
+            box-shadow: 0 20px 40px -12px rgba(139, 0, 255, 0.15);
+        }
+
+        /* ---------- BUTTONS ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--violet-deep);
+            color: #fff;
+            border-color: var(--violet-deep);
+            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
+        }
+        .btn-primary:hover {
+            background: #9B1DFF;
+            border-color: #9B1DFF;
+            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
+            color: #fff;
+        }
+
+        .btn-gold {
+            background: var(--gold-radiant);
+            color: var(--violet-dark);
+            border-color: var(--gold-radiant);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
+        }
+        .btn-gold:hover {
+            background: #FFE44D;
+            border-color: #FFE44D;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
+            color: var(--violet-dark);
+        }
+
+        .btn-outline-violet {
+            background: transparent;
+            border-color: rgba(139, 0, 255, 0.2);
+            color: var(--violet-deep);
+        }
+        .btn-outline-violet:hover {
+            background: var(--violet-deep);
+            color: #fff;
+            border-color: var(--violet-deep);
+        }
+
+        /* ---------- NAVIGATION ---------- */
+        nav {
+            padding: 8px 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .logo i {
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+        }
+        .logo span {
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: var(--violet-deep);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--violet-deep);
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ---------- HERO ---------- */
+        #hero {
+            padding: 20px 0 40px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 4.2rem;
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+        .hero-content h1 .highlight-violet {
+            background: linear-gradient(135deg, var(--violet-deep), #B45EFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-content h1 .highlight-gold {
+            background: linear-gradient(135deg, var(--gold-radiant), #FFB800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-bottom: 36px;
+        }
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        /* ----- AI MENTOR CARD ----- */
+        .ai-mentor-card {
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 12px 40px -10px rgba(139, 0, 255, 0.06);
+            transition: all 0.4s ease;
+        }
+        .ai-mentor-card:hover {
+            border-color: var(--violet-glow);
+            box-shadow: 0 20px 50px -12px rgba(139, 0, 255, 0.12);
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .ai-header i {
+            font-size: 2.2rem;
+            color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.04);
+            padding: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 0, 255, 0.06);
+        }
+        .ai-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .ai-header h3 small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .ai-greeting {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            background: rgba(139, 0, 255, 0.02);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--violet-deep);
+            color: var(--text-primary);
+        }
+
+        .ai-mission {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid rgba(139, 0, 255, 0.04);
+        }
+        .ai-mission .label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .ai-mission .value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .ai-mission .xp {
+            background: linear-gradient(135deg, var(--gold-radiant), #FFB800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .ai-continue {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            color: var(--violet-deep);
+            font-weight: 700;
+            text-decoration: none;
+            transition: gap 0.3s ease;
+        }
+        .ai-continue:hover {
+            gap: 14px;
+        }
+
+        /* ---------- STATISTICS ---------- */
+        #statistics {
+            padding: 20px 0 30px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 24px 12px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: var(--violet-deep);
+            transform: translateY(-4px);
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .stat-number .violet {
+            color: var(--violet-deep);
+        }
+        .stat-number .gold {
+            color: var(--gold-radiant);
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .stat-label i {
+            color: var(--violet-deep);
+            margin-right: 6px;
+        }
+
+        /* ---------- LEARNING CATEGORIES (NEW) ---------- */
+        #categories {
+            padding: 40px 0 20px;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+        }
+        .category-card {
+            text-align: center;
+            padding: 28px 16px 24px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            transition: all 0.35s ease;
+            cursor: default;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: var(--violet-deep);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px -12px rgba(139, 0, 255, 0.12);
+        }
+        .category-card .icon {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .category-card h4 {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+        .category-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ---------- FEATURED COURSES ---------- */
+        #featured-courses {
+            padding: 30px 0 10px;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .section-header h2 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+        }
+        .section-header h2 i {
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 10px;
+        }
+        .section-header .sub {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .section-header .sub i {
+            color: var(--gold-radiant);
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 28px;
+        }
+
+        .course-card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.35s ease;
+            box-shadow: var(--glass-shadow);
+        }
+        .course-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--violet-deep);
+            box-shadow: 0 20px 40px -12px rgba(139, 0, 255, 0.15);
+        }
+
+        .course-thumb {
+            height: 140px;
+            background: linear-gradient(135deg, rgba(139, 0, 255, 0.05), rgba(255, 215, 0, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
+            color: var(--violet-deep);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+        .course-thumb .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--gold-radiant);
+            color: var(--violet-dark);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .course-body {
+            padding: 20px 20px 24px;
+        }
+        .course-body h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .course-body p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(139, 0, 255, 0.04);
+            padding-top: 12px;
+        }
+        .course-meta i {
+            color: var(--violet-deep);
+            margin-right: 4px;
+        }
+
+        /* Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(139, 0, 255, 0.03) 25%, rgba(139, 0, 255, 0.07) 50%, rgba(139, 0, 255, 0.03) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        .skeleton-thumb {
+            height: 140px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        .skeleton-title {
+            height: 20px;
+            width: 80%;
+            margin-bottom: 8px;
+        }
+        .skeleton-text {
+            height: 14px;
+            width: 90%;
+            margin-bottom: 4px;
+        }
+        .skeleton-meta {
+            height: 16px;
+            width: 60%;
+        }
+
+        /* ---------- FOOTER ---------- */
+        .footer {
+            padding: 32px 0 8px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(139, 0, 255, 0.04);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .footer i {
+            color: var(--violet-deep);
+        }
+        .footer .gold {
+            color: var(--gold-radiant);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .app-wrapper {
+                padding: 16px;
+                border-radius: var(--radius-lg);
+            }
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .hero-content h1 {
+                font-size: 3.2rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .nav-actions {
+                justify-content: center;
+            }
+            .hero-content h1 {
+                font-size: 2.6rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .stat-number {
+                font-size: 2rem;
+            }
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .courses-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .hero-buttons .btn {
+                width: 100%;
+            }
+            .ai-mentor-card {
+                padding: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-item {
+                padding: 14px 8px;
+            }
+            .stat-number {
+                font-size: 1.6rem;
+            }
+            .app-wrapper {
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- ========================= -->
-<!-- BACKGROUND -->
-<!-- ========================= -->
+    <div class="app-wrapper">
+        <!-- Spiritual Orbs -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
 
-<div class="background">
-
-    <div class="blob blob1"></div>
-
-    <div class="blob blob2"></div>
-
-    <div class="blob blob3"></div>
-
-</div>
-
-<!-- ========================= -->
-<!-- NAVBAR -->
-<!-- ========================= -->
-
-<header class="navbar">
-
-    <div class="container">
-
-        <a href="#" class="logo">
-
-            ⚔ Sword Institute
-
-        </a>
-
+        <!-- ============ NAVIGATION ============ -->
         <nav>
-
-            <ul>
-
-                <li><a href="#">Home</a></li>
-
-                <li><a href="#programmes">Programmes</a></li>
-
-                <li><a href="#mentor">AI Mentor</a></li>
-
-                <li><a href="#about">About</a></li>
-
-                <li><a href="#contact">Contact</a></li>
-
-            </ul>
-
+            <div class="container nav-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-shield-halved"></i>
+                    Sword<span>Institute</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#featured-courses">Courses</a></li>
+                    <li><a href="#categories">Paths</a></li>
+                    <li><a href="#">AI Mentor</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+                <div class="nav-actions" id="navActions">
+                    <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
+                </div>
+            </div>
         </nav>
 
-        <div class="nav-buttons">
-
-            <a href="login.html" class="btn btn-outline">
-
-                Login
-
-            </a>
-
-            <a href="register.html" class="btn btn-primary">
-
-                Register
-
-            </a>
-
-            <!-- Hidden until user logs in -->
-
-            <a href="student/dashboard.html"
-
-               id="dashboardButton"
-
-               class="btn btn-dashboard">
-
-               Dashboard
-
-            </a>
-
-        </div>
-
-    </div>
-
-</header>
-
-<!-- ========================= -->
-<!-- HERO -->
-<!-- ========================= -->
-
-<section class="hero">
-
-<div class="container hero-grid">
-
-<div class="hero-left">
-
-<span class="badge">
-
-Future Ready Learning Platform
-
-</span>
-
-<h1>
-
-Forging
-
-<span>Digital Warriors</span>
-
-for Social Good
-
-</h1>
-
-<p>
-
-Sword Institute empowers learners through practical education in
-
-Communication Skills,
-
-Leadership,
-
-Administration,
-
-Entrepreneurship,
-
-Community Development,
-
-Child Welfare,
-
-Psychosocial Support,
-
-AI Basic Education,
-
-and Home Based Care.
-
-</p>
-
-<div class="hero-buttons">
-
-<a href="register.html"
-
-class="btn btn-primary btn-large">
-
-Start Learning
-
-</a>
-
-<a href="#programmes"
-
-class="btn btn-outline btn-large">
-
-Explore Programmes
-
-</a>
-
-</div>
-
-<div class="hero-features">
-
-<div>
-
-✔ Professional Certificates
-
-</div>
-
-<div>
-
-✔ AI Mentor
-
-</div>
-
-<div>
-
-✔ Learn Anywhere
-
-</div>
-
-<div>
-
-✔ Self-Paced
-
-</div>
-
-</div>
-
-</div>
-
-<!-- ========================= -->
-<!-- AI MENTOR CARD -->
-<!-- ========================= -->
-
-<div class="mentor-card">
-
-<div class="mentor-header">
-
-<div class="mentor-avatar">
-
-🤖
-
-</div>
-
-<div>
-
-<h3>
-
-AI Mentor
-
-</h3>
-
-<p>
-
-Online
-
-</p>
-
-</div>
-
-</div>
-
-<div class="mentor-message">
-
-<h4>
-
-Good Evening Michael 👋
-
-</h4>
-
-<p>
-
-Today's Mission
-
-</p>
-
-<h2>
-
-Communication Skills
-
-</h2>
-
-<p>
-
-Estimated Time
-
-<strong>
-
-18 Minutes
-
-</strong>
-
-</p>
-
-<p>
-
-Reward
-
-<strong>
-
-+100 XP
-
-</strong>
-
-</p>
-
-<div class="mentor-tip">
-
-💡
-
-Communication begins with listening.
-
-Practice active listening today.
-
-</div>
-
-<a href="student/dashboard.html"
-
-class="btn btn-primary mentor-button">
-
-Continue Mission →
-
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ========================= -->
-<!-- SCROLL INDICATOR -->
-<!-- ========================= -->
-<!-- ==========================================================
-     SECTION: STATISTICS
-=========================================================== -->
-
-<section class="stats animate" id="statistics">
-
-    <div class="container">
-
-        <section class="programmes animate" id="programmes">
-
-    <div class="container">
-
-        <div class="section-title">
-
-            <h2>Featured Professional Programmes</h2>
-
-            <p>
-                Learn practical skills designed for today's workforce,
-                NGOs, community organisations and future leaders.
-            </p>
-
-        </div>
-
-        <div id="featuredCourses" class="programme-grid">
-
-            <!-- Featured courses will be loaded dynamically from Firestore -->
-
-            <div class="loading-courses">
-
-                <div class="loader"></div>
-
-                <p>Loading Professional Programmes...</p>
-
+        <!-- ============ HERO ============ -->
+        <section id="hero">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <h1>
+                        Forging <span class="highlight-violet">Digital Warriors</span><br />
+                        for <span class="highlight-gold">Sacred</span> Social Good
+                    </h1>
+                    <p>
+                        Professional education for NGOs, Government, Business, AI, Leadership,
+                        and Community Development. Illuminate your path.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#featured-courses" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Start Learning
+                        </a>
+                        <a href="#categories" class="btn btn-gold">
+                            <i class="fas fa-compass"></i> Explore Paths
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AI Mentor Card -->
+                <div class="ai-mentor-card">
+                    <div class="ai-header">
+                        <i class="fas fa-robot"></i>
+                        <h3>
+                            AI Mentor
+                            <small>Your 24/7 Spiritual Guide</small>
+                        </h3>
+                    </div>
+                    <div class="ai-greeting" id="aiGreeting">
+                        <i class="fas fa-sparkles" style="color:var(--gold-radiant);margin-right:8px;"></i>
+                        Good Evening, Warrior of Light.
+                    </div>
+                    <div class="ai-mission">
+                        <span class="label"><i class="fas fa-bullseye" style="color:var(--violet-deep);"></i> Today's Mission</span>
+                        <span class="value">Sacred Communication</span>
+                    </div>
+                    <div class="ai-mission">
+                        <span class="label"><i class="fas fa-clock"></i> Estimated Time</span>
+                        <span class="value">18 min</span>
+                    </div>
+                    <div class="ai-mission" style="border-bottom:1px solid rgba(139,0,255,0.04);padding-bottom:12px;">
+                        <span class="label"><i class="fas fa-star"></i> Divine XP</span>
+                        <span class="xp">+100 XP</span>
+                    </div>
+                    <a href="#" class="ai-continue">
+                        Continue Journey <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
+        </section>
 
+        <!-- ============ STATISTICS ============ -->
+        <section id="statistics">
+            <div class="container stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalStudents">12,000<span class="violet">+</span></div>
+                    <div class="stat-label"><i class="fas fa-users"></i>Students</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCourses">8</div>
+                    <div class="stat-label"><i class="fas fa-book-open"></i>Sacred Courses</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completionRate">97<span class="gold">%</span></div>
+                    <div class="stat-label"><i class="fas fa-check-circle"></i>Completion Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="studentRating">4.9<span class="gold">★</span></div>
+                    <div class="stat-label"><i class="fas fa-star"></i>Divine Rating</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ LEARNING CATEGORIES (NEW) ============ -->
+        <section id="categories">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-tree"></i> Sacred Learning Paths
+                    </h2>
+                    <span class="sub">Choose your journey <i class="fas fa-sparkles"></i></span>
+                </div>
+                <div class="categories-grid" id="categoriesContainer">
+                    <!-- Hardcoded categories with beautiful icons -->
+                    <div class="category-card">
+                        <span class="icon"><i class="fas fa-brain"></i></span>
+                        <h4>AI &amp; Alchemy</h4>
+                        <p>Artificial Intelligence &amp; Machine Learning</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="icon"><i class="fas fa-hand-holding-heart"></i></span>
+                        <h4>NGO Leadership</h4>
+                        <p>Community development &amp; social impact</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="icon"><i class="fas fa-heart-pulse"></i></span>
+                        <h4>Digital Wellbeing</h4>
+                        <p>Mindfulness &amp; sacred technology</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="icon"><i class="fas fa-city"></i></span>
+                        <h4>Smart Governance</h4>
+                        <p>Government &amp; policy innovation</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <h4>Sacred Business</h4>
+                        <p>Ethical entrepreneurship &amp; impact</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="icon"><i class="fas fa-globe-africa"></i></span>
+                        <h4>Global Community</h4>
+                        <p>Cross-cultural collaboration &amp; unity</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ FEATURED COURSES ============ -->
+        <section id="featured-courses">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-graduation-cap"></i> Featured Courses
+                    </h2>
+                    <span class="sub">Powered by Sacred AI <i class="fas fa-sparkles"></i></span>
+                </div>
+                <div class="courses-grid" id="coursesContainer">
+                    <!-- Skeleton Loaders -->
+                    <div class="course-card">
+                        <div class="skeleton skeleton-thumb"></div>
+                        <div class="course-body">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text" style="width:70%;"></div>
+                            <div class="course-meta" style="border:none;padding-top:8px;">
+                                <span class="skeleton skeleton-meta"></span>
+                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <div class="skeleton skeleton-thumb"></div>
+                        <div class="course-body">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text" style="width:70%;"></div>
+                            <div class="course-meta" style="border:none;padding-top:8px;">
+                                <span class="skeleton skeleton-meta"></span>
+                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <div class="skeleton skeleton-thumb"></div>
+                        <div class="course-body">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text" style="width:70%;"></div>
+                            <div class="course-meta" style="border:none;padding-top:8px;">
+                                <span class="skeleton skeleton-meta"></span>
+                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <div class="skeleton skeleton-thumb"></div>
+                        <div class="course-body">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text" style="width:70%;"></div>
+                            <div class="course-meta" style="border:none;padding-top:8px;">
+                                <span class="skeleton skeleton-meta"></span>
+                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ FOOTER ============ -->
+        <div class="footer container">
+            <p style="margin-bottom:6px;">
+                <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
+            </p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
         </div>
-
     </div>
 
-</section>
+    <!-- ========================================================== -->
+    <!-- MODULAR JAVASCRIPT (IMPORTING FROM YOUR LOCAL FIREBASE.JS) -->
+    <!-- ========================================================== -->
+    <script type="module">
+        // =============================================================
+        // Import from your local firebase.js (modular SDK)
+        // =============================================================
+        import {
+            auth,
+            db,
+            onAuthStateChanged,
+            collection,
+            doc,
+            query,
+            orderBy,
+            limit,
+            getDocs,
+            getDoc
+        } from './firebase.js';
 
-        <<div id="featuredCourses" class="programme-grid">
+        // =============================================================
+        // DOM References
+        // =============================================================
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const aiGreeting = document.getElementById('aiGreeting');
+        const coursesContainer = document.getElementById('coursesContainer');
 
-    <!-- Featured courses will be loaded dynamically from Firestore -->
+        // Statistics elements
+        const totalStudentsEl = document.getElementById('totalStudents');
+        const totalCoursesEl = document.getElementById('totalCourses');
+        const completionRateEl = document.getElementById('completionRate');
+        const studentRatingEl = document.getElementById('studentRating');
 
-    <div class="loading-courses">
+        // =============================================================
+        // 1. AUTH STATE
+        // =============================================================
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const name = user.displayName || user.email || 'Warrior';
+                const hour = new Date().getHours();
+                let timeGreeting = 'Good Evening';
+                if (hour < 12) timeGreeting = 'Good Morning';
+                else if (hour < 17) timeGreeting = 'Good Afternoon';
 
-        <div class="loader"></div>
+                loginBtn.textContent = 'Dashboard';
+                loginBtn.href = 'dashboard.html';
+                loginBtn.className = 'btn btn-primary';
+                registerBtn.textContent = 'Logout';
+                registerBtn.href = '#';
+                registerBtn.className = 'btn btn-outline-violet';
+                registerBtn.onclick = (e) => {
+                    e.preventDefault();
+                    auth.signOut();
+                };
 
-        <p>Loading Professional Programmes...</p>
+                aiGreeting.innerHTML =
+                    `<i class="fas fa-sparkles" style="color:var(--gold-radiant);margin-right:8px;"></i> ${timeGreeting}, ${name}. Your light shines bright.`;
+            } else {
+                loginBtn.textContent = 'Login';
+                loginBtn.href = 'login.html';
+                loginBtn.className = 'btn btn-outline-violet';
+                registerBtn.textContent = 'Register';
+                registerBtn.href = 'register.html';
+                registerBtn.className = 'btn btn-primary';
+                registerBtn.onclick = null;
 
-    </div>
+                const hour = new Date().getHours();
+                let timeGreeting = 'Evening';
+                if (hour < 12) timeGreeting = 'Morning';
+                else if (hour < 17) timeGreeting = 'Afternoon';
+                aiGreeting.innerHTML =
+                    `<i class="fas fa-sparkles" style="color:var(--gold-radiant);margin-right:8px;"></i> Good ${timeGreeting}, Seeker. <a href="login.html" style="color:var(--violet-deep);font-weight:700;text-decoration:underline;">Sign in</a> to awaken your journey.`;
+            }
+        });
 
-</div>
+        // =============================================================
+        // 2. DYNAMIC STATISTICS (from Firestore)
+        // =============================================================
+        async function loadStatistics() {
+            try {
+                const statsRef = doc(db, 'app_metadata', 'stats');
+                const statsSnap = await getDoc(statsRef);
 
-            <!-- Communication -->
+                if (statsSnap.exists()) {
+                    const data = statsSnap.data();
 
-            <article class="programme-card">
+                    // Update DOM with live data
+                    if (data.totalStudents) {
+                        totalStudentsEl.innerHTML = `${data.totalStudents.toLocaleString()}<span class="violet">+</span>`;
+                    }
+                    if (data.totalCourses) {
+                        totalCoursesEl.textContent = data.totalCourses;
+                    }
+                    if (data.completionRate) {
+                        completionRateEl.innerHTML = `${data.completionRate}<span class="gold">%</span>`;
+                    }
+                    if (data.studentRating) {
+                        studentRatingEl.innerHTML = `${data.studentRating}<span class="gold">★</span>`;
+                    }
 
-                <div class="programme-image"></div>
+                    console.log('✅ Statistics loaded from Firestore');
+                } else {
+                    console.log('ℹ️ No stats document found. Using hardcoded fallback values.');
+                }
+            } catch (error) {
+                console.warn('⚠️ Could not load statistics:', error.message);
+                // Fallback: keep hardcoded values
+            }
+        }
 
-                <div class="programme-content">
+        // =============================================================
+        // 3. DYNAMIC COURSES (from Firestore)
+        // =============================================================
+        async function loadFeaturedCourses() {
+            try {
+                const coursesRef = collection(db, 'courses');
+                const q = query(coursesRef, orderBy('createdAt', 'desc'), limit(4));
+                const querySnapshot = await getDocs(q);
 
-                    <span class="tag">
+                if (querySnapshot.empty) {
+                    coursesContainer.innerHTML = `
+                        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
+                            <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
+                            <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
+                            <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-                        Professional Skills
+                let html = '';
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const title = data.title || 'Untitled Scroll';
+                    const description = data.description || 'No wisdom shared yet.';
+                    const category = data.category || 'General';
+                    const duration = data.duration || 'Self-paced';
+                    const icon = data.icon || 'fa-book';
+                    const level = data.level || 'Beginner';
 
-                    </span>
+                    html += `
+                        <div class="course-card">
+                            <div class="course-thumb">
+                                <i class="fas ${icon}"></i>
+                                <span class="badge">${level}</span>
+                            </div>
+                            <div class="course-body">
+                                <h4>${title}</h4>
+                                <p>${description}</p>
+                                <div class="course-meta">
+                                    <span><i class="fas fa-tag"></i> ${category}</span>
+                                    <span><i class="fas fa-clock"></i> ${duration}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
 
-                    <h3>Communication Skills</h3>
+                coursesContainer.innerHTML = html;
 
-                    <p>
-
-                        Master professional communication,
-                        presentation,
-                        negotiation and interpersonal skills
-                        for workplace excellence.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                coursesContainer.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
+                        <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
+                        <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
+                        <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
+                        <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
                     </div>
-
-                </div>
-
-            </article>
-
-            <!-- Administration -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        Leadership
-
-                    </span>
-
-                    <h3>Administration & Management</h3>
-
-                    <p>
-
-                        Build leadership,
-                        planning,
-                        budgeting,
-                        governance
-                        and organisational management skills.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            <!-- Entrepreneurship -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        Business
-
-                    </span>
-
-                    <h3>Entrepreneurship</h3>
-
-                    <p>
-
-                        Transform innovative ideas
-                        into sustainable businesses
-                        with practical entrepreneurial strategies.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            <!-- Community -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        Community Development
-
-                    </span>
-
-                    <h3>Community Based Organisations</h3>
-
-                    <p>
-
-                        Learn project planning,
-                        governance,
-                        mobilisation,
-                        monitoring
-                        and donor engagement.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            <!-- AI -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        AI Education
-
-                    </span>
-
-                    <h3>AI Basic Education</h3>
-
-                    <p>
-
-                        Learn responsible AI,
-                        productivity tools,
-                        prompt engineering
-                        and digital transformation.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            <!-- Child -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        Child Protection
-
-                    </span>
-
-                    <h3>Child Welfare Programmes</h3>
-
-                    <p>
-
-                        Understand safeguarding,
-                        advocacy,
-                        child rights
-                        and community interventions.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            <!-- HBC -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        Wellbeing
-
-                    </span>
-
-                    <h3>Home Based Care</h3>
-
-                    <p>
-
-                        Gain practical knowledge
-                        in home care,
-                        patient support
-                        and community healthcare.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            <!-- Psycho -->
-
-            <article class="programme-card">
-
-                <div class="programme-image"></div>
-
-                <div class="programme-content">
-
-                    <span class="tag">
-
-                        Wellbeing
-
-                    </span>
-
-                    <h3>Psychosocial Support</h3>
-
-                    <p>
-
-                        Develop counselling,
-                        emotional support
-                        and resilience-building skills
-                        for individuals and communities.
-
-                    </p>
-
-                    <div class="programme-footer">
-
-                        <strong>Certificate Included</strong>
-
-                        <a href="register.html" class="btn btn-primary">
-
-                            Enrol
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-        </div>
-
-    </div>
-
-</section>
-<div class="scroll-indicator">
-
-↓
-
-</div>
-
-<!-- ========================= -->
-<!-- NEXT SECTION PLACEHOLDER -->
-<!-- ========================= -->
-
-<section class="coming-next">
-
-<div class="container">
-
-<h2>
-
-Statistics Section Coming Next
-
-</h2>
-
-<p>
-
-In Part 2 we'll add:
-
-Animated Counters,
-
-Featured Programmes,
-
-Professional Cards,
-
-and Firestore Integration.
-
-</p>
-
-</div>
-
-</section>
-
-<script type="module" src="js/index.js"></script>
-<script type="module" src="js/homeCourses.js"></script>
+                `;
+            }
+        }
+
+        // =============================================================
+        // 4. INITIALIZE EVERYTHING
+        // =============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStatistics();
+            loadFeaturedCourses();
+        });
+    </script>
 </body>
 </html>
