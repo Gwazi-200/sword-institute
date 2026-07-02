@@ -662,3 +662,516 @@ nav{
 }
 
 }
+/* ==========================================================
+   SECTION 2
+   Statistics
+   Featured Courses
+   Admissions
+   Why Choose Sword
+==========================================================*/
+
+/* =========================================
+   SECTION SPACING
+========================================= */
+
+section{
+
+    padding:120px 0;
+
+}
+
+.section-title{
+
+    text-align:center;
+
+    margin-bottom:70px;
+
+}
+
+.section-title h2{
+
+    font-size:2.8rem;
+
+    margin-bottom:20px;
+
+    color:var(--text);
+
+}
+
+.section-title p{
+
+    color:var(--text-light);
+
+    max-width:760px;
+
+    margin:auto;
+
+    line-height:1.8;
+
+}
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.stats{
+
+    background:white;
+
+}
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:30px;
+
+}
+
+.stat-card{
+
+    background:var(--glass);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid var(--glass-border);
+
+    border-radius:20px;
+
+    padding:40px;
+
+    text-align:center;
+
+    transition:.35s;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:var(--shadow-lg);
+
+}
+
+.counter{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    color:var(--primary);
+
+}
+
+.stat-card h4{
+
+    margin-top:18px;
+
+}
+
+.stat-card p{
+
+    color:var(--text-light);
+
+    margin-top:10px;
+
+}
+
+/* =========================================
+   PROGRAMMES
+========================================= */
+
+.programmes{
+
+    background:#F8FAFC;
+
+}
+
+.programme-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:35px;
+
+}
+
+.programme-card{
+
+    background:white;
+
+    border-radius:25px;
+
+    overflow:hidden;
+
+    transition:.4s;
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.programme-card:hover{
+
+    transform:translateY(-12px);
+
+    box-shadow:var(--shadow-lg);
+
+}
+
+.programme-image{
+
+    height:220px;
+
+    background:linear-gradient(135deg,#5B5CEB,#7C3AED);
+
+}
+
+.programme-content{
+
+    padding:30px;
+
+}
+
+.programme-content h3{
+
+    margin-bottom:18px;
+
+}
+
+.programme-content p{
+
+    color:var(--text-light);
+
+    line-height:1.7;
+
+}
+
+.programme-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:25px;
+
+    align-items:center;
+
+}
+
+.tag{
+
+    background:#EEF2FF;
+
+    color:var(--primary);
+
+    padding:8px 18px;
+
+    border-radius:40px;
+
+    font-size:.85rem;
+
+}
+
+/* =========================================
+   WHY CHOOSE US
+========================================= */
+
+.why{
+
+    background:white;
+
+}
+
+.why-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:35px;
+
+}
+
+.why-card{
+
+    padding:45px;
+
+    background:var(--glass);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:25px;
+
+    transition:.4s;
+
+    border:1px solid rgba(255,255,255,.30);
+
+}
+
+.why-card:hover{
+
+    transform:translateY(-12px);
+
+}
+
+.why-icon{
+
+    width:80px;
+
+    height:80px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:2rem;
+
+    background:linear-gradient(135deg,#5B5CEB,#7C3AED);
+
+    color:white;
+
+    margin-bottom:25px;
+
+}
+
+.why-card h3{
+
+    margin-bottom:18px;
+
+}
+
+.why-card p{
+
+    color:var(--text-light);
+
+    line-height:1.8;
+
+}
+
+/* =========================================
+   ADMISSIONS
+========================================= */
+
+.admissions{
+
+    background:linear-gradient(135deg,#5B5CEB,#7C3AED);
+
+    color:white;
+
+}
+
+.admissions-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:70px;
+
+    align-items:center;
+
+}
+
+.admission-box{
+
+    background:rgba(255,255,255,.15);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:30px;
+
+    padding:45px;
+
+}
+
+.admission-box h3{
+
+    margin-bottom:25px;
+
+}
+
+.admission-box ul{
+
+    display:grid;
+
+    gap:15px;
+
+}
+
+.admission-box li{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+}
+
+/* =========================================
+   NGO SECTION
+========================================= */
+
+.ngo{
+
+    background:#EEF2FF;
+
+}
+
+.ngo-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:35px;
+
+}
+
+.ngo-card{
+
+    background:white;
+
+    border-radius:25px;
+
+    padding:35px;
+
+    transition:.35s;
+
+}
+
+.ngo-card:hover{
+
+    transform:translateY(-10px);
+
+}
+
+.ngo-card h3{
+
+    margin-bottom:20px;
+
+}
+
+.ngo-card p{
+
+    line-height:1.8;
+
+    color:var(--text-light);
+
+}
+
+/* =========================================
+   CALL TO ACTION
+========================================= */
+
+.cta{
+
+    text-align:center;
+
+    background:white;
+
+}
+
+.cta-box{
+
+    max-width:950px;
+
+    margin:auto;
+
+    border-radius:35px;
+
+    padding:70px;
+
+    background:linear-gradient(135deg,#5B5CEB,#7C3AED);
+
+    color:white;
+
+}
+
+.cta-box h2{
+
+    font-size:3rem;
+
+    margin-bottom:25px;
+
+}
+
+.cta-box p{
+
+    max-width:700px;
+
+    margin:auto;
+
+    line-height:1.9;
+
+    margin-bottom:35px;
+
+}
+
+.cta-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:992px){
+
+.stats-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+.admissions-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.stats-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.section-title h2{
+
+font-size:2.2rem;
+
+}
+
+.cta-box{
+
+padding:45px;
+
+}
+
+.cta-box h2{
+
+font-size:2.1rem;
+
+}
+
+}
