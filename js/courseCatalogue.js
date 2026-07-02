@@ -101,6 +101,7 @@ async function loadCategories() {
 }
 
 function renderCategoryCarousel(categories) {
+    if (!categoryCarousel) return;
     categoryCarousel.innerHTML = '';
     const allBtn = document.createElement('div');
     allBtn.className = 'category-card active';
@@ -118,6 +119,7 @@ function renderCategoryCarousel(categories) {
         categoryCarousel.appendChild(card);
     });
 }
+
 
 function renderCategoryFilters(categories) {
     categoryFiltersContainer.innerHTML = '';
