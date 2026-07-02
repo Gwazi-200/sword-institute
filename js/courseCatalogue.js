@@ -45,9 +45,11 @@ const mentorMessage = document.getElementById('mentorMessage');
 const mentorTip = document.getElementById('mentorTip');
 const mentorRefreshBtn = document.getElementById('mentorRefreshBtn');
 
+
 function elPresent(el) {
     return !!el;
 }
+
 
 // ============================================================
 // AUTH
@@ -513,10 +515,10 @@ function setupEventListeners() {
         document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
         document.querySelector('.category-card[data-category="all"]')?.classList.add('active');
 
-        levelFilters.forEach(b => b.classList.remove('active'));
+        levelFilters?.forEach(b => b.classList.remove('active'));
         document.querySelector('#levelFilters .filter-chip[data-level="all"]')?.classList.add('active');
 
-        featureFilters.forEach(b => b.classList.remove('active'));
+        featureFilters?.forEach(b => b.classList.remove('active'));
 
         applyFilters();
     });
@@ -527,4 +529,5 @@ function setupEventListeners() {
         loadCourses();
     });
 }
+
 
