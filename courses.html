@@ -1,65 +1,178 @@
-﻿<!DOCTYPE html>
+﻿<!-- courses.html – Sword Institute Course Catalogue -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sword Institute — Courses</title>
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚔%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚔%3C/text%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./css/auth.css" />
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
-            }
-        }
-    </script>
+    <title>Sword Institute · Course Catalogue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/courseCatalogue.css" />
 </head>
 <body>
-    <a href="#courses-section" class="skip-link">Skip to courses</a>
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <a href="./index.html" class="logo" aria-label="Sword Institute Home">
-            <span class="sword-icon">⚔</span>
-            <span class="sword-text">Sword</span>
-            <span class="institute">Institute</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="./index.html">Home</a></li>
-            <li><a href="./dashboard.html">Dashboard</a></li>
-            <li><a href="./login.html" id="nav-login">Log In</a></li>
-        </ul>
-    </nav>
-    <main class="auth-container" id="courses-section">
-        <div class="glass-card auth-card">
-            <div class="auth-header">
-                <div class="auth-icon" aria-hidden="true">📚</div>
-                <h2>Explore Courses</h2>
-                <p class="auth-subtitle">Find your next learning path and join the Sword Institute community.</p>
+    <div id="app" class="app">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="sidebar-brand">
+                <i class="fas fa-sword brand-icon"></i>
+                <span class="brand-name">Sword Institute</span>
             </div>
-            <div class="form-group">
-                <label for="course-search">Search courses</label>
-                <input type="search" id="course-search" class="input-glass" placeholder="Try 'AI', 'Python', or 'Web'" />
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html"><i class="fas fa-gavel"></i> Dashboard</a></li>
+                    <li class="nav-item active"><a href="courses.html"><i class="fas fa-book-open"></i> Courses</a></li>
+                    <li class="nav-item"><a href="learning-journey.html"><i class="fas fa-route"></i> Learning Journey</a></li>
+                    <li class="nav-item"><a href="certificates.html"><i class="fas fa-certificate"></i> Certificates</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fas fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="community.html"><i class="fas fa-globe-asia"></i> Community</a></li>
+                    <li class="nav-item"><a href="ai-mentor.html"><i class="fas fa-robot"></i> AI Mentor</a></li>
+                    <li class="nav-item"><a href="downloads.html"><i class="fas fa-download"></i> Downloads</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li class="nav-item logout-item"><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+
+            <!-- ===== TOP HEADER ===== -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+                    <span class="welcome-text">Course Catalogue</span>
+                </div>
+                <div class="header-right">
+                    <span class="current-date" id="currentDate"></span>
+                    <button class="notification-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+                    <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+                    <div class="avatar-wrapper">
+                        <img id="studentAvatar" src="https://ui-avatars.com/api/?name=Student&background=7C3AED&color=fff&size=40" alt="Student avatar" />
+                    </div>
+                </div>
+            </header>
+
+            <!-- ===== CATEGORY CAROUSEL ===== -->
+            <section class="category-carousel" id="categoryCarousel">
+                <!-- Rendered by JS -->
+            </section>
+
+            <!-- ===== SEARCH & FILTERS ===== -->
+            <section class="search-filters">
+                <div class="search-bar glass">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search for courses, skills, or topics..." />
+                    <button id="clearSearch" aria-label="Clear search"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <button class="filter-toggle" id="filterToggle" aria-expanded="false">
+                            <i class="fas fa-sliders-h"></i> Filters
+                        </button>
+                    </div>
+                    <div class="filter-group view-toggle">
+                        <button class="view-btn active" data-view="grid" aria-label="Grid view"><i class="fas fa-th"></i></button>
+                        <button class="view-btn" data-view="list" aria-label="List view"><i class="fas fa-list"></i></button>
+                    </div>
+                    <div class="filter-group sort-group">
+                        <label for="sortSelect" class="sr-only">Sort by</label>
+                        <select id="sortSelect">
+                            <option value="newest">Newest</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="title">Alphabetical</option>
+                            <option value="duration">Duration</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-panel glass" id="filterPanel" hidden>
+                    <div class="filter-row">
+                        <div class="filter-column">
+                            <h4>Category</h4>
+                            <div class="filter-options" id="categoryFilters"></div>
+                        </div>
+                        <div class="filter-column">
+                            <h4>Level</h4>
+                            <div class="filter-options" id="levelFilters">
+                                <button class="filter-chip active" data-level="all">All</button>
+                                <button class="filter-chip" data-level="beginner">Beginner</button>
+                                <button class="filter-chip" data-level="intermediate">Intermediate</button>
+                                <button class="filter-chip" data-level="advanced">Advanced</button>
+                            </div>
+                        </div>
+                        <div class="filter-column">
+                            <h4>Features</h4>
+                            <div class="filter-options" id="featureFilters">
+                                <button class="filter-chip" data-feature="featured">Featured</button>
+                                <button class="filter-chip" data-feature="popular">Popular</button>
+                                <button class="filter-chip" data-feature="certificate">Certificate</button>
+                                <button class="filter-chip" data-feature="free">Free</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="clearFilters" class="btn-secondary">Clear All</button>
+                        <span id="filterCount"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== FEATURED COURSES ===== -->
+            <section class="featured-section" id="featuredSection">
+                <h2><i class="fas fa-star"></i> Featured Courses</h2>
+                <div class="featured-grid" id="featuredGrid"></div>
+            </section>
+
+            <!-- ===== RECOMMENDED COURSES ===== -->
+            <section class="recommended-section" id="recommendedSection">
+                <h2><i class="fas fa-thumbs-up"></i> Recommended For You</h2>
+                <div class="recommended-grid" id="recommendedGrid"></div>
+            </section>
+
+            <!-- ===== ALL COURSES (with pagination) ===== -->
+            <section class="course-grid-section" id="courseGridSection">
+                <h2><i class="fas fa-th-list"></i> All Courses</h2>
+                <div id="courseGrid" class="course-grid view-grid"></div>
+                <div id="paginationControls" class="pagination-controls">
+                    <button id="loadMoreBtn" class="btn-primary">Load More</button>
+                </div>
+                <div id="emptyState" class="empty-state" hidden>
+                    <i class="fas fa-search"></i>
+                    <p>No courses match your filters. Try adjusting your search.</p>
+                </div>
+                <div id="errorState" class="error-state" hidden>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Something went wrong. Please try again.</p>
+                    <button id="retryBtn" class="btn-primary">Retry</button>
+                </div>
+            </section>
+
+            <!-- ===== AI MENTOR PANEL (floating) ===== -->
+            <div class="ai-mentor-panel glass" id="aiMentorPanel">
+                <div class="mentor-avatar">
+                    <img src="https://placehold.co/80x80/7C3AED/FFFFFF?text=AI" alt="AI Mentor" />
+                </div>
+                <div class="mentor-message" id="mentorMessage">Small progress every day creates remarkable results.</div>
+                <div class="mentor-tip" id="mentorTip">💡 Today's goal: Complete one lesson.</div>
+                <div class="mentor-action">
+                    <button id="mentorRefreshBtn" aria-label="Refresh message"><i class="fas fa-sync-alt"></i></button>
+                </div>
             </div>
-            <button type="button" class="btn-primary" id="search-button">Search</button>
-            <div class="section-inner courses-section-inner">
-                <div class="course-grid" id="courses-grid"></div>
-            </div>
-        </div>
-    </main>
-    <footer role="contentinfo">
-        <div class="footer-content">
-            <p>© 2026 Sword Institute — Your next lesson awaits.</p>
-            <div class="footer-links">
-                <a href="./index.html">Home</a>
-                <a href="./dashboard.html">Dashboard</a>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-            </div>
-        </div>
-    </footer>
-    <script type="module" src="./js/courses.js"></script>
+
+            <!-- ===== FOOTER ===== -->
+            <footer class="app-footer">
+                <p>&copy; 2025 Sword Institute – Forging Digital Warriors for Social Good</p>
+                <p><i class="fas fa-bolt"></i> Powered by Firebase · AI Learning Ecosystem</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ===== JAVASCRIPT MODULES ===== -->
+    <script type="module" src="js/courseCatalogue.js"></script>
 </body>
 </html>

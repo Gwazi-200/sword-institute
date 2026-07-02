@@ -1,14 +1,8 @@
-# TODO
+## TODO (progress tracker)
 
-## Dashboard fixes
-- [x] Confirm mismatch between `dashboard.html` DOM IDs and `js/dashboard.js` referenced IDs.
-
-- [x] Update `js/dashboard.js` import + DOM access so it matches `dashboard.html` and avoids null deref crashes.
-- [x] Added `js/dashboard-fixed.js` as reference/legacy patch.
-
-- [x] Wire AI mentor panel logic to the correct IDs/classes used in `dashboard.html` (with guards).
-- [x] Fix auth visibility toggling to match what `dashboard.html` actually contains (e.g., `nav-logout`).
-- [ ] Verify dashboard loads without JS console errors (manual browser check).
-
-
+- [ ] Diagnose runtime errors / console errors across pages.
+- [x] Fix missing import path in `js/services/courseService.js` (was importing non-existent `./firebase.js`).
+- [ ] Review course catalog flow: ensure only one course-catalog script is used per page.
+- [ ] Fix any remaining null dereferences by adding DOM-guards in UI scripts.
+- [ ] Run a local build/lint (if available) and verify no console errors.
 

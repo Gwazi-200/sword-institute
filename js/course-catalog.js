@@ -1,7 +1,7 @@
 // course-catalog.js – Sword Institute Course Catalogue (Module 2.1)
 // ES Module – imports from firebase.js
 
-import { auth, db } from './firebase.js';
+import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
