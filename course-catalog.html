@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute · Course Catalogue</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/course-catalog.css" />
+</head>
+<body>
+    <div id="app" class="app">
+
+        <!-- ===== SIDEBAR (identical to dashboard) ===== -->
+        <aside class="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="sidebar-brand">
+                <i class="fas fa-sword brand-icon"></i>
+                <span class="brand-name">Sword Institute</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html"><i class="fas fa-gavel"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="my-courses.html"><i class="fas fa-book-open"></i> My Courses</a></li>
+                    <li class="nav-item"><a href="learning-journey.html"><i class="fas fa-route"></i> Learning Journey</a></li>
+                    <li class="nav-item"><a href="certificates.html"><i class="fas fa-certificate"></i> Certificates</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fas fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="community.html"><i class="fas fa-globe-asia"></i> Community</a></li>
+                    <li class="nav-item"><a href="ai-mentor.html"><i class="fas fa-robot"></i> AI Mentor</a></li>
+                    <li class="nav-item"><a href="downloads.html"><i class="fas fa-download"></i> Downloads</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li class="nav-item logout-item"><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+
+            <!-- ===== TOP HEADER ===== -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+                    <span class="welcome-text">Course Catalogue</span>
+                </div>
+                <div class="header-right">
+                    <span class="current-date" id="currentDate"></span>
+                    <button class="notification-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+                    <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+                    <div class="avatar-wrapper">
+                        <img id="studentAvatar" src="https://ui-avatars.com/api/?name=Student&background=7C3AED&color=fff&size=40" alt="Student avatar" />
+                    </div>
+                </div>
+            </header>
+
+            <!-- ===== HERO SECTION with search ===== -->
+            <section class="hero-catalog glass">
+                <div class="hero-text">
+                    <h1>Discover Your Next Course</h1>
+                    <p>Find the perfect course to forge your digital warrior skills.</p>
+                </div>
+                <div class="hero-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search for courses, skills, or topics..." />
+                    <button id="searchBtn"><i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="hero-stats">
+                    <span><i class="fas fa-book"></i> <span id="totalCourses">0</span> Courses</span>
+                    <span><i class="fas fa-users"></i> <span id="totalStudents">0</span> Students</span>
+                    <span><i class="fas fa-star"></i> <span id="avgRating">0</span> Avg Rating</span>
+                </div>
+            </section>
+
+            <!-- ===== FILTER PANEL ===== -->
+            <section class="filter-panel glass">
+                <div class="filter-group">
+                    <label>Category</label>
+                    <div class="filter-options" id="categoryFilter">
+                        <button class="filter-btn active" data-category="all">All</button>
+                        <button class="filter-btn" data-category="professional">Professional Skills</button>
+                        <button class="filter-btn" data-category="community">Community Development</button>
+                        <button class="filter-btn" data-category="ai">AI &amp; Digital Skills</button>
+                        <button class="filter-btn" data-category="wellbeing">Wellbeing</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Difficulty</label>
+                    <div class="filter-options" id="difficultyFilter">
+                        <button class="filter-btn active" data-difficulty="all">All</button>
+                        <button class="filter-btn" data-difficulty="beginner">Beginner</button>
+                        <button class="filter-btn" data-difficulty="intermediate">Intermediate</button>
+                        <button class="filter-btn" data-difficulty="advanced">Advanced</button>
+                    </div>
+                </div>
+                <div class="filter-clear">
+                    <button id="clearFilters">Clear Filters</button>
+                </div>
+            </section>
+
+            <!-- ===== COURSE GRID ===== -->
+            <section class="course-grid-section">
+                <h2><i class="fas fa-th-list"></i> All Courses</h2>
+                <div class="course-grid" id="courseGrid">
+                    <!-- Cards rendered by JavaScript -->
+                </div>
+                <div class="pagination-placeholder" id="paginationPlaceholder">
+                    <!-- Future pagination -->
+                </div>
+            </section>
+
+            <!-- ===== CONTINUE LEARNING SECTION ===== -->
+            <section class="continue-learning-section">
+                <h2><i class="fas fa-play-circle"></i> Continue Learning</h2>
+                <div class="continue-grid" id="continueGrid">
+                    <!-- Rendered from Firestore with progress > 0 -->
+                </div>
+            </section>
+
+            <!-- ===== RECOMMENDED FOR YOU ===== -->
+            <section class="recommended-section">
+                <h2><i class="fas fa-star"></i> Recommended For You</h2>
+                <div class="recommended-grid" id="recommendedGrid">
+                    <!-- Rendered from Firestore based on user interests -->
+                </div>
+            </section>
+
+            <!-- ===== STATISTICS CARDS ===== -->
+            <section class="stats-section">
+                <h2><i class="fas fa-chart-pie"></i> Your Learning Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card glass">
+                        <i class="fas fa-book-open"></i>
+                        <span class="stat-value" id="statEnrolled">0</span>
+                        <span class="stat-label">Enrolled</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="stat-value" id="statCompleted">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-clock"></i>
+                        <span class="stat-value" id="statHours">0</span>
+                        <span class="stat-label">Hours Spent</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-certificate"></i>
+                        <span class="stat-value" id="statCertificates">0</span>
+                        <span class="stat-label">Certificates</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== POPULAR COURSES CAROUSEL ===== -->
+            <section class="popular-section">
+                <h2><i class="fas fa-fire"></i> Popular Courses</h2>
+                <div class="carousel-wrapper">
+                    <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Rendered by JS -->
+                    </div>
+                    <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <!-- ===== COURSE DETAILS MODAL ===== -->
+            <div class="modal-overlay" id="courseModal">
+                <div class="modal-content glass">
+                    <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+                    <div id="modalBody">
+                        <!-- Dynamically filled -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== FOOTER ===== -->
+            <footer class="app-footer">
+                <p>&copy; 2025 Sword Institute – Forging Digital Warriors for Social Good</p>
+                <p><i class="fas fa-bolt"></i> Powered by Firebase · AI Learning Ecosystem</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ===== JAVASCRIPT (ES Module) ===== -->
+    <script type="module" src="js/course-catalog.js"></script>
+</body>
+</html>
