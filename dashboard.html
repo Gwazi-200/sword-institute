@@ -1,81 +1,810 @@
-﻿<!DOCTYPE html>
+﻿<!-- dashboard.html – Sword Institute Learning Management System -->
+<!-- ====================================================================== -->
+<!-- COMPLETE PRODUCTION-READY DASHBOARD                                   -->
+<!-- All data placeholders with Firestore-ready IDs.                       -->
+<!-- Fully semantic, accessible, and responsive.                           -->
+<!-- ====================================================================== -->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sword Institute LMS - Dashboard</title>
-    <style>
-        /* Glassmorphism design */
-        .glass {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute · Warrior Dashboard</title>
 
-        /* Responsive layout */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: static;
-            }
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="./css/dashboard.css" />
 
-            .content {
-                width: 100%;
-            }
-        }
+    <!-- Google Fonts – elegant sans-serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
 
-        /* Student Profile card */
-        .student-profile {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+    <!-- Font Awesome 6 (Free) – icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
 
-        /* AI Mentor card */
-        .ai-mentor {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+<body>
 
-        /* Continue Learning card */
-        .continue-learning {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+    <!-- ================================================================ -->
+    <!-- MAIN APPLICATION WRAPPER                                         -->
+    <!-- ================================================================ -->
+    <div id="app" class="app-wrapper">
 
-        /* Learning Academies card */
-        .learning-academies {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+        <!-- ============================================================ -->
+        <!-- SIDEBAR (left navigation)                                     -->
+        <!-- ============================================================ -->
+        <aside id="sidebar" class="sidebar" role="navigation" aria-label="Main Navigation">
 
-        /* Announcements card */
-        .announcements {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+            <!-- Brand -->
+            <div id="brand" class="brand">
+                <i class="fas fa-sword brand-icon" aria-hidden="true"></i>
+                <span class="brand-name">Sword Institute</span>
+            </div>
 
-        /* Statistics card */
-        .statistics {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+            <!-- Navigation list -->
+            <nav class="sidebar-nav" aria-label="Sidebar">
+                <ul class="nav-list">
+                    <!-- Dashboard -->
+                    <li class="nav-item active">
+                        <a href="#dashboard" id="nav-dashboard" class="nav-link" aria-current="page">
+                            <i class="fas fa-gavel nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">Warrior Dashboard</span>
+                            <span class="nav-desc">Overview</span>
+                        </a>
+                    </li>
+                    <!-- My Learning -->
+                    <li class="nav-item">
+                        <a href="#my-learning" id="nav-mylearning" class="nav-link">
+                            <i class="fas fa-book-open nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">My Learning</span>
+                            <span class="nav-desc">Your courses</span>
+                        </a>
+                    </li>
+                    <!-- Learning Journey -->
+                    <li class="nav-item">
+                        <a href="#learning-journey" id="nav-learningjourney" class="nav-link">
+                            <i class="fas fa-route nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">Learning Journey</span>
+                            <span class="nav-desc">Path & milestones</span>
+                        </a>
+                    </li>
+                    <!-- AI Mentor -->
+                    <li class="nav-item">
+                        <a href="#ai-mentor" id="nav-aimentor" class="nav-link">
+                            <i class="fas fa-robot nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">AI Mentor</span>
+                            <span class="nav-desc">Your AI guide</span>
+                        </a>
+                    </li>
+                    <!-- Community Impact -->
+                    <li class="nav-item">
+                        <a href="#community-impact" id="nav-community" class="nav-link">
+                            <i class="fas fa-globe-asia nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">Community Impact</span>
+                            <span class="nav-desc">Social change</span>
+                        </a>
+                    </li>
+                    <!-- Certificates -->
+                    <li class="nav-item">
+                        <a href="#certificates" id="nav-certificates" class="nav-link">
+                            <i class="fas fa-certificate nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">Certificates</span>
+                            <span class="nav-desc">Your achievements</span>
+                        </a>
+                    </li>
+                    <!-- Mission Progress -->
+                    <li class="nav-item">
+                        <a href="#mission-progress" id="nav-mission" class="nav-link">
+                            <i class="fas fa-chart-line nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">Mission Progress</span>
+                            <span class="nav-desc">Track your growth</span>
+                        </a>
+                    </li>
+                    <!-- Profile -->
+                    <li class="nav-item">
+                        <a href="#profile" id="nav-profile" class="nav-link">
+                            <i class="fas fa-user-circle nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">My Profile</span>
+                            <span class="nav-desc">Account settings</span>
+                        </a>
+                    </li>
+                    <!-- Settings -->
+                    <li class="nav-item">
+                        <a href="#settings" id="nav-settings" class="nav-link">
+                            <i class="fas fa-cog nav-icon" aria-hidden="true"></i>
+                            <span class="nav-label">Settings</span>
+                            <span class="nav-desc">Preferences</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-        /* Recent Activity card */
-        .recent-activity {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px
+            <!-- Logout – placed at bottom -->
+            <div class="logout-wrapper">
+                <a href="#logout" id="nav-logout" class="nav-link logout-link">
+                    <i class="fas fa-sign-out-alt nav-icon" aria-hidden="true"></i>
+                    <span class="nav-label">Logout</span>
+                    <span class="nav-desc">Sign out</span>
+                </a>
+            </div>
+
+        </aside>
+        <!-- /SIDEBAR -->
+
+        <!-- ============================================================ -->
+        <!-- MAIN CONTENT AREA                                             -->
+        <!-- ============================================================ -->
+        <main id="main-content" class="main-content" role="main">
+
+            <!-- ========================================================== -->
+            <!-- TOP HEADER (navigation bar)                                 -->
+            <!-- ========================================================== -->
+            <header id="top-header" class="top-header" role="banner">
+
+                <!-- Left: logo & mobile toggle -->
+                <div class="header-left">
+                    <button id="menu-toggle" class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                        <i class="fas fa-bars" aria-hidden="true"></i>
+                    </button>
+                    <div class="header-logo">
+                        <i class="fas fa-sword" aria-hidden="true"></i>
+                        <span>Sword Institute</span>
+                    </div>
+                </div>
+
+                <!-- Right: notifications, warrior level, avatar, dark mode, profile dropdown -->
+                <div class="header-right">
+                    <!-- Notification Bell -->
+                    <button id="notification-btn" class="notification-btn" aria-label="Notifications">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                        <span id="notification-count" class="notification-badge">3</span>
+                    </button>
+
+                    <!-- Warrior Level Badge -->
+                    <div id="warrior-level" class="warrior-level" aria-label="Warrior Level: Gold">
+                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                        <span>Gold</span>
+                    </div>
+
+                    <!-- Student Avatar -->
+                    <div id="student-avatar-wrapper" class="avatar-wrapper">
+                        <img id="student-avatar" src="https://ui-avatars.com/api/?name=Alex+Rider&background=6C63FF&color=fff&size=40" alt="Student avatar" class="avatar-img" />
+                    </div>
+
+                    <!-- Student Name (placeholder) -->
+                    <span id="student-name" class="student-name-header">Alex Rider</span>
+
+                    <!-- Dark Mode Toggle Placeholder -->
+                    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon" aria-hidden="true"></i>
+                    </button>
+
+                    <!-- Profile Dropdown Placeholder -->
+                    <button id="profile-dropdown" class="profile-dropdown" aria-label="Profile menu">
+                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </header>
+            <!-- /TOP HEADER -->
+
+            <!-- ========================================================== -->
+            <!-- DASHBOARD CONTENT (all sections)                            -->
+            <!-- ========================================================== -->
+            <section id="dashboard-content" class="dashboard-content">
+
+                <!-- ======================================================= -->
+                <!-- SECTION 1 – HERO BANNER                                  -->
+                <!-- ======================================================= -->
+                <article id="hero-banner" class="card hero-banner glass">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Welcome back, <span id="student-name-hero">Alex Rider</span>
+                        </h1>
+                        <p class="hero-subtitle">Forging Digital Warriors for Social Good</p>
+
+                        <div class="hero-mission">
+                            <div class="mission-quote">
+                                <i class="fas fa-quote-left" aria-hidden="true"></i>
+                                <span id="mission-quote">"The best way to predict the future is to create it."</span>
+                            </div>
+                            <div class="mission-progress-wrapper">
+                                <span class="mission-label">Today's Mission Progress</span>
+                                <progress id="mission-progress" value="65" max="100" aria-label="Mission progress"></progress>
+                                <span id="mission-progress-text" class="mission-progress-text">65%</span>
+                            </div>
+                            <button id="continue-learning-btn" class="btn-primary">Continue Learning</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 2 – AI MENTOR CARD (most important)             -->
+                <!-- ======================================================= -->
+                <section id="ai-mentor-card" class="card ai-mentor-card glass premium-card">
+                    <div class="ai-mentor-grid">
+                        <!-- Robot illustration placeholder -->
+                        <figure class="ai-robot">
+                            <img src="https://placehold.co/120x120/6C63FF/FFFFFF?text=AI" alt="AI Mentor Robot" class="robot-img" />
+                            <figcaption class="sr-only">AI Mentor</figcaption>
+                        </figure>
+
+                        <div class="ai-message-area">
+                            <div class="ai-greeting">
+                                <span id="mentor-greeting">Good afternoon, Warrior!</span>
+                            </div>
+                            <p id="mentor-message" class="mentor-message">
+                                "You are making remarkable progress. Keep pushing your limits."
+                            </p>
+                            <div class="mentor-tip-wrapper">
+                                <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                                <span id="mentor-tip" class="mentor-tip">Daily tip: Practice active recall for 10 minutes.</span>
+                            </div>
+                            <div class="mentor-news">
+                                <i class="fas fa-newspaper" aria-hidden="true"></i>
+                                <span id="mentor-news">Latest: AI for Social Good course now available.</span>
+                            </div>
+                            <div class="mentor-date">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                <span id="mentor-date">Wednesday, 15 May 2025</span>
+                            </div>
+                            <div class="mentor-actions">
+                                <button id="ask-ai-btn" class="btn-ai-ask">Ask AI Mentor</button>
+                                <button id="refresh-mentor-btn" class="btn-refresh">Refresh Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 3 – STATISTICS CARDS (6)                        -->
+                <!-- ======================================================= -->
+                <section id="stats-grid" class="stats-grid">
+                    <div class="stat-card glass">
+                        <i class="fas fa-book-open stat-icon" aria-hidden="true"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="courses-enrolled">12</span>
+                            <span class="stat-label">Courses Enrolled</span>
+                            <progress class="stat-progress" value="12" max="20" aria-label="Enrolled progress"></progress>
+                        </div>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-chart-pie stat-icon" aria-hidden="true"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="learning-progress">68%</span>
+                            <span class="stat-label">Learning Progress</span>
+                            <progress class="stat-progress" value="68" max="100" aria-label="Learning progress"></progress>
+                        </div>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-award stat-icon" aria-hidden="true"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="certificates-earned">5</span>
+                            <span class="stat-label">Certificates Earned</span>
+                            <progress class="stat-progress" value="5" max="10" aria-label="Certificates progress"></progress>
+                        </div>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-fire stat-icon" aria-hidden="true"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="warrior-streak">23</span>
+                            <span class="stat-label">Warrior Streak</span>
+                            <progress class="stat-progress" value="23" max="30" aria-label="Streak progress"></progress>
+                        </div>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-clock stat-icon" aria-hidden="true"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="learning-hours">89</span>
+                            <span class="stat-label">Learning Hours</span>
+                            <progress class="stat-progress" value="89" max="150" aria-label="Hours progress"></progress>
+                        </div>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fas fa-hand-holding-heart stat-icon" aria-hidden="true"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="community-score">142</span>
+                            <span class="stat-label">Community Impact Score</span>
+                            <progress class="stat-progress" value="142" max="200" aria-label="Community progress"></progress>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 4 – CONTINUE LEARNING (8 courses)               -->
+                <!-- ======================================================= -->
+                <section id="continue-learning" class="continue-learning">
+                    <header class="section-header">
+                        <h2><i class="fas fa-play-circle" aria-hidden="true"></i> Continue Learning</h2>
+                        <a href="#my-learning" class="view-all">View all</a>
+                    </header>
+                    <div class="courses-grid">
+
+                        <!-- Course card template – repeated with different data -->
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=Communication" alt="Communication Skills thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Communication Skills</h3>
+                                <span class="course-category">Soft Skills</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="75" max="100" aria-label="Communication Skills progress"></progress>
+                                    <span class="course-percentage" id="progress-comm">75%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 3h 20m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Dr. Jane</span>
+                                </div>
+                                <button class="btn-resume" data-course="comm">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=Admin" alt="Administration thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Administration &amp; Management</h3>
+                                <span class="course-category">Business</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="40" max="100" aria-label="Admin progress"></progress>
+                                    <span class="course-percentage" id="progress-admin">40%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 4h 10m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Mr. Smith</span>
+                                </div>
+                                <button class="btn-resume" data-course="admin">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=Entrepreneurship" alt="Entrepreneurship thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Entrepreneurship</h3>
+                                <span class="course-category">Business</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="90" max="100" aria-label="Entrepreneurship progress"></progress>
+                                    <span class="course-percentage" id="progress-ent">90%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 2h 45m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Prof. Lee</span>
+                                </div>
+                                <button class="btn-resume" data-course="ent">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=AI+Basic" alt="AI Basic Education thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">AI Basic Education</h3>
+                                <span class="course-category">Technology</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="25" max="100" aria-label="AI progress"></progress>
+                                    <span class="course-percentage" id="progress-ai">25%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 5h 00m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Dr. Khan</span>
+                                </div>
+                                <button class="btn-resume" data-course="ai">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=Child+Welfare" alt="Child Welfare thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Child Welfare</h3>
+                                <span class="course-category">Social Work</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="60" max="100" aria-label="Child Welfare progress"></progress>
+                                    <span class="course-percentage" id="progress-cw">60%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 3h 00m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Ms. Aisha</span>
+                                </div>
+                                <button class="btn-resume" data-course="cw">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=Psychosocial" alt="Psychosocial Support thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Psychosocial Support</h3>
+                                <span class="course-category">Mental Health</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="15" max="100" aria-label="Psychosocial progress"></progress>
+                                    <span class="course-percentage" id="progress-psych">15%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 4h 30m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Dr. Patel</span>
+                                </div>
+                                <button class="btn-resume" data-course="psych">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=CBO" alt="Community Based Organisations thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Community Based Organisations</h3>
+                                <span class="course-category">Development</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="85" max="100" aria-label="CBO progress"></progress>
+                                    <span class="course-percentage" id="progress-cbo">85%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 2h 15m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Mr. Omar</span>
+                                </div>
+                                <button class="btn-resume" data-course="cbo">Resume</button>
+                            </div>
+                        </article>
+
+                        <article class="course-card glass">
+                            <figure class="course-thumb">
+                                <img src="https://placehold.co/400x200/6C63FF/FFFFFF?text=Home+Care" alt="Home Based Care thumbnail" />
+                            </figure>
+                            <div class="course-info">
+                                <h3 class="course-title">Home Based Care</h3>
+                                <span class="course-category">Health</span>
+                                <div class="course-progress-wrapper">
+                                    <progress class="course-progress" value="50" max="100" aria-label="Home Care progress"></progress>
+                                    <span class="course-percentage" id="progress-home">50%</span>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="course-duration"><i class="far fa-clock" aria-hidden="true"></i> 3h 45m</span>
+                                    <span class="course-instructor"><i class="far fa-user" aria-hidden="true"></i> Nurse Grace</span>
+                                </div>
+                                <button class="btn-resume" data-course="home">Resume</button>
+                            </div>
+                        </article>
+
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 5 – LEARNING JOURNEY (Timeline)                 -->
+                <!-- ======================================================= -->
+                <section id="learning-journey" class="learning-journey card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-route" aria-hidden="true"></i> Your Learning Journey</h2>
+                        <span id="xp-gained" class="xp-badge"><i class="fas fa-star" aria-hidden="true"></i> 1,450 XP</span>
+                    </header>
+                    <div class="journey-timeline">
+                        <div class="timeline-item completed">
+                            <span class="timeline-icon"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                            <div class="timeline-content">
+                                <h4>Module 1: Foundations</h4>
+                                <p>Completed · 12 May 2025</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <span class="timeline-icon"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                            <div class="timeline-content">
+                                <h4>Module 2: Core Skills</h4>
+                                <p>Completed · 14 May 2025</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item current">
+                            <span class="timeline-icon"><i class="fas fa-play-circle" aria-hidden="true"></i></span>
+                            <div class="timeline-content">
+                                <h4>Module 3: Advanced Topics <span class="current-badge">Current</span></h4>
+                                <p>In progress · 3 lessons left</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item upcoming">
+                            <span class="timeline-icon"><i class="fas fa-clock" aria-hidden="true"></i></span>
+                            <div class="timeline-content">
+                                <h4>Module 4: Mastery Project</h4>
+                                <p>Upcoming · Starts 20 May 2025</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item milestone">
+                            <span class="timeline-icon"><i class="fas fa-flag-checkered" aria-hidden="true"></i></span>
+                            <div class="timeline-content">
+                                <h4>Next Milestone: Complete 70% of courses</h4>
+                                <p id="next-milestone">You are at 65% – 5% to go!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 6 – COMMUNITY IMPACT                             -->
+                <!-- ======================================================= -->
+                <section id="community-impact" class="community-impact">
+                    <header class="section-header">
+                        <h2><i class="fas fa-globe-asia" aria-hidden="true"></i> Community Impact</h2>
+                    </header>
+                    <div class="impact-grid">
+                        <div class="impact-card glass">
+                            <i class="fas fa-city" aria-hidden="true"></i>
+                            <span id="communities-served" class="impact-number">14</span>
+                            <span class="impact-label">Communities Served</span>
+                        </div>
+                        <div class="impact-card glass">
+                            <i class="fas fa-hands-helping" aria-hidden="true"></i>
+                            <span id="volunteer-hours" class="impact-number">320</span>
+                            <span class="impact-label">Volunteer Hours</span>
+                        </div>
+                        <div class="impact-card glass">
+                            <i class="fas fa-heart" aria-hidden="true"></i>
+                            <span id="lives-impacted" class="impact-number">2,450</span>
+                            <span class="impact-label">Lives Impacted</span>
+                        </div>
+                        <div class="impact-card glass">
+                            <i class="fas fa-project-diagram" aria-hidden="true"></i>
+                            <span id="projects-completed" class="impact-number">27</span>
+                            <span class="impact-label">Projects Completed</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 7 – ACHIEVEMENTS (badges)                       -->
+                <!-- ======================================================= -->
+                <section id="achievements" class="achievements card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-trophy" aria-hidden="true"></i> Your Achievements</h2>
+                    </header>
+                    <div class="badge-grid">
+                        <div class="badge-item bronze">
+                            <i class="fas fa-medal" aria-hidden="true"></i>
+                            <span>Bronze Warrior</span>
+                        </div>
+                        <div class="badge-item silver">
+                            <i class="fas fa-medal" aria-hidden="true"></i>
+                            <span>Silver Warrior</span>
+                        </div>
+                        <div class="badge-item gold">
+                            <i class="fas fa-medal" aria-hidden="true"></i>
+                            <span>Gold Warrior</span>
+                        </div>
+                        <div class="badge-item diamond">
+                            <i class="fas fa-gem" aria-hidden="true"></i>
+                            <span>Diamond Warrior</span>
+                        </div>
+                        <div class="badge-item ai-explorer">
+                            <i class="fas fa-robot" aria-hidden="true"></i>
+                            <span>AI Explorer</span>
+                        </div>
+                        <div class="badge-item champion">
+                            <i class="fas fa-users" aria-hidden="true"></i>
+                            <span>Community Champion</span>
+                        </div>
+                        <div class="badge-item leadership">
+                            <i class="fas fa-star" aria-hidden="true"></i>
+                            <span>Leadership Award</span>
+                        </div>
+                        <div class="badge-item course-master">
+                            <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                            <span>Course Master</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 8 – CERTIFICATES (latest)                       -->
+                <!-- ======================================================= -->
+                <section id="certificates-section" class="certificates card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-certificate" aria-hidden="true"></i> Latest Certificates</h2>
+                        <a href="#certificates" class="view-all">View all</a>
+                    </header>
+                    <div class="certificate-list">
+                        <div class="certificate-item">
+                            <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                            <div class="cert-detail">
+                                <span class="cert-title">AI Basic Education</span>
+                                <span class="cert-date">Issued: 10 May 2025</span>
+                            </div>
+                            <button class="btn-download" aria-label="Download certificate">Download</button>
+                            <button class="btn-view" aria-label="View certificate">View</button>
+                        </div>
+                        <div class="certificate-item">
+                            <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                            <div class="cert-detail">
+                                <span class="cert-title">Communication Skills</span>
+                                <span class="cert-date">Issued: 28 April 2025</span>
+                            </div>
+                            <button class="btn-download" aria-label="Download certificate">Download</button>
+                            <button class="btn-view" aria-label="View certificate">View</button>
+                        </div>
+                        <div class="certificate-item">
+                            <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                            <div class="cert-detail">
+                                <span class="cert-title">Child Welfare</span>
+                                <span class="cert-date">Issued: 15 April 2025</span>
+                            </div>
+                            <button class="btn-download" aria-label="Download certificate">Download</button>
+                            <button class="btn-view" aria-label="View certificate">View</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 9 – RECENT ACTIVITY (Timeline)                  -->
+                <!-- ======================================================= -->
+                <section id="recent-activity" class="recent-activity card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-history" aria-hidden="true"></i> Recent Activity</h2>
+                        <a href="#progress" class="view-all">View all</a>
+                    </header>
+                    <ul class="activity-timeline">
+                        <li class="activity-item">
+                            <i class="fas fa-check-circle activity-icon" aria-hidden="true"></i>
+                            <div>
+                                <span class="activity-text">Completed "AI Ethics" lesson</span>
+                                <time class="activity-time" datetime="2025-05-15T14:30">2 hours ago</time>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <i class="fas fa-quiz activity-icon" aria-hidden="true"></i>
+                            <div>
+                                <span class="activity-text">Scored 92% on Entrepreneurship quiz</span>
+                                <time class="activity-time" datetime="2025-05-15T10:15">6 hours ago</time>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <i class="fas fa-certificate activity-icon" aria-hidden="true"></i>
+                            <div>
+                                <span class="activity-text">Earned "AI Explorer" badge</span>
+                                <time class="activity-time" datetime="2025-05-14T22:00">Yesterday</time>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <i class="fas fa-robot activity-icon" aria-hidden="true"></i>
+                            <div>
+                                <span class="activity-text">AI Mentor recommended "Data Ethics" course</span>
+                                <time class="activity-time" datetime="2025-05-14T16:30">Yesterday</time>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <i class="fas fa-comment activity-icon" aria-hidden="true"></i>
+                            <div>
+                                <span class="activity-text">Replied to discussion on community projects</span>
+                                <time class="activity-time" datetime="2025-05-13T20:00">2 days ago</time>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 10 – QUICK ACTIONS (glass buttons)               -->
+                <!-- ======================================================= -->
+                <section id="quick-actions" class="quick-actions card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-bolt" aria-hidden="true"></i> Quick Actions</h2>
+                    </header>
+                    <div class="actions-grid">
+                        <button class="action-btn" id="action-resume"><i class="fas fa-play" aria-hidden="true"></i> Resume Course</button>
+                        <button class="action-btn" id="action-ai"><i class="fas fa-robot" aria-hidden="true"></i> Ask AI Mentor</button>
+                        <button class="action-btn" id="action-download"><i class="fas fa-download" aria-hidden="true"></i> Download Certificate</button>
+                        <button class="action-btn" id="action-browse"><i class="fas fa-search" aria-hidden="true"></i> Browse Courses</button>
+                        <button class="action-btn" id="action-community"><i class="fas fa-hands" aria-hidden="true"></i> Community Projects</button>
+                        <button class="action-btn" id="action-profile"><i class="fas fa-user-edit" aria-hidden="true"></i> Profile</button>
+                    </div>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 11 – UPCOMING EVENTS                             -->
+                <!-- ======================================================= -->
+                <section id="upcoming-events" class="upcoming-events card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-calendar-alt" aria-hidden="true"></i> Upcoming Events</h2>
+                    </header>
+                    <ul class="events-list">
+                        <li class="event-item">
+                            <time class="event-date" datetime="2025-05-20T15:00">20 May, 3 PM</time>
+                            <span class="event-title">Live Webinar: AI &amp; Social Good</span>
+                        </li>
+                        <li class="event-item">
+                            <time class="event-date" datetime="2025-05-22T10:00">22 May, 10 AM</time>
+                            <span class="event-title">AI Workshop: Hands-on with LLMs</span>
+                        </li>
+                        <li class="event-item">
+                            <time class="event-date" datetime="2025-05-25T14:00">25 May, 2 PM</time>
+                            <span class="event-title">Leadership Training: Leading with Purpose</span>
+                        </li>
+                        <li class="event-item">
+                            <time class="event-date" datetime="2025-05-28T09:00">28 May, 9 AM</time>
+                            <span class="event-title">Community Outreach: Digital Literacy Drive</span>
+                        </li>
+                        <li class="event-item">
+                            <time class="event-date" datetime="2025-06-01T11:00">1 Jun, 11 AM</time>
+                            <span class="event-title">Career Coaching: Resume &amp; LinkedIn</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 12 – ANNOUNCEMENTS (Firestore ready)            -->
+                <!-- ======================================================= -->
+                <section id="announcements" class="announcements card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-bullhorn" aria-hidden="true"></i> Announcements</h2>
+                    </header>
+                    <ul id="announcement-list" class="announcement-list">
+                        <li class="announcement-item">
+                            <span class="announcement-badge">New</span>
+                            <span class="announcement-text">New course "Digital Ethics" now available.</span>
+                            <time class="announcement-time">Today</time>
+                        </li>
+                        <li class="announcement-item">
+                            <span class="announcement-badge">Update</span>
+                            <span class="announcement-text">Sword Institute mobile app is live on iOS and Android.</span>
+                            <time class="announcement-time">Yesterday</time>
+                        </li>
+                        <li class="announcement-item">
+                            <span class="announcement-badge">Reminder</span>
+                            <span class="announcement-text">Complete your profile to unlock personalized learning.</span>
+                            <time class="announcement-time">2 days ago</time>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- ======================================================= -->
+                <!-- SECTION 13 – LEARNING RESOURCES (quick links)           -->
+                <!-- ======================================================= -->
+                <section id="learning-resources" class="learning-resources card glass">
+                    <header class="section-header">
+                        <h2><i class="fas fa-folder-open" aria-hidden="true"></i> Learning Resources</h2>
+                    </header>
+                    <div class="resources-grid">
+                        <a href="#library" class="resource-link"><i class="fas fa-book" aria-hidden="true"></i> Library</a>
+                        <a href="#downloads" class="resource-link"><i class="fas fa-download" aria-hidden="true"></i> Downloads</a>
+                        <a href="#videos" class="resource-link"><i class="fas fa-video" aria-hidden="true"></i> Videos</a>
+                        <a href="#templates" class="resource-link"><i class="fas fa-copy" aria-hidden="true"></i> Templates</a>
+                        <a href="#guides" class="resource-link"><i class="fas fa-compass" aria-hidden="true"></i> Guides</a>
+                    </div>
+                </section>
+
+            </section>
+            <!-- /DASHBOARD CONTENT -->
+
+        </main>
+        <!-- /MAIN CONTENT AREA -->
+
+    </div>
+    <!-- /MAIN APPLICATION WRAPPER -->
+
+    <!-- ================================================================ -->
+    <!-- FOOTER (full width, below main content)                          -->
+    <!-- ================================================================ -->
+    <footer id="app-footer" class="app-footer" role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-sword" aria-hidden="true"></i>
+                <span>Sword Institute</span>
+            </div>
+            <p class="footer-tagline">Forging Digital Warriors for Social Good</p>
+            <div class="footer-meta">
+                <span><i class="fas fa-bolt" aria-hidden="true"></i> Powered by Firebase</span>
+                <span><i class="fas fa-brain" aria-hidden="true"></i> AI Powered Learning Ecosystem</span>
+                <span id="app-version">Version 1.0.0</span>
+                <span id="copyright">&copy; 2025 Sword Institute</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================================================================ -->
+    <!-- EXTERNAL JAVASCRIPT (ES Module) – for Firestore integration      -->
+    <!-- ================================================================ -->
+    <script type="module" src="./js/dashboard.js"></script>
+
+</body>
+</html>
