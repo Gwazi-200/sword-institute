@@ -219,7 +219,23 @@ export async function registerUser(userData, options = { sendVerification: true 
         console.error("❌ registerUser() failed.");
         console.error(error);
 
-        throw error;
+        if (error.code === 'auth/email-already-in-use') {
+            throw new Error('That email is already registered. Please use a different email or log in.');
+        }
+        if (error.code === 'auth/invalid-email') {
+            throw new Error('The email address is invalid. Please enter a correct email.');
+        }
+        if (error.code === 'auth/weak-password') {
+            throw new Error('Your password is too weak. Please choose a stronger password.');
+        }
+        if (error.code === 'auth/invalid-api-key') {
+            throw new Error('Firebase configuration is invalid. Check your API key and project settings in firebase-config.js.');
+        }
+        if (error.code === 'auth/network-request-failed') {
+            throw new Error('Network error. Please check your internet connection and try again.');
+        }
+
+        throw new Error(error.message || 'Registration failed. Please try again.');
 
     }
 
@@ -277,6 +293,9 @@ export async function loginUser(email, password) {
         }
         if (error.code === 'auth/invalid-email') {
             throw new Error('Invalid email address format.');
+        }
+        if (error.code === 'auth/invalid-api-key') {
+            throw new Error('Firebase configuration is invalid. Check your API key and project settings.');
         }
         if (error.code === 'auth/network-request-failed') {
             throw new Error('Network error. Please check your connection.');

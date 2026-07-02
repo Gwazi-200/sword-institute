@@ -104,8 +104,8 @@ export function clearToasts() {
 export function showLoading(button, loadingText = 'Processing...') {
     if (!button) return;
     
-    const originalText = button.dataset.originalText || button.textContent;
-    button.dataset.originalText = originalText;
+    const originalHtml = button.dataset.originalHtml || button.innerHTML;
+    button.dataset.originalHtml = originalHtml;
     
     button.disabled = true;
     button.classList.add('loading');
@@ -134,9 +134,9 @@ export function hideLoading(button) {
     button.disabled = false;
     button.classList.remove('loading');
     
-    const originalText = button.dataset.originalText || 'Submit';
-    button.textContent = originalText;
-    delete button.dataset.originalText;
+    const originalHtml = button.dataset.originalHtml || button.innerHTML || 'Submit';
+    button.innerHTML = originalHtml;
+    delete button.dataset.originalHtml;
 }
 
 /**

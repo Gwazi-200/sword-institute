@@ -46,6 +46,7 @@ const password = document.getElementById('password');
 const confirmPassword = document.getElementById('confirmPassword');
 const terms = document.getElementById('terms');
 const submitBtn = document.getElementById('register-submit');
+let isSubmitting = false;
 
 // ============================================================
 // FIELD MAPPING
@@ -212,8 +213,9 @@ form.addEventListener('submit', async (e) => {
     
     e.preventDefault();
     
-    // Clear old toasts
+    // Clear old UI state
     clearToasts();
+    clearErrors(form);
     
     // Final validation pass
     if (!validateAll()) {
@@ -222,9 +224,11 @@ form.addEventListener('submit', async (e) => {
     }
     
     // Prevent duplicate submissions
-    if (submitBtn.disabled) {
+    if (isSubmitting) {
         return;
     }
+    
+    isSubmitting = true;
     
     // Collect form data
     const userData = {
@@ -243,22 +247,33 @@ form.addEventListener('submit', async (e) => {
     
     try {
         //// Register user with Firebase
-console.log("🚀 About to call registerUser");
+        console.log("🚀 About to call registerUser");
 
-const result = await registerUser(userData, {
-    sendVerification: true
-});
+        const result = await registerUser(userData, {
+            sendVerification: true
+        });
 
-console.log("✅ registerUser returned:", result);
+        console.log("✅ registerUser returned:", result);
+        console.log('✅ Registration complete. User:', result.email);
 
-console.log('✅ Registration complete. User:', result.email);
+        // Store session data for auth-aware pages
+        sessionStorage.setItem('sword_user', JSON.stringify({
+            uid: result.uid,
+            email: result.email,
+            fullName: result.fullName
+        }));
 
-// Store session data
-sessionStorage.setItem('sword_user', JSON.stringify({
-    uid: result.uid,
-    email: result.email,
-    fullName: result.fullName
-}));
+        // Persist dashboard login state used by index.html
+        localStorage.setItem('sword_student', JSON.stringify({
+            uid: result.uid,
+            email: result.email,
+            name: result.fullName,
+            phone: userData.phone,
+            country: userData.country,
+            goal: 'career',
+            daily: 30,
+            created: new Date().toISOString()
+        }));
         
         // Show success toast
         showToast('🎉 Account created successfully! Redirecting to dashboard...', 'success', 3000);
@@ -270,12 +285,21 @@ sessionStorage.setItem('sword_user', JSON.stringify({
         
     } catch (error) {
         console.error('❌ Registration error:', error);
-        showToast(error.message || 'Registration failed. Please try again.', 'error');
+
+        const friendlyMessage =
+            error.code === 'auth/email-already-in-use' ? 'That email is already registered.' :
+            error.code === 'auth/invalid-email' ? 'Please enter a valid email address.' :
+            error.code === 'auth/weak-password' ? 'Password is too weak. Please choose a stronger password.' :
+            error.message || 'Registration failed. Please try again.';
+
+        showToast(friendlyMessage, 'error');
         
         // Reset form state
         hideLoading(submitBtn);
         setFormDisabled(form, false);
         submitBtn.disabled = false;
+    } finally {
+        isSubmitting = false;
     }
 });
 

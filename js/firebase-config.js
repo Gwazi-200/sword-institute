@@ -19,10 +19,10 @@ import { getFirestore } from 'firebase/firestore';
 // FIREBASE CONFIGURATION
 // ============================================================
 const firebaseConfig = {
-    apiKey: "AIzaSyC1q6Fq5rLMPd9Pdf8Cp5qGQe4jQK0Xe2w",
-    authDomain: "sword-institute.firebaseapp.com",
-    projectId: "sword-institute",
-    storageBucket: "sword-institute.firebasestorage.app",
+    apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
+    authDomain: "sword-institute-lms.firebaseapp.com",
+    projectId: "sword-institute-lms",
+    storageBucket: "sword-institute-lms.firebasestorage.app",
     messagingSenderId: "478896038426",
     appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
 };
