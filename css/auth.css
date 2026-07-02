@@ -1301,6 +1301,7 @@ footer p {
         background: #fff !important;
         color: #000 !important;
         box-shadow: none !important;
+        -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
         border: none !important;
     }
@@ -1309,6 +1310,7 @@ footer p {
         background: #fff !important;
         box-shadow: none !important;
         border: 1px solid #ddd !important;
+        -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
     }
 
