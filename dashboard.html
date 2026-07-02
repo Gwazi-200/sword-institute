@@ -1,111 +1,81 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sword Institute — Dashboard</title>
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚔%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚔%3C/text%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./css/auth.css" />
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sword Institute LMS - Dashboard</title>
+    <style>
+        /* Glassmorphism design */
+        .glass {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            .content {
+                width: 100%;
             }
         }
-    </script>
-</head>
-<body>
-    <a href="#dashboard" class="skip-link">Skip to dashboard content</a>
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <a href="./index.html" class="logo" aria-label="Sword Institute Home">
-            <span class="sword-icon">⚔</span>
-            <span class="sword-text">Sword</span>
-            <span class="institute">Institute</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="./index.html">Home</a></li>
-            <li><a href="./courses.html">Courses</a></li>
-            <li><a href="./login.html" id="nav-login">Log In</a></li>
-            <li><button id="nav-logout" class="btn-secondary hidden">Log Out</button></li>
-        </ul>
-    </nav>
-    <main class="auth-container" id="dashboard">
-        <div class="glass-card auth-card">
-            <div class="auth-header">
-                <div class="auth-icon" aria-hidden="true">🛡️</div>
-                <h2>Your Student Dashboard</h2>
-                <p class="auth-subtitle">Track your progress, view enrolled courses, and continue learning.</p>
-            </div>
-            <div id="toast-container" role="alert" aria-live="polite"></div>
-            <section class="dashboard-stats">
-                <div class="stat-grid" id="dashboard-stats"></div>
-            </section>
-            <section class="dashboard-focus" aria-labelledby="learning-focus-title">
-                <div class="focus-card">
-                    <div>
-                        <p class="eyebrow">Learning Focus</p>
-                        <h3 id="learning-focus-title">Today’s next step</h3>
-                        <p id="focus-summary">Continue your current learning path and build momentum.</p>
-                    </div>
-                    <div class="focus-pill" id="focus-pill">AI Foundations</div>
-                </div>
-            </section>
-            <section class="mentor-panel" aria-labelledby="mentor-title">
-                <div class="mentor-panel-header">
-                    <div>
-                        <p class="eyebrow">AI Mentor</p>
-                        <h3 id="mentor-title">Your personal learning guide</h3>
-                    </div>
-                    <div class="mentor-status">Online</div>
-                </div>
-                <div class="mentor-messages" id="mentor-messages">
-                    <div class="message bot">
-                        <strong>Mentor</strong>
-                        <p>Welcome back. I can help you plan your next lesson, explain a concept, or suggest a study path.</p>
-                    </div>
-                </div>
-                <div class="mentor-quick-actions">
-                    <button type="button" class="mentor-chip" data-prompt="Help me plan my week">Plan my week</button>
-                    <button type="button" class="mentor-chip" data-prompt="Explain leadership in simple terms">Leadership help</button>
-                    <button type="button" class="mentor-chip" data-prompt="How can I stay motivated in AI learning?">Stay motivated</button>
-                </div>
-                <form class="mentor-form" id="mentor-form">
-                    <input type="text" id="mentor-input" placeholder="Ask your mentor..." aria-label="Ask the AI mentor" />
-                    <button type="submit" class="btn-sm enrolled">Send</button>
-                </form>
-            </section>
-            <section class="section-inner">
-                <h3 class="section-subheading">Welcome back, <span id="student-name">Warrior</span></h3>
-                <div class="course-grid" id="dashboard-courses"></div>
-            </section>
-            <section class="glass-card profile-card">
-                <h3>Profile Summary</h3>
-                <p><strong>Name:</strong> <span id="profile-name">—</span></p>
-                <p><strong>Email:</strong> <span id="profile-email">—</span></p>
-                <p><strong>Country:</strong> <span id="profile-country">—</span></p>
-                <p><strong>Study Goal:</strong> <span id="profile-goal">—</span></p>
-                <div class="actions profile-actions">
-                    <button type="button" class="btn-primary" id="view-courses">Browse Courses</button>
-                    <button type="button" class="btn-secondary" id="logout-button">Log Out</button>
-                </div>
-            </section>
-        </div>
-    </main>
-    <footer role="contentinfo">
-        <div class="footer-content">
-            <p>© 2026 Sword Institute — Your learning journey continues.</p>
-            <div class="footer-links">
-                <a href="./index.html">Home</a>
-                <a href="./courses.html">Courses</a>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-            </div>
-        </div>
-    </footer>
-    <script type="module" src="./js/dashboard.js"></script>
-</body>
-</html>
+
+        /* Student Profile card */
+        .student-profile {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* AI Mentor card */
+        .ai-mentor {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Continue Learning card */
+        .continue-learning {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Learning Academies card */
+        .learning-academies {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Announcements card */
+        .announcements {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Statistics card */
+        .statistics {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Recent Activity card */
+        .recent-activity {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px
