@@ -52,16 +52,20 @@ export const courseCard = {
         card.innerHTML = imageHtml + bodyHtml;
 
         // Event delegation for buttons
-        card.querySelector('[data-action="enroll"]').addEventListener('click', (e) => {
+        const enrollBtn = card.querySelector('[data-action="enroll"]');
+        const detailBtn = card.querySelector('[data-action="detail"]');
+
+        enrollBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
-            const id = e.currentTarget.dataset.id;
-            // For now, navigate to course player or show modal
+            const id = e.currentTarget?.dataset?.id;
+            if (!id) return;
             window.location.href = `course-player.html?id=${id}`;
         });
-        card.querySelector('[data-action="detail"]').addEventListener('click', (e) => {
+
+        detailBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
-            const id = e.currentTarget.dataset.id;
-            // Show detail modal or navigate to course page
+            const id = e.currentTarget?.dataset?.id;
+            if (!id) return;
             window.location.href = `course-detail.html?id=${id}`;
         });
 
