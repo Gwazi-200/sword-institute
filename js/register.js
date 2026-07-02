@@ -48,6 +48,10 @@ const terms = document.getElementById('terms');
 const submitBtn = document.getElementById('register-submit');
 let isSubmitting = false;
 
+if (!form || !submitBtn) {
+    console.error('⚠️ Registration form or submit button is missing.');
+}
+
 // ============================================================
 // FIELD MAPPING
 // ============================================================
@@ -312,6 +316,9 @@ submitBtn.disabled = true;
 
 // Initialize password meter
 updatePasswordMeter('');
+
+// Ensure initial validity state if browser autofills values
+validateAll();
 
 console.log('📋 Registration page loaded successfully.');
 console.log('🔍 Validation ready. Submit button disabled until form is valid.');
