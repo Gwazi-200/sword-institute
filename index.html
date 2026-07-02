@@ -1113,7 +1113,6 @@
             function loginStudent(email, password, name, goal, daily) {
                 const student = {
                     email,
-                    password,
                     name: name || email.split('@')[0],
                     goal: goal || 'career',
                     daily: parseInt(daily) || 30,
@@ -1423,7 +1422,6 @@
             const modal = document.getElementById('authModal');
             const authForm = document.getElementById('auth-form');
             const authSubmit = document.getElementById('auth-submit');
-            const authSwitchLink = document.getElementById('auth-switch-link');
             const authSwitchText = document.getElementById('auth-switch-text');
             const authTitle = document.getElementById('auth-title');
 
@@ -1436,13 +1434,15 @@
                 authSwitchText.innerHTML = register ?
                     'Already have an account? <a id="auth-switch-link">Log In</a>' :
                     'Don\'t have an account? <a id="auth-switch-link">Register</a>';
-                // re-bind switch link
-                document.getElementById('auth-switch-link').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openModal(!isRegister);
-                });
                 authForm.reset();
             }
+
+            authSwitchText.addEventListener('click', function(e) {
+                if (e.target && e.target.id === 'auth-switch-link') {
+                    e.preventDefault();
+                    openModal(!isRegister);
+                }
+            });
 
             function closeModal() {
                 modal.classList.remove('visible');
