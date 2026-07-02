@@ -816,6 +816,153 @@ select.input-glass {
 }
 
 /* ============================================================
+   DASHBOARD ENHANCEMENTS
+   ============================================================ */
+.dashboard-stats {
+    margin-bottom: 1.25rem;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.stat-pill {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(139, 0, 255, 0.16);
+    border-radius: 18px;
+    padding: 1rem;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.stat-pill .number {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--violet-primary);
+}
+
+.stat-pill .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.dashboard-focus {
+    margin-bottom: 1.25rem;
+}
+
+.focus-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.16), rgba(139, 0, 255, 0.12));
+    border: 1px solid rgba(139, 0, 255, 0.16);
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--violet-primary);
+    margin-bottom: 0.2rem;
+}
+
+.focus-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.2rem;
+}
+
+.focus-card p {
+    color: var(--text-secondary);
+}
+
+.focus-pill {
+    background: var(--violet-primary);
+    color: white;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.section-inner {
+    margin-bottom: 1.5rem;
+}
+
+.section-subheading {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.course-card {
+    background: rgba(255, 255, 255, 0.68);
+    border: 1px solid rgba(139, 0, 255, 0.15);
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+}
+
+.course-card .icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.course-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.course-desc {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    margin-bottom: 0.7rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(139, 0, 255, 0.12);
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+.progress-bar .fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--violet-primary), var(--gold-primary));
+}
+
+.btn-sm {
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-sm.enrolled {
+    background: var(--violet-primary);
+    color: white;
+}
+
+.profile-card {
+    margin-top: 1rem;
+}
+
+/* ============================================================
    FOOTER
    ============================================================ */
 footer {
@@ -864,6 +1011,13 @@ footer p {
 /* ============================================================
    RESPONSIVE DESIGN
    ============================================================ */
+@media (max-width: 900px) {
+    .stat-grid,
+    .course-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
     .navbar {
         padding: 0.6rem 1.2rem;

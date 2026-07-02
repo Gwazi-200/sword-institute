@@ -1,5 +1,4 @@
-﻿import { initAuthListener, getCurrentUser, logoutUser } from './js/auth.js';
-import { showToast } from './js/ui.js';
+﻿import { initAuthListener, getCurrentUser, logoutUser, getUserProfile } from './auth.js';
 
 const studentName = document.getElementById('student-name');
 const profileName = document.getElementById('profile-name');
@@ -8,39 +7,74 @@ const profileCountry = document.getElementById('profile-country');
 const profileGoal = document.getElementById('profile-goal');
 const statsContainer = document.getElementById('dashboard-stats');
 const coursesContainer = document.getElementById('dashboard-courses');
+const focusSummary = document.getElementById('focus-summary');
+const focusPill = document.getElementById('focus-pill');
 const logoutButton = document.getElementById('logout-button');
 const navLogin = document.getElementById('nav-login');
 const navLogout = document.getElementById('nav-logout');
 const viewCourses = document.getElementById('view-courses');
 
 const COURSES = [
-    { id: 1, icon: '🌐', title: 'Web Alchemy', duration: '12 Weeks', progress: 35 },
-    { id: 2, icon: '🐍', title: 'Python Pathways', duration: '10 Weeks', progress: 20 },
-    { id: 3, icon: '🧠', title: 'AI & Consciousness', duration: '14 Weeks', progress: 10 }
+    { id: 1, icon: '🌐', title: 'AI for Everyday Leadership', duration: '12 Weeks', progress: 35, category: 'Leadership' },
+    { id: 2, icon: '🐍', title: 'Python for Social Impact', duration: '10 Weeks', progress: 20, category: 'AI Education' },
+    { id: 3, icon: '🧠', title: 'Communication & Community Care', duration: '14 Weeks', progress: 10, category: 'Community Development' }
 ];
 
-function loadStudent() {
-    const data = localStorage.getItem('sword_student');
-    if (data) {
+function normalizeStudent(rawStudent) {
+    if (!rawStudent) return null;
+
+    const profile = typeof rawStudent === 'string' ? JSON.parse(rawStudent) : rawStudent;
+    const fullName = profile.fullName || profile.name || profile.displayName || profile.email?.split('@')[0] || 'Warrior';
+
+    return {
+        uid: profile.uid || profile.id || '',
+        email: profile.email || '',
+        name: fullName,
+        phone: profile.phone || '',
+        country: profile.country || '',
+        goal: profile.goal || profile.preferences?.preferredTime || profile.studyGoal || 'career growth',
+        daily: profile.daily || profile.preferences?.dailyStudyGoal || 30,
+        learningStreak: profile.learningStreak || 3,
+        progress: profile.progress || 0,
+        completedCourses: profile.coursesCompleted || 0,
+        certificateCount: profile.certificateCount || 0,
+        currentCourse: profile.currentCourse || 'AI Foundations',
+        created: profile.createdAt?.seconds ? new Date(profile.createdAt.seconds * 1000).toISOString() : profile.created || new Date().toISOString()
+    };
+}
+
+async function loadStudent() {
+    const storedData = localStorage.getItem('sword_student');
+    if (storedData) {
         try {
-            return JSON.parse(data);
+            const parsed = normalizeStudent(JSON.parse(storedData));
+            if (parsed) return parsed;
         } catch {
-            return null;
+            localStorage.removeItem('sword_student');
         }
     }
 
     const current = getCurrentUser();
-    if (current) {
-        return {
+    if (current?.uid) {
+        try {
+            const profile = await getUserProfile(current.uid);
+            const merged = normalizeStudent({ ...current, ...profile });
+            if (merged) {
+                localStorage.setItem('sword_student', JSON.stringify(merged));
+                return merged;
+            }
+        } catch (error) {
+            console.warn('Unable to load Firestore profile:', error);
+        }
+
+        return normalizeStudent({
             uid: current.uid,
             email: current.email,
-            name: current.fullName || current.displayName || current.email.split('@')[0],
-            phone: current.phone || '',
+            fullName: current.fullName || current.displayName || current.email?.split('@')[0],
             country: current.country || '',
-            goal: current.preferences?.preferredTime || 'career',
-            daily: current.preferences?.dailyStudyGoal || 30,
-            created: current.createdAt ? new Date(current.createdAt.seconds * 1000).toISOString() : new Date().toISOString()
-        };
+            phone: current.phone || '',
+            preferences: current.preferences || {}
+        });
     }
 
     return null;
@@ -58,28 +92,43 @@ function renderProfile(student) {
 function renderStats(student) {
     if (!statsContainer) return;
     const enrolledCount = COURSES.length;
-    const streak = 3;
-    const totalHours = 12;
+    const streak = student?.learningStreak || 3;
+    const totalHours = Math.max(6, Math.round((student?.progress || 0) / 10) + 6);
+    const badges = student?.certificateCount || 4;
 
     statsContainer.innerHTML = `
         <div class="stat-pill"><div class="number">${enrolledCount}</div><div class="label">Enrolled</div></div>
         <div class="stat-pill"><div class="number">${streak}</div><div class="label">Day Streak</div></div>
         <div class="stat-pill"><div class="number">${totalHours}h</div><div class="label">Study Time</div></div>
-        <div class="stat-pill"><div class="number">4</div><div class="label">Badges</div></div>
+        <div class="stat-pill"><div class="number">${badges}</div><div class="label">Badges</div></div>
     `;
 }
 
-function renderCourses() {
+function renderFocus(student) {
+    if (!focusSummary || !focusPill) return;
+    const nextStep = student?.currentCourse || 'AI Foundations';
+    const dailyGoal = student?.daily || 30;
+    focusSummary.textContent = `Continue ${nextStep.toLowerCase()} and aim for ${dailyGoal} minutes of focused study today.`;
+    focusPill.textContent = nextStep;
+}
+
+function renderCourses(student) {
     if (!coursesContainer) return;
-    coursesContainer.innerHTML = COURSES.map(course => `
-        <div class="course-card">
-            <div class="icon">${course.icon}</div>
-            <h3>${course.title}</h3>
-            <p class="course-desc">${course.duration} • ${course.progress}% complete</p>
-            <div class="progress-bar"><div class="fill" style="width:${course.progress}%"></div></div>
-            <button type="button" class="btn-sm enrolled" disabled>Continue</button>
-        </div>
-    `).join('');
+
+    const personalizedCourses = COURSES.map((course, index) => {
+        const progress = Math.min(100, Math.max(course.progress, (student?.progress || 0) / 3 + index * 5));
+        return `
+            <div class="course-card">
+                <div class="icon">${course.icon}</div>
+                <h3>${course.title}</h3>
+                <p class="course-desc">${course.category} • ${course.duration} • ${Math.round(progress)}% complete</p>
+                <div class="progress-bar"><div class="fill" style="width:${Math.round(progress)}%"></div></div>
+                <button type="button" class="btn-sm enrolled">Continue</button>
+            </div>
+        `;
+    });
+
+    coursesContainer.innerHTML = personalizedCourses.join('');
 }
 
 function setAuthVisibility(loggedIn) {
@@ -98,8 +147,8 @@ async function signOut() {
     }
 }
 
-function init() {
-    const student = loadStudent();
+async function init() {
+    const student = await loadStudent();
     if (!student) {
         window.location.href = './login.html';
         return;
@@ -107,7 +156,8 @@ function init() {
 
     renderProfile(student);
     renderStats(student);
-    renderCourses();
+    renderFocus(student);
+    renderCourses(student);
     setAuthVisibility(true);
 
     initAuthListener((user) => {
