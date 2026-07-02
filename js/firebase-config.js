@@ -2,24 +2,24 @@
  * ============================================================
  * Sword Institute LMS
  * Firebase Configuration
- * Version: 2.0.0
+ * Version: 3.0.0
  * ============================================================
  *
- * This file is the SINGLE source of Firebase imports.
+ * CENTRAL FIREBASE MODULE
  *
- * Never import directly from:
- * firebase/app
- * firebase/auth
- * firebase/firestore
- *
- * Every other file must import ONLY from:
+ * All project files MUST import ONLY from:
  *
  *      ./firebase.js
  *
+ * Never import directly from Firebase SDK modules anywhere else.
  * ============================================================
  */
 
 import { initializeApp } from "firebase/app";
+
+/* ============================================================
+   AUTHENTICATION
+============================================================ */
 
 import {
     getAuth,
@@ -31,6 +31,10 @@ import {
     updateProfile,
     onAuthStateChanged
 } from "firebase/auth";
+
+/* ============================================================
+   FIRESTORE
+============================================================ */
 
 import {
     getFirestore,
@@ -49,14 +53,38 @@ import {
     limit,
     startAfter,
     writeBatch,
+    runTransaction,
     serverTimestamp,
+    Timestamp,
     increment,
     arrayUnion,
     arrayRemove
 } from "firebase/firestore";
 
 /* ============================================================
-   FIREBASE CONFIGURATION
+   STORAGE
+============================================================ */
+
+import {
+    getStorage,
+    ref,
+    uploadBytes,
+    uploadBytesResumable,
+    getDownloadURL,
+    deleteObject
+} from "firebase/storage";
+
+/* ============================================================
+   CLOUD FUNCTIONS
+============================================================ */
+
+import {
+    getFunctions,
+    httpsCallable
+} from "firebase/functions";
+
+/* ============================================================
+   FIREBASE CONFIG
 ============================================================ */
 
 const firebaseConfig = {
@@ -76,7 +104,7 @@ const firebaseConfig = {
 };
 
 /* ============================================================
-   INITIALIZE FIREBASE
+   INITIALIZE APP
 ============================================================ */
 
 const app = initializeApp(firebaseConfig);
@@ -89,8 +117,12 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 
+const storage = getStorage(app);
+
+const functions = getFunctions(app);
+
 /* ============================================================
-   EXPORT SERVICES
+   EXPORTS
 ============================================================ */
 
 export {
@@ -101,7 +133,11 @@ export {
 
     db,
 
-    // Authentication
+    storage,
+
+    functions,
+
+    /* Authentication */
 
     createUserWithEmailAndPassword,
 
@@ -117,7 +153,7 @@ export {
 
     onAuthStateChanged,
 
-    // Firestore
+    /* Firestore */
 
     collection,
 
@@ -149,28 +185,70 @@ export {
 
     writeBatch,
 
+    runTransaction,
+
     serverTimestamp,
+
+    Timestamp,
 
     increment,
 
     arrayUnion,
 
-    arrayRemove
+    arrayRemove,
+
+    /* Storage */
+
+    ref,
+
+    uploadBytes,
+
+    uploadBytesResumable,
+
+    getDownloadURL,
+
+    deleteObject,
+
+    /* Functions */
+
+    httpsCallable
 
 };
 
 export default app;
 
 /* ============================================================
-   STARTUP MESSAGE
+   STARTUP BANNER
 ============================================================ */
 
+console.clear();
+
 console.log(`
-==========================================
-⚔ Sword Institute LMS
-🔥 Firebase Initialized Successfully
-==========================================
-Project : sword-institute-lms
-Version : 2.0.0
-==========================================
+==================================================
+⚔ SWORD INSTITUTE LMS
+==================================================
+
+🔥 Firebase Connected Successfully
+
+Project   : sword-institute-lms
+Version   : 3.0.0
+
+Services
+──────────────
+✔ Authentication
+✔ Cloud Firestore
+✔ Cloud Storage
+✔ Cloud Functions
+
+Architecture
+──────────────
+firebase.js
+        │
+        ▼
+firebase-config.js
+        │
+        ▼
+Entire LMS
+
+==================================================
 `);
