@@ -1,99 +1,235 @@
-// js/services/courseService.js – Firestore data service
-import { db } from '../firebase-config.js';
-import { collection, getDocs, query, where, orderBy, getDoc, doc } from 'firebase/firestore';
+/**
+ * ==========================================================
+ * Sword Institute LMS
+ * Course Service
+ * Version: 1.0.0
+ * ==========================================================
+ *
+ * This service is the ONLY place that communicates
+ * with the Firestore "courses" collection.
+ *
+ * UI pages must NEVER query Firestore directly.
+ *
+ * Homepage
+ * Dashboard
+ * Catalogue
+ * Lesson Player
+ * Admin Panel
+ *
+ * all use this service.
+ * ==========================================================
+ */
 
-export const courseService = {
-    async getCategories() {
-        const snap = await getDocs(collection(db, 'categories'));
-        const categories = [];
-        snap.forEach(doc => {
-            categories.push({ id: doc.id, ...doc.data() });
-        });
-        return categories.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-    },
+import {
 
-    async getCourses({ page = 1, pageSize = 9, filters = {} } = {}) {
-        const coursesRef = collection(db, 'courses');
-        let constraints = [];
-        // Only published
-        constraints.push(where('published', '==', true));
+    db,
 
-        // Category filter
-        if (filters.category && filters.category !== 'all') {
-            constraints.push(where('category', '==', filters.category));
-        }
-        if (filters.level && filters.level !== 'all') {
-            constraints.push(where('level', '==', filters.level));
-        }
-        // Features filter – we'll apply client-side since it's multiple
-        // Sorting
-        let sortField = 'title';
-        let sortOrder = 'asc';
-        switch (filters.sort) {
-            case 'newest':
-                sortField = 'createdAt';
-                sortOrder = 'desc';
-                break;
-            case 'popular':
-                sortField = 'students';
-                sortOrder = 'desc';
-                break;
-            case 'rating':
-                sortField = 'rating';
-                sortOrder = 'desc';
-                break;
-            case 'duration':
-                sortField = 'estimatedHours';
-                sortOrder = 'asc';
-                break;
-            default:
-                sortField = 'title';
-                sortOrder = 'asc';
-        }
-        constraints.push(orderBy(sortField, sortOrder));
+    collection,
 
-        // Pagination
-        const q = query(coursesRef, ...constraints);
-        const snap = await getDocs(q);
-        let courses = [];
-        snap.forEach(doc => {
-            courses.push({ id: doc.id, ...doc.data() });
-        });
+    query,
 
-        // Apply feature filters client-side
-        if (filters.features && filters.features.length > 0) {
-            courses = courses.filter(c => {
-                let match = true;
-                if (filters.features.includes('featured')) {
-                    match = match && c.featured === true;
-                }
-                if (filters.features.includes('popular')) {
-                    match = match && c.popular === true;
-                }
-                if (filters.features.includes('certificate')) {
-                    match = match && c.certificate === true;
-                }
-                if (filters.features.includes('free')) {
-                    match = match && c.price === 0;
-                }
-                return match;
+    where,
+
+    orderBy,
+
+    limit,
+
+    getDocs
+
+} from "../firebase.js";
+
+/* ==========================================================
+   COLLECTION
+========================================================== */
+
+const COURSE_COLLECTION = "courses";
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function courseCollection() {
+
+    return collection(db, COURSE_COLLECTION);
+
+}
+
+/* ==========================================================
+   GET FEATURED COURSES
+========================================================== */
+
+export async function getFeaturedCourses(max = 8) {
+
+    try {
+
+        console.log("📚 Loading featured courses...");
+
+        const q = query(
+
+            courseCollection(),
+
+            where("featured", "==", true),
+
+            where("published", "==", true),
+
+            orderBy("createdAt", "desc"),
+
+            limit(max)
+
+        );
+
+        const snapshot = await getDocs(q);
+
+        const courses = [];
+
+        snapshot.forEach(doc => {
+
+            courses.push({
+
+                id: doc.id,
+
+                ...doc.data()
+
             });
-        }
 
-        // Pagination client-side
-        const start = (page - 1) * pageSize;
-        const paginated = courses.slice(start, start + pageSize);
-        const hasMore = start + pageSize < courses.length;
+        });
 
-        return { courses: paginated, hasMore, total: courses.length };
-    },
+        console.log(`✅ ${courses.length} featured courses loaded.`);
 
-    async getCourseById(courseId) {
-        const docRef = doc(db, 'courses', courseId);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-            return { id: snap.id, ...snap.data() };
-        }
-        return null;
-    },
-};
+        return courses;
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "❌ Failed loading featured courses",
+
+            error
+
+        );
+
+        return [];
+
+    }
+
+}
+
+/* ==========================================================
+   GET ALL COURSES
+========================================================== */
+
+export async function getAllCourses() {
+
+    try {
+
+        console.log("📚 Loading all courses...");
+
+        const q = query(
+
+            courseCollection(),
+
+            where("published","==",true),
+
+            orderBy("title")
+
+        );
+
+        const snapshot = await getDocs(q);
+
+        const courses = [];
+
+        snapshot.forEach(doc=>{
+
+            courses.push({
+
+                id:doc.id,
+
+                ...doc.data()
+
+            });
+
+        });
+
+        console.log(`✅ ${courses.length} courses loaded.`);
+
+        return courses;
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        return [];
+
+    }
+
+}
+
+/* ==========================================================
+   GET COURSES BY CATEGORY
+========================================================== */
+
+export async function getCoursesByCategory(category){
+
+    try{
+
+        const q=query(
+
+            courseCollection(),
+
+            where("category","==",category),
+
+            where("published","==",true),
+
+            orderBy("title")
+
+        );
+
+        const snapshot=await getDocs(q);
+
+        const courses=[];
+
+        snapshot.forEach(doc=>{
+
+            courses.push({
+
+                id:doc.id,
+
+                ...doc.data()
+
+            });
+
+        });
+
+        return courses;
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        return[];
+
+    }
+
+}
+
+/* ==========================================================
+   SEARCH COURSES
+========================================================== */
+
+export async function searchCourses(){
+
+    return getAllCourses();
+
+}
+
+/* ==========================================================
+   VERSION
+========================================================== */
+
+console.log("📚 Course Service Loaded");
