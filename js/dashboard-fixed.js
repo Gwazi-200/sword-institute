@@ -221,13 +221,37 @@ function initMentorUI(student) {
 }
 
 function setAuthVisibility() {
-    // dashboard.html only has nav-logout. If user is not logged in, redirect happens anyway.
-    // Keep nav-logout visible when signed in.
-    if (navLogout) navLogout.classList.toggle('hidden', false);
-    if (navLogin) navLogin.classList.toggle('hidden', true);
+    // dashboard.html does not have nav-login/nav-logout elements.
+    // It only has the logout link with id="logout-btn".
+    // Keep this guard-only (no DOM assumptions) to avoid crashes.
+    if (navLogout) {
+        navLogout.classList.toggle('hidden', false);
+    }
+    // If you later add a login element, toggle it here.
+
+    // dashboard.html uses logout link id="logout-btn".
+    // Ensure it's visible and bound.
+    attachLogoutHandler();
+}
+
+
+function attachLogoutHandler() {
+    // dashboard.html logout link id is "logout-btn".
+    const logoutBtn = document.getElementById('logout-btn');
+    if (!logoutBtn) return;
+
+    // Avoid double-binding: remove existing handler by cloning.
+    const cloned = logoutBtn.cloneNode(true);
+    logoutBtn.replaceWith(cloned);
+
+    cloned.addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut();
+    });
 }
 
 async function signOut() {
+
     try {
         await logoutUser();
     } catch (error) {
