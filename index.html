@@ -139,14 +139,6 @@
             align-items: center;
             gap: 14px;
         }
-        .ai-header i {
-            font-size: 2rem;
-            color: var(--violet-deep);
-            background: rgba(139, 0, 255, 0.04);
-            padding: 12px;
-            border-radius: 50%;
-            border: 1px solid rgba(139, 0, 255, 0.06);
-        }
         .ai-header h3 {
             font-size: 1.2rem;
             font-weight: 700;
@@ -154,6 +146,15 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        .mentor-title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            line-height: 1.2;
+        }
+        .mentor-name {
+            display: block;
         }
         .ai-header h3 small {
             display: block;
@@ -933,11 +934,12 @@
                 ========================================================== -->
                 <div class="ai-mentor-card" id="aiMentorCard">
                     <div class="ai-header">
-                        <i class="fas fa-robot"></i>
                         <h3>
-                            <span class="professor-emoji" role="img" aria-label="Smiling professor">🧑‍🏫</span>
-                            Professor SWORD
-                            <small>Your Spiritual Guide</small>
+                            <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
+                            <span class="mentor-title-block">
+                                <span class="mentor-name">Professor SWORD</span>
+                                <small>Your Spiritual Guide</small>
+                            </span>
                         </h3>
                         <div class="ai-status">
                             <span class="dot"></span>
