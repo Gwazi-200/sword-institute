@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sword Institute | Sacred Code & Digital Alchemy</title>
+    <title>Sword Institute | Forging Digital Warriors for Social Good</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Sword Institute - Professional education for NGOs, Government, Business, AI, Leadership, and Community Development." />
+    <meta name="keywords" content="community development, social work, NGO training, AI education, leadership, counseling" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,7 +18,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* ---------- ROOT: PEARLESCENT + VIOLET + GOLD ---------- */
+        /* ==========================================================
+           ROOT: PEARLESCENT + VIOLET + GOLD
+           ========================================================== */
         *,
         *::before,
         *::after {
@@ -79,7 +85,7 @@
             overflow: hidden;
         }
 
-        /* Floating Light Orbs */
+        /* Floating Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -118,23 +124,9 @@
             z-index: 2;
         }
 
-        /* ---------- GLASS CARD ---------- */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--glass-shadow);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .glass-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(139, 0, 255, 0.2);
-            box-shadow: 0 20px 40px -12px rgba(139, 0, 255, 0.15);
-        }
-
-        /* ---------- BUTTONS ---------- */
+        /* ==========================================================
+           BUTTONS
+           ========================================================== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -196,7 +188,25 @@
             border-color: var(--violet-deep);
         }
 
-        /* ---------- NAVIGATION ---------- */
+        .btn-success {
+            background: #16a34a;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        .btn-success:hover {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ==========================================================
+           NAVIGATION
+           ========================================================== */
         nav {
             padding: 8px 0 20px;
             position: relative;
@@ -264,6 +274,13 @@
         .nav-links a:hover::after {
             width: 100%;
         }
+        .nav-links a.active {
+            color: var(--violet-deep);
+            font-weight: 700;
+        }
+        .nav-links a.active::after {
+            width: 100%;
+        }
 
         .nav-actions {
             display: flex;
@@ -271,7 +288,9 @@
             gap: 12px;
         }
 
-        /* ---------- HERO ---------- */
+        /* ==========================================================
+           HERO SECTION
+           ========================================================== */
         #hero {
             padding: 20px 0 40px;
         }
@@ -314,9 +333,9 @@
             gap: 14px;
         }
 
-        /* ----- AI MENTOR CARD ----- */
+        /* ----- AI Mentor Card (Interactive) ----- */
         .ai-mentor-card {
-            padding: 32px;
+            padding: 28px;
             background: rgba(255, 255, 255, 0.35);
             backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
@@ -324,6 +343,10 @@
             border-radius: var(--radius-xl);
             box-shadow: 0 12px 40px -10px rgba(139, 0, 255, 0.06);
             transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
         }
         .ai-mentor-card:hover {
             border-color: var(--violet-glow);
@@ -334,18 +357,17 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            margin-bottom: 20px;
         }
         .ai-header i {
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: var(--violet-deep);
             background: rgba(139, 0, 255, 0.04);
-            padding: 14px;
+            padding: 12px;
             border-radius: 50%;
             border: 1px solid rgba(139, 0, 255, 0.06);
         }
         .ai-header h3 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--text-primary);
         }
@@ -355,53 +377,186 @@
             font-size: 0.8rem;
             color: var(--text-muted);
         }
-
-        .ai-greeting {
-            font-size: 1.05rem;
-            margin-bottom: 16px;
-            padding: 14px 18px;
-            background: rgba(139, 0, 255, 0.02);
-            border-radius: var(--radius-md);
-            border-left: 4px solid var(--violet-deep);
-            color: var(--text-primary);
-        }
-
-        .ai-mission {
+        .ai-header .ai-status {
+            margin-left: auto;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid rgba(139, 0, 255, 0.04);
-        }
-        .ai-mission .label {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        .ai-mission .value {
+            gap: 6px;
+            font-size: 0.7rem;
+            color: #16a34a;
             font-weight: 600;
-            color: var(--text-primary);
         }
-        .ai-mission .xp {
-            background: linear-gradient(135deg, var(--gold-radiant), #FFB800);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
+        .ai-header .ai-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #16a34a;
+            animation: pulse-dot 2s infinite;
         }
-        .ai-continue {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 16px;
-            color: var(--violet-deep);
-            font-weight: 700;
-            text-decoration: none;
-            transition: gap 0.3s ease;
-        }
-        .ai-continue:hover {
-            gap: 14px;
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
         }
 
-        /* ---------- STATISTICS ---------- */
+        .ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 180px;
+            padding-right: 4px;
+        }
+        .ai-messages::-webkit-scrollbar {
+            width: 3px;
+        }
+        .ai-messages::-webkit-scrollbar-track {
+            background: rgba(139, 0, 255, 0.05);
+            border-radius: 10px;
+        }
+        .ai-messages::-webkit-scrollbar-thumb {
+            background: var(--violet-deep);
+            border-radius: 10px;
+        }
+
+        .ai-message-bubble {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            animation: fadeIn 0.4s ease;
+        }
+        .ai-message-bubble.ai {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+        }
+        .ai-message-bubble.user {
+            background: var(--violet-deep);
+            color: #fff;
+            margin-left: auto;
+            max-width: 85%;
+        }
+        .ai-message-bubble .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .ai-message-bubble .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            animation: typing-bounce 1.4s infinite;
+        }
+        .ai-message-bubble .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .ai-message-bubble .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typing-bounce {
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ai-quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .ai-quick-actions button {
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+        .ai-quick-actions button:hover {
+            border-color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.05);
+            color: var(--violet-deep);
+            transform: scale(1.05);
+        }
+
+        .ai-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .ai-input-row input {
+            flex: 1;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        .ai-input-row input:focus {
+            outline: none;
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 4px rgba(139, 0, 255, 0.08);
+        }
+        .ai-input-row input::placeholder {
+            color: var(--text-muted);
+        }
+        .ai-input-row button {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--violet-deep);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        .ai-input-row button:hover {
+            background: #9B1DFF;
+            transform: scale(1.02);
+        }
+        .ai-input-row button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==========================================================
+           STATISTICS
+           ========================================================== */
         #statistics {
             padding: 20px 0 30px;
         }
@@ -449,55 +604,11 @@
             margin-right: 6px;
         }
 
-        /* ---------- LEARNING CATEGORIES (NEW) ---------- */
+        /* ==========================================================
+           LEARNING CATEGORIES
+           ========================================================== */
         #categories {
             padding: 40px 0 20px;
-        }
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 24px;
-        }
-        .category-card {
-            text-align: center;
-            padding: 28px 16px 24px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: var(--radius-md);
-            transition: all 0.35s ease;
-            cursor: default;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-        .category-card:hover {
-            background: rgba(255, 255, 255, 0.6);
-            border-color: var(--violet-deep);
-            transform: translateY(-6px);
-            box-shadow: 0 16px 40px -12px rgba(139, 0, 255, 0.12);
-        }
-        .category-card .icon {
-            font-size: 2.8rem;
-            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .category-card h4 {
-            font-weight: 700;
-            font-size: 1.05rem;
-            margin-bottom: 4px;
-        }
-        .category-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* ---------- FEATURED COURSES ---------- */
-        #featured-courses {
-            padding: 30px 0 10px;
         }
         .section-header {
             display: flex;
@@ -527,6 +638,55 @@
             color: var(--gold-radiant);
         }
 
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+        }
+        .category-card {
+            text-align: center;
+            padding: 28px 16px 24px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            transition: all 0.35s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: var(--violet-deep);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px -12px rgba(139, 0, 255, 0.12);
+        }
+        .category-card .icon {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .category-card h4 {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+        .category-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================
+           FEATURED COURSES
+           ========================================================== */
+        #featured-courses {
+            padding: 30px 0 10px;
+        }
+
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -542,6 +702,9 @@
             overflow: hidden;
             transition: all 0.35s ease;
             box-shadow: var(--glass-shadow);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
         }
         .course-card:hover {
             transform: translateY(-8px);
@@ -638,7 +801,100 @@
             width: 60%;
         }
 
-        /* ---------- FOOTER ---------- */
+        /* ==========================================================
+           TESTIMONIALS
+           ========================================================== */
+        #testimonials {
+            padding: 40px 0 20px;
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .testimonial-card {
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+        .testimonial-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: var(--violet-deep);
+            transform: translateY(-4px);
+        }
+        .testimonial-card .quote {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .testimonial-card .author .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .testimonial-card .author .name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .testimonial-card .author .role {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================
+           CTA SECTION
+           ========================================================== */
+        #cta {
+            padding: 50px 0 30px;
+        }
+        .cta-box {
+            padding: 48px 40px;
+            background: linear-gradient(135deg, rgba(139, 0, 255, 0.05), rgba(255, 215, 0, 0.05));
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .cta-box h2 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .cta-box h2 .violet {
+            color: var(--violet-deep);
+        }
+        .cta-box p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+        .cta-box .cta-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ==========================================================
+           FOOTER
+           ========================================================== */
         .footer {
             padding: 32px 0 8px;
             margin-top: 40px;
@@ -653,8 +909,25 @@
         .footer .gold {
             color: var(--gold-radiant);
         }
+        .footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .footer .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer .footer-links a:hover {
+            color: var(--violet-deep);
+        }
 
-        /* ---------- RESPONSIVE ---------- */
+        /* ==========================================================
+           RESPONSIVE
+           ========================================================== */
         @media (max-width: 1024px) {
             .app-wrapper {
                 padding: 16px;
@@ -672,6 +945,12 @@
             }
             .categories-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            .ai-mentor-card {
+                max-height: none;
+            }
+            .ai-messages {
+                max-height: 140px;
             }
         }
 
@@ -710,6 +989,25 @@
             body {
                 padding: 10px;
             }
+            .cta-box {
+                padding: 32px 20px;
+            }
+            .cta-box h2 {
+                font-size: 1.8rem;
+            }
+            .ai-mentor-card {
+                padding: 20px;
+            }
+            .ai-messages {
+                max-height: 120px;
+            }
+            .ai-quick-actions {
+                gap: 4px;
+            }
+            .ai-quick-actions button {
+                font-size: 0.65rem;
+                padding: 3px 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -726,7 +1024,7 @@
                 width: 100%;
             }
             .ai-mentor-card {
-                padding: 20px;
+                padding: 16px;
             }
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
@@ -741,38 +1039,60 @@
             .app-wrapper {
                 padding: 12px;
             }
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .cta-box .cta-buttons .btn {
+                width: 100%;
+            }
+            .ai-input-row {
+                flex-direction: column;
+            }
+            .ai-input-row button {
+                width: 100%;
+            }
+            .ai-messages {
+                max-height: 100px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="app-wrapper">
-        <!-- Spiritual Orbs -->
+        <!-- Floating Orbs -->
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
 
-        <!-- ============ NAVIGATION ============ -->
+        <!-- ==========================================================
+        NAVIGATION
+        ========================================================== -->
         <nav>
             <div class="container nav-container">
-                <a href="#" class="logo">
+                <a href="index.html" class="logo">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="#featured-courses">Courses</a></li>
-                    <li><a href="#categories">Paths</a></li>
-                    <li><a href="#">AI Mentor</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="#hero">AI Mentor</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
                     <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
                     <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
+                    <a href="dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
+                        <i class="fas fa-shield-halved"></i> Dashboard
+                    </a>
                 </div>
             </div>
         </nav>
 
-        <!-- ============ HERO ============ -->
+        <!-- ==========================================================
+        HERO
+        ========================================================== -->
         <section id="hero">
             <div class="container hero-grid">
                 <div class="hero-content">
@@ -785,48 +1105,69 @@
                         and Community Development. Illuminate your path.
                     </p>
                     <div class="hero-buttons">
-                        <a href="#featured-courses" class="btn btn-primary">
+                        <a href="courses.html" class="btn btn-primary">
                             <i class="fas fa-rocket"></i> Start Learning
                         </a>
-                        <a href="#categories" class="btn btn-gold">
-                            <i class="fas fa-compass"></i> Explore Paths
+                        <a href="#featured-courses" class="btn btn-gold">
+                            <i class="fas fa-compass"></i> Explore Courses
                         </a>
                     </div>
                 </div>
 
-                <!-- AI Mentor Card -->
-                <div class="ai-mentor-card">
+                <!-- ==========================================================
+                AI MENTOR CARD - Interactive
+                ========================================================== -->
+                <div class="ai-mentor-card" id="aiMentorCard">
                     <div class="ai-header">
                         <i class="fas fa-robot"></i>
                         <h3>
                             AI Mentor
-                            <small>Your 24/7 Spiritual Guide</small>
+                            <small>Your Guide to Sword Institute</small>
                         </h3>
+                        <div class="ai-status">
+                            <span class="dot"></span>
+                            Online
+                        </div>
                     </div>
-                    <div class="ai-greeting" id="aiGreeting">
-                        <i class="fas fa-sparkles" style="color:var(--gold-radiant);margin-right:8px;"></i>
-                        Good Evening, Warrior of Light.
+
+                    <!-- Chat Messages -->
+                    <div class="ai-messages" id="aiMessages">
+                        <!-- Welcome message will be added by JavaScript -->
                     </div>
-                    <div class="ai-mission">
-                        <span class="label"><i class="fas fa-bullseye" style="color:var(--violet-deep);"></i> Today's Mission</span>
-                        <span class="value">Sacred Communication</span>
+
+                    <!-- Quick Actions -->
+                    <div class="ai-quick-actions" id="aiQuickActions">
+                        <button onclick="sendAIMessage('Give me a tour of Sword Institute')">
+                            <i class="fas fa-compass"></i> Tour
+                        </button>
+                        <button onclick="sendAIMessage('What courses do you offer?')">
+                            <i class="fas fa-graduation-cap"></i> Courses
+                        </button>
+                        <button onclick="sendAIMessage('How do I get started?')">
+                            <i class="fas fa-rocket"></i> Get Started
+                        </button>
+                        <button onclick="sendAIMessage('What is the AI Mentor?')">
+                            <i class="fas fa-robot"></i> About AI
+                        </button>
+                        <button onclick="sendAIMessage('Recommend a course for me')">
+                            <i class="fas fa-lightbulb"></i> Recommend
+                        </button>
                     </div>
-                    <div class="ai-mission">
-                        <span class="label"><i class="fas fa-clock"></i> Estimated Time</span>
-                        <span class="value">18 min</span>
+
+                    <!-- Input -->
+                    <div class="ai-input-row">
+                        <input type="text" id="aiInput" placeholder="Ask me anything about Sword Institute..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
+                        <button onclick="sendAIMessage()" id="aiSendBtn">
+                            <i class="fas fa-paper-plane"></i> Ask
+                        </button>
                     </div>
-                    <div class="ai-mission" style="border-bottom:1px solid rgba(139,0,255,0.04);padding-bottom:12px;">
-                        <span class="label"><i class="fas fa-star"></i> Divine XP</span>
-                        <span class="xp">+100 XP</span>
-                    </div>
-                    <a href="#" class="ai-continue">
-                        Continue Journey <i class="fas fa-arrow-right"></i>
-                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- ============ STATISTICS ============ -->
+        <!-- ==========================================================
+        STATISTICS
+        ========================================================== -->
         <section id="statistics">
             <div class="container stats-grid">
                 <div class="stat-item">
@@ -834,7 +1175,7 @@
                     <div class="stat-label"><i class="fas fa-users"></i>Students</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="totalCourses">8</div>
+                    <div class="stat-number" id="totalCourses">18</div>
                     <div class="stat-label"><i class="fas fa-book-open"></i>Sacred Courses</div>
                 </div>
                 <div class="stat-item">
@@ -848,7 +1189,9 @@
             </div>
         </section>
 
-        <!-- ============ LEARNING CATEGORIES (NEW) ============ -->
+        <!-- ==========================================================
+        LEARNING CATEGORIES
+        ========================================================== -->
         <section id="categories">
             <div class="container">
                 <div class="section-header">
@@ -858,42 +1201,43 @@
                     <span class="sub">Choose your journey <i class="fas fa-sparkles"></i></span>
                 </div>
                 <div class="categories-grid" id="categoriesContainer">
-                    <!-- Hardcoded categories with beautiful icons -->
-                    <div class="category-card">
+                    <a href="courses.html?category=AI%20%26%20Alchemy" class="category-card">
                         <span class="icon"><i class="fas fa-brain"></i></span>
                         <h4>AI &amp; Alchemy</h4>
                         <p>Artificial Intelligence &amp; Machine Learning</p>
-                    </div>
-                    <div class="category-card">
+                    </a>
+                    <a href="courses.html?category=NGO%20Leadership" class="category-card">
                         <span class="icon"><i class="fas fa-hand-holding-heart"></i></span>
                         <h4>NGO Leadership</h4>
                         <p>Community development &amp; social impact</p>
-                    </div>
-                    <div class="category-card">
+                    </a>
+                    <a href="courses.html?category=Digital%20Wellbeing" class="category-card">
                         <span class="icon"><i class="fas fa-heart-pulse"></i></span>
                         <h4>Digital Wellbeing</h4>
                         <p>Mindfulness &amp; sacred technology</p>
-                    </div>
-                    <div class="category-card">
+                    </a>
+                    <a href="courses.html?category=Smart%20Governance" class="category-card">
                         <span class="icon"><i class="fas fa-city"></i></span>
                         <h4>Smart Governance</h4>
                         <p>Government &amp; policy innovation</p>
-                    </div>
-                    <div class="category-card">
+                    </a>
+                    <a href="courses.html?category=Sacred%20Business" class="category-card">
                         <span class="icon"><i class="fas fa-chart-line"></i></span>
                         <h4>Sacred Business</h4>
                         <p>Ethical entrepreneurship &amp; impact</p>
-                    </div>
-                    <div class="category-card">
+                    </a>
+                    <a href="courses.html?category=Global%20Community" class="category-card">
                         <span class="icon"><i class="fas fa-globe-africa"></i></span>
                         <h4>Global Community</h4>
                         <p>Cross-cultural collaboration &amp; unity</p>
-                    </div>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- ============ FEATURED COURSES ============ -->
+        <!-- ==========================================================
+        FEATURED COURSES
+        ========================================================== -->
         <section id="featured-courses">
             <div class="container">
                 <div class="section-header">
@@ -956,8 +1300,84 @@
             </div>
         </section>
 
-        <!-- ============ FOOTER ============ -->
+        <!-- ==========================================================
+        TESTIMONIALS
+        ========================================================== -->
+        <section id="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-quote-left" style="color:var(--violet-deep);"></i> What Our Students Say
+                    </h2>
+                    <span class="sub">Real stories from real warriors <i class="fas fa-sparkles"></i></span>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="quote">"Sword Institute transformed my career. The AI Mentor helped me stay on track and the courses are incredibly practical."</div>
+                        <div class="author">
+                            <div class="avatar">M</div>
+                            <div>
+                                <div class="name">Michael O.</div>
+                                <div class="role">NGO Director</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="quote">"The community development courses gave me the tools I needed to make a real difference in my community."</div>
+                        <div class="author">
+                            <div class="avatar">S</div>
+                            <div>
+                                <div class="name">Sarah K.</div>
+                                <div class="role">Community Organizer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="quote">"I love how the AI Mentor personalizes my learning experience. It feels like having a personal guide."</div>
+                        <div class="author">
+                            <div class="avatar">J</div>
+                            <div>
+                                <div class="name">James W.</div>
+                                <div class="role">Social Worker</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================
+        CTA SECTION
+        ========================================================== -->
+        <section id="cta">
+            <div class="container">
+                <div class="cta-box">
+                    <h2>Ready to <span class="violet">Transform</span> Your Career?</h2>
+                    <p>Join thousands of students already forging their path to becoming Digital Warriors for Social Good.</p>
+                    <div class="cta-buttons">
+                        <a href="register.html" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Get Started Free
+                        </a>
+                        <a href="courses.html" class="btn btn-gold">
+                            <i class="fas fa-compass"></i> Explore Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================
+        FOOTER
+        ========================================================== -->
         <div class="footer container">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="courses.html">Courses</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#hero">AI Mentor</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
             <p style="margin-bottom:6px;">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
@@ -966,93 +1386,334 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- MODULAR JAVASCRIPT (IMPORTING FROM YOUR LOCAL FIREBASE.JS) -->
+    <!-- FIREBASE CDN                                              -->
     <!-- ========================================================== -->
-    <script type="module">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
         // =============================================================
-        // Import from your local firebase.js (modular SDK)
+        // FIREBASE CONFIG
         // =============================================================
-        import {
-            auth,
-            db,
-            onAuthStateChanged,
-            collection,
-            doc,
-            query,
-            orderBy,
-            limit,
-            getDocs,
-            getDoc
-        } from './firebase.js';
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
+            authDomain: "sword-institute-lms.firebaseapp.com",
+            projectId: "sword-institute-lms",
+            storageBucket: "sword-institute-lms.firebasestorage.app",
+            messagingSenderId: "478896038426",
+            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // =============================================================
         // DOM References
         // =============================================================
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
-        const aiGreeting = document.getElementById('aiGreeting');
+        const dashboardBtn = document.getElementById('dashboardBtn');
+        const aiMessages = document.getElementById('aiMessages');
+        const aiInput = document.getElementById('aiInput');
+        const aiSendBtn = document.getElementById('aiSendBtn');
         const coursesContainer = document.getElementById('coursesContainer');
-
-        // Statistics elements
         const totalStudentsEl = document.getElementById('totalStudents');
         const totalCoursesEl = document.getElementById('totalCourses');
         const completionRateEl = document.getElementById('completionRate');
         const studentRatingEl = document.getElementById('studentRating');
 
+        let currentUser = null;
+        let isProcessing = false;
+        let userName = 'Seeker';
+
         // =============================================================
-        // 1. AUTH STATE
+        // 1. AI MENTOR KNOWLEDGE BASE
         // =============================================================
-        onAuthStateChanged(auth, (user) => {
+        const aiKnowledge = {
+            greeting: {
+                keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening'],
+                responses: [
+                    "Hello, Seeker of Light! 🌟 Welcome to Sword Institute. I'm your AI Mentor, here to guide you on your sacred journey. How can I assist you today?",
+                    "Greetings, brave soul! ✨ I'm the AI Mentor of Sword Institute. Ask me anything about our courses, programs, or how to get started.",
+                    "Welcome, future Digital Warrior! 🛡️ I'm here to help you navigate Sword Institute. What would you like to know?"
+                ]
+            },
+            tour: {
+                keywords: ['tour', 'guide', 'show me around', 'introduce', 'overview', 'what is sword institute'],
+                responses: [
+                    "🏛️ **Welcome to Sword Institute!**\n\nI'm delighted to give you a tour of our sacred learning space.\n\n🎓 **What We Offer:**\n• 18+ Professional Courses\n• AI-Powered Learning\n• Community Development Programs\n• Social Work Training\n• NGO Leadership\n• Counseling & Psychology\n• And much more!\n\n🔮 **Key Features:**\n• Personalized AI Mentor\n• Progress Tracking\n• Earn XP and Badges\n• Interactive Lessons\n• Community Support\n\n💡 **Ready to start?** Ask me about courses, or click the 'Start Learning' button above!",
+                    "🌟 **Welcome to Sword Institute!**\n\nThis is a sacred space where we forge Digital Warriors for Social Good.\n\n📚 **Our Mission:**\nEmpowering individuals like you to create positive change in communities through education and AI-powered learning.\n\n✨ **What Makes Us Special:**\n• Sacred Learning Paths\n• AI Mentor Guidance\n• Practical Skills\n• Community Impact\n\nAsk me anything, and I'll guide you!"
+                ]
+            },
+            courses: {
+                keywords: ['courses', 'programs', 'offer', 'study', 'learn', 'education', 'what courses'],
+                responses: [
+                    "📚 **Our Sacred Courses**\n\nWe offer 18+ professional courses across multiple categories:\n\n**🏛️ Community Development**\n• Community Development Methodologies\n• Management of Community Concerns\n• Community Based Organisation (CBO)\n\n**🤝 Social Work**\n• Social Work Theory and Practice\n• Child Welfare Programmes\n• Legal Framework in Child Care\n\n**🧠 Psychology & Counseling**\n• Introduction to Counseling Psychology\n• Counseling Skills\n• Social Psychology & Human Development\n\n**🌿 Health & Wellbeing**\n• Introduction to Community Health\n• Substance Abuse\n\n**💼 Management & Administration**\n• Administration and Management\n• Entrepreneurship\n\n**📖 Communication & Language**\n• Communication Skills\n• English Language Skills\n\n💡 **Want a recommendation?** Tell me what you're interested in!",
+                    "🎓 **Our Course Catalogue**\n\nWe have 18 courses divided into 9 categories:\n\n1. **AI & Alchemy** - Artificial Intelligence & Machine Learning\n2. **NGO Leadership** - Community Development & Social Impact\n3. **Digital Wellbeing** - Mindfulness & Sacred Technology\n4. **Smart Governance** - Government & Policy Innovation\n5. **Sacred Business** - Ethical Entrepreneurship\n6. **Global Community** - Cross-Cultural Collaboration\n7. **Social Work** - Professional Social Work Training\n8. **Psychology & Counseling** - Mental Health & Counseling\n9. **Communication** - Professional Communication Skills\n\n🔍 **Which one interests you most?** I can help you choose!"
+                ]
+            },
+            get_started: {
+                keywords: ['start', 'begin', 'how to', 'get started', 'first steps', 'join', 'enroll'],
+                responses: [
+                    "🚀 **Getting Started at Sword Institute**\n\nHere's your path to becoming a Digital Warrior:\n\n**Step 1:** 🎯 Click 'Register' or 'Get Started' to create your free account.\n\n**Step 2:** 📚 Browse our course catalogue and find a course that excites you.\n\n**Step 3:** ✨ Enroll in your chosen course and begin your journey.\n\n**Step 4:** 🤖 Use your AI Mentor for personalized guidance.\n\n**Step 5:** 🏆 Complete lessons, earn XP, and track your progress.\n\n💡 **Pro Tip:** Start with a beginner course like 'Communication Skills' or 'Introduction to Community Health'.\n\nReady to start? Click the 'Start Learning' button above!",
+                    "🌟 **Your Journey Begins Here!**\n\nGetting started is simple:\n\n1️⃣ **Create Your Account** - Click 'Register' and join our community\n2️⃣ **Choose Your Path** - Browse our sacred learning paths\n3️⃣ **Start Learning** - Enroll in a course and begin your first lesson\n4️⃣ **Grow with AI** - Your AI Mentor will guide you\n\n🔮 **Why Join Us?**\n• Learn at your own pace\n• Get personalized guidance\n• Connect with a global community\n• Build skills that change lives\n\nTake the first step today!"
+                ]
+            },
+            ai_mentor: {
+                keywords: ['ai mentor', 'what is ai', 'how does ai', 'about ai', 'mentor'],
+                responses: [
+                    "🤖 **About Your AI Mentor**\n\nI'm your 24/7 learning companion, designed to guide you on your sacred journey at Sword Institute.\n\n**What I Can Do:**\n• 💡 Answer questions about courses\n• 🎯 Suggest personalized learning paths\n• 📊 Track your progress\n• 🏆 Motivate and encourage you\n• 🔍 Help you find the right courses\n\n**How I Work:**\nI use advanced AI technology to understand your learning needs and provide personalized guidance.\n\n**Benefits of Learning with AI:**\n• Personalized feedback\n• 24/7 availability\n• Adaptable to your pace\n• Intelligent recommendations\n\n💬 **Try me out!** Ask me about courses, get recommendations, or just say hello!"
+                ]
+            },
+            recommend: {
+                keywords: ['recommend', 'suggestion', 'advice', 'help me choose', 'which course', 'best course'],
+                responses: [
+                    "🎯 **Personalized Course Recommendations**\n\nBased on your interests, here are some great starting points:\n\n**If you're new to this field:**\n• 📖 Communication Skills\n• 🏛️ Introduction to Community Health\n\n**If you're interested in Community Work:**\n• 🤝 Community Development Methodologies\n• 🏗️ Management of Community Concerns\n\n**If you're interested in Social Work:**\n• ❤️ Social Work Theory and Practice\n• 👶 Child Welfare Programmes\n\n**If you're interested in Counseling:**\n• 🧠 Introduction to Counseling Psychology\n• 🗣️ Introduction to Counseling Skills\n\n💡 **Not sure?** Tell me more about what you do or what you're interested in, and I'll give you a tailored recommendation!",
+                    "🌟 **Your Recommended Path**\n\nI recommend starting with:\n\n**Beginner Friendly:**\n1. Communication Skills\n2. Introduction to Community Health\n\n**Then Progress To:**\n3. Community Development Methodologies\n4. Introduction to Counseling Psychology\n\n**Advanced Options:**\n5. Social Work Theory and Practice\n6. Development Economics\n\n🚀 **Why this path?** It builds a strong foundation in community development and social work skills, which are essential for making a real impact.\n\nWant to know more about any of these courses?"
+                ]
+            },
+            about: {
+                keywords: ['about', 'sword institute', 'mission', 'vision', 'what is', 'who are you'],
+                responses: [
+                    "⚔️ **About Sword Institute**\n\nWe are a premier learning institution dedicated to forging Digital Warriors for Social Good.\n\n**Our Mission:**\nEmpower individuals and communities through sacred education and AI-powered learning.\n\n**Our Vision:**\nA world where every community has leaders equipped with the skills to create positive change.\n\n**Our Values:**\n• 🕊️ **Sacred Learning** - Education as a spiritual journey\n• 🤝 **Community** - Building connections and impact\n• ✨ **Innovation** - Embracing AI and technology\n• 🌍 **Social Good** - Creating positive change\n\n**Our Team:**\nDedicated educators, AI engineers, and community development experts.\n\n💡 **Want to join us?** Start by exploring our courses!"
+                ]
+            },
+            gratitude: {
+                keywords: ['thank', 'thanks', 'appreciate', 'grateful'],
+                responses: [
+                    "You're most welcome! 🌟 It's my honor to guide you. Is there anything else I can help you with?",
+                    "Thank you for your kind words! 🙏 I'm here to serve you. What would you like to learn next?",
+                    "I appreciate your gratitude! 💜 Remember, I'm always here when you need guidance. Ask me anything!"
+                ]
+            },
+            default: [
+                "That's a wonderful question! 🤔 Let me think about that.\n\nI'd suggest exploring our course catalogue or asking me about specific topics like 'courses', 'get started', or 'recommendations'.\n\n🔍 You can also ask me about:\n• Tour of Sword Institute\n• Course recommendations\n• How to get started\n• What makes us unique\n\nWhat would you like to know more about?",
+                "I love your curiosity! 🌟 Sword Institute has so much to explore.\n\nHere are some things you can ask me:\n• 'Give me a tour'\n• 'What courses do you offer?'\n• 'How do I get started?'\n• 'Recommend a course for me'\n• 'What is the AI Mentor?'\n\nI'm here to help you find your path. What interests you most?",
+                "Great question! 💡 At Sword Institute, we're passionate about transforming lives through education.\n\nYou might find these questions helpful:\n• What courses do you offer?\n• How do I get started?\n• Can you give me a tour?\n• What makes this place special?\n\nI'm here to guide you. Ask me anything!"
+            ]
+        };
+
+        // =============================================================
+        // 2. AI MENTOR RESPONSE ENGINE
+        // =============================================================
+        function getAIResponse(message) {
+            const lower = message.toLowerCase();
+
+            // Check for keywords in each category
+            for (const category of Object.keys(aiKnowledge)) {
+                if (category === 'default') continue;
+                const data = aiKnowledge[category];
+                const matched = data.keywords.some(keyword => lower.includes(keyword));
+                if (matched) {
+                    const responses = data.responses;
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+
+            // Default responses
+            const defaults = aiKnowledge.default;
+            return defaults[Math.floor(Math.random() * defaults.length)];
+        }
+
+        // =============================================================
+        // 3. AI MESSAGE FUNCTIONS
+        // =============================================================
+        function addAIMessage(type, text) {
+            const bubble = document.createElement('div');
+            bubble.className = `ai-message-bubble ${type}`;
+
+            if (type === 'ai') {
+                // Convert markdown-like text to HTML
+                let formatted = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/•/g, '•');
+                bubble.innerHTML = formatted;
+            } else {
+                bubble.textContent = text;
+            }
+
+            aiMessages.appendChild(bubble);
+            aiMessages.scrollTop = aiMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const bubble = document.createElement('div');
+            bubble.className = 'ai-message-bubble ai';
+            bubble.id = 'typingIndicator';
+            bubble.innerHTML = `
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+            aiMessages.appendChild(bubble);
+            aiMessages.scrollTop = aiMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        function sendAIMessage(message) {
+            if (isProcessing) return;
+
+            // Get message from input if not provided
+            if (!message) {
+                message = aiInput.value.trim();
+                if (!message) return;
+                aiInput.value = '';
+            }
+
+            // Add user message
+            addAIMessage('user', message);
+
+            // Show typing indicator
+            isProcessing = true;
+            aiSendBtn.disabled = true;
+            showTypingIndicator();
+
+            // Simulate thinking delay
+            const delay = 500 + Math.random() * 1000;
+            setTimeout(() => {
+                removeTypingIndicator();
+
+                // Get AI response
+                const response = getAIResponse(message);
+
+                // Add AI response with formatting
+                addAIMessage('ai', response);
+
+                isProcessing = false;
+                aiSendBtn.disabled = false;
+                aiInput.focus();
+            }, delay);
+        }
+
+        // =============================================================
+        // 4. AUTH STATE
+        // =============================================================
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+
             if (user) {
-                const name = user.displayName || user.email || 'Warrior';
+                userName = user.displayName || user.email || 'Warrior';
                 const hour = new Date().getHours();
                 let timeGreeting = 'Good Evening';
                 if (hour < 12) timeGreeting = 'Good Morning';
                 else if (hour < 17) timeGreeting = 'Good Afternoon';
 
-                loginBtn.textContent = 'Dashboard';
-                loginBtn.href = 'dashboard.html';
-                loginBtn.className = 'btn btn-primary';
-                registerBtn.textContent = 'Logout';
-                registerBtn.href = '#';
-                registerBtn.className = 'btn btn-outline-violet';
-                registerBtn.onclick = (e) => {
-                    e.preventDefault();
-                    auth.signOut();
-                };
+                // Update navigation
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                dashboardBtn.style.display = 'inline-flex';
 
-                aiGreeting.innerHTML =
-                    `<i class="fas fa-sparkles" style="color:var(--gold-radiant);margin-right:8px;"></i> ${timeGreeting}, ${name}. Your light shines bright.`;
+                // Update AI welcome
+                setTimeout(() => {
+                    addAIMessage('ai',
+                        `${timeGreeting}, ${userName}! 🌟 Welcome back to Sword Institute. How can I assist you on your sacred journey today?`
+                        );
+                }, 500);
+
             } else {
-                loginBtn.textContent = 'Login';
-                loginBtn.href = 'login.html';
-                loginBtn.className = 'btn btn-outline-violet';
-                registerBtn.textContent = 'Register';
-                registerBtn.href = 'register.html';
-                registerBtn.className = 'btn btn-primary';
-                registerBtn.onclick = null;
+                // Update navigation
+                loginBtn.style.display = 'inline-flex';
+                registerBtn.style.display = 'inline-flex';
+                dashboardBtn.style.display = 'none';
 
-                const hour = new Date().getHours();
-                let timeGreeting = 'Evening';
-                if (hour < 12) timeGreeting = 'Morning';
-                else if (hour < 17) timeGreeting = 'Afternoon';
-                aiGreeting.innerHTML =
-                    `<i class="fas fa-sparkles" style="color:var(--gold-radiant);margin-right:8px;"></i> Good ${timeGreeting}, Seeker. <a href="login.html" style="color:var(--violet-deep);font-weight:700;text-decoration:underline;">Sign in</a> to awaken your journey.`;
+                // Update AI welcome for visitors
+                setTimeout(() => {
+                    addAIMessage('ai',
+                        '🌟 Welcome to Sword Institute, Seeker of Light! I\'m your AI Mentor. 🧙‍♂️ I can give you a tour, help you find courses, or answer any questions. What would you like to know?'
+                        );
+                }, 500);
             }
         });
 
         // =============================================================
-        // 2. DYNAMIC STATISTICS (from Firestore)
+        // 5. LOAD FEATURED COURSES
+        // =============================================================
+        async function loadFeaturedCourses() {
+            try {
+                const snapshot = await db.collection('courses')
+                    .orderBy('order', 'asc')
+                    .limit(4)
+                    .get();
+
+                if (snapshot.empty) {
+                    coursesContainer.innerHTML = `
+                            <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
+                                <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
+                                <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
+                                <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
+                            </div>
+                        `;
+                    return;
+                }
+
+                let html = '';
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const title = data.title || 'Untitled Scroll';
+                    const description = data.description || 'No wisdom shared yet.';
+                    const category = data.category || 'General';
+                    const duration = data.duration || 'Self-paced';
+                    const icon = data.icon || 'fa-book';
+                    const level = data.level || 'Beginner';
+
+                    html += `
+                            <a href="course-view.html?id=${doc.id}" class="course-card">
+                                <div class="course-thumb">
+                                    <i class="fas ${icon}"></i>
+                                    <span class="badge">${level}</span>
+                                </div>
+                                <div class="course-body">
+                                    <h4>${title}</h4>
+                                    <p>${description}</p>
+                                    <div class="course-meta">
+                                        <span><i class="fas fa-tag"></i> ${category}</span>
+                                        <span><i class="fas fa-clock"></i> ${duration}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                });
+
+                coursesContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                coursesContainer.innerHTML = `
+                        <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
+                            <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
+                            <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
+                            <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
+                            <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
+                        </div>
+                    `;
+            }
+        }
+
+        // =============================================================
+        // 6. LOAD STATISTICS
         // =============================================================
         async function loadStatistics() {
             try {
-                const statsRef = doc(db, 'app_metadata', 'stats');
-                const statsSnap = await getDoc(statsRef);
+                const statsRef = db.collection('app_metadata').doc('stats');
+                const statsSnap = await statsRef.get();
 
-                if (statsSnap.exists()) {
+                if (statsSnap.exists) {
                     const data = statsSnap.data();
 
-                    // Update DOM with live data
                     if (data.totalStudents) {
                         totalStudentsEl.innerHTML = `${data.totalStudents.toLocaleString()}<span class="violet">+</span>`;
                     }
@@ -1065,87 +1726,78 @@
                     if (data.studentRating) {
                         studentRatingEl.innerHTML = `${data.studentRating}<span class="gold">★</span>`;
                     }
-
-                    console.log('✅ Statistics loaded from Firestore');
-                } else {
-                    console.log('ℹ️ No stats document found. Using hardcoded fallback values.');
                 }
             } catch (error) {
-                console.warn('⚠️ Could not load statistics:', error.message);
-                // Fallback: keep hardcoded values
+                console.warn('Could not load statistics:', error);
             }
         }
 
         // =============================================================
-        // 3. DYNAMIC COURSES (from Firestore)
+        // 7. COUNTER ANIMATION
         // =============================================================
-        async function loadFeaturedCourses() {
-            try {
-                const coursesRef = collection(db, 'courses');
-                const q = query(coursesRef, orderBy('createdAt', 'desc'), limit(4));
-                const querySnapshot = await getDocs(q);
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const text = counter.textContent;
+                const number = parseInt(text.replace(/[^0-9.]/g, ''));
+                if (isNaN(number)) return;
 
-                if (querySnapshot.empty) {
-                    coursesContainer.innerHTML = `
-                        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
-                            <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
-                            <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
-                            <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
-                        </div>
-                    `;
-                    return;
+                let current = 0;
+                const speed = number / 60;
+                const suffix = text.replace(/[0-9.]/g, '');
+
+                function update() {
+                    current += speed;
+                    if (current < number) {
+                        counter.innerHTML = Math.floor(current) + suffix;
+                        requestAnimationFrame(update);
+                    } else {
+                        counter.innerHTML = number.toLocaleString() + suffix;
+                    }
                 }
-
-                let html = '';
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const title = data.title || 'Untitled Scroll';
-                    const description = data.description || 'No wisdom shared yet.';
-                    const category = data.category || 'General';
-                    const duration = data.duration || 'Self-paced';
-                    const icon = data.icon || 'fa-book';
-                    const level = data.level || 'Beginner';
-
-                    html += `
-                        <div class="course-card">
-                            <div class="course-thumb">
-                                <i class="fas ${icon}"></i>
-                                <span class="badge">${level}</span>
-                            </div>
-                            <div class="course-body">
-                                <h4>${title}</h4>
-                                <p>${description}</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-tag"></i> ${category}</span>
-                                    <span><i class="fas fa-clock"></i> ${duration}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                coursesContainer.innerHTML = html;
-
-            } catch (error) {
-                console.error('Error loading courses:', error);
-                coursesContainer.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
-                        <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
-                        <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
-                        <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
-                        <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
-                    </div>
-                `;
-            }
+                update();
+            });
         }
 
         // =============================================================
-        // 4. INITIALIZE EVERYTHING
+        // 8. SMOOTH SCROLL
+        // =============================================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // =============================================================
+        // 9. KEYBOARD SHORTCUTS
+        // =============================================================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Shift+A to focus AI input
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                aiInput.focus();
+            }
+        });
+
+        // =============================================================
+        // 10. INITIALIZE
         // =============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            loadStatistics();
             loadFeaturedCourses();
+            loadStatistics();
+            animateCounters();
+            console.log('🏛️ Sword Institute Homepage initialized successfully');
+            console.log('🤖 AI Mentor ready to assist!');
         });
+
+        // =============================================================
+        // 11. EXPOSE FUNCTIONS GLOBALLY
+        // =============================================================
+        window.sendAIMessage = sendAIMessage;
     </script>
 </body>
 </html>

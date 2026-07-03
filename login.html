@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sword Institute | Register</title>
+    <title>Sword Institute | Login</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -245,6 +245,16 @@
             transform: none;
         }
 
+        .btn-danger {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+        .btn-danger:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
         .auth-footer {
             text-align: center;
             margin-top: 24px;
@@ -294,6 +304,19 @@
             margin-right: 8px;
         }
 
+        .info-message {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            color: #3b82f6;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .info-message i {
+            margin-right: 8px;
+        }
+
         .spinner {
             display: inline-block;
             width: 20px;
@@ -307,12 +330,6 @@
             to {
                 transform: rotate(360deg);
             }
-        }
-
-        .password-hint {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 4px;
         }
 
         @media (max-width: 480px) {
@@ -338,29 +355,26 @@
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
-                <h1>Begin Your Journey</h1>
-                <p>Create your account and awaken your potential</p>
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue your sacred journey</p>
+            </div>
+
+            <div id="sessionInfo" class="info-message" style="display:none;">
+                <i class="fas fa-info-circle"></i>
+                <span id="sessionText">You are already logged in.</span>
             </div>
 
             <div id="errorMessage" class="error-message">
                 <i class="fas fa-exclamation-circle"></i>
-                <span id="errorText">Error creating account</span>
+                <span id="errorText">Invalid credentials</span>
             </div>
 
             <div id="successMessage" class="success-message">
                 <i class="fas fa-check-circle"></i>
-                <span id="successText">Account created! Redirecting...</span>
+                <span id="successText">Success!</span>
             </div>
 
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="displayName">Full Name</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="displayName" placeholder="Your full name" required autocomplete="name" />
-                    </div>
-                </div>
-
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
@@ -373,34 +387,32 @@
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6" />
-                    </div>
-                    <div class="password-hint">Must be at least 6 characters long</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-check-circle"></i>
-                        <input type="password" id="confirmPassword" placeholder="Re-enter your password" required autocomplete="new-password" />
+                        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
                     </div>
                 </div>
 
                 <div class="form-options">
                     <label>
-                        <input type="checkbox" id="termsCheck" required />
-                        I agree to the <a href="#">Terms of Service</a>
+                        <input type="checkbox" id="rememberMe" />
+                        Remember me
                     </label>
+                    <a href="#">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="registerBtn">
-                    <span id="registerText">Create Account</span>
-                    <span id="registerSpinner" style="display:none;"><span class="spinner"></span></span>
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span id="loginText">Sign In</span>
+                    <span id="loginSpinner" style="display:none;"><span class="spinner"></span></span>
                 </button>
+
+                <div style="margin-top:12px;text-align:center;">
+                    <button type="button" class="btn btn-danger" id="logoutBtn" style="display:none;width:auto;padding:8px 20px;font-size:0.85rem;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
             </form>
 
             <div class="auth-footer">
-                Already have an account? <a href="login.html">Sign in</a>
+                Don't have an account? <a href="register.html">Create one</a>
             </div>
         </div>
     </div>
@@ -411,6 +423,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
 
     <script>
@@ -426,37 +440,56 @@
             appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
         // =============================================================
         // DOM References
         // =============================================================
-        const form = document.getElementById('registerForm');
-        const nameInput = document.getElementById('displayName');
+        const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
-        const confirmInput = document.getElementById('confirmPassword');
-        const termsCheck = document.getElementById('termsCheck');
-        const registerBtn = document.getElementById('registerBtn');
-        const registerText = document.getElementById('registerText');
-        const registerSpinner = document.getElementById('registerSpinner');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginText = document.getElementById('loginText');
+        const loginSpinner = document.getElementById('loginSpinner');
+        const logoutBtn = document.getElementById('logoutBtn');
         const errorMessage = document.getElementById('errorMessage');
         const errorText = document.getElementById('errorText');
         const successMessage = document.getElementById('successMessage');
         const successText = document.getElementById('successText');
+        const sessionInfo = document.getElementById('sessionInfo');
+        const sessionText = document.getElementById('sessionText');
+
+        // Flag to track if user just logged out
+        let justLoggedOut = sessionStorage.getItem('justLoggedOut') === 'true';
 
         // =============================================================
-        // Check if user is already logged in
+        // Check if user is already logged in (show info, but don't redirect)
         // =============================================================
         auth.onAuthStateChanged((user) => {
-            if (user) {
-                window.location.href = 'dashboard.html';
+            if (user && !justLoggedOut) {
+                // Show that user is already logged in
+                sessionInfo.style.display = 'block';
+                sessionText.textContent = 'You are already logged in as ' + (user.email || 'User');
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-flex';
+            } else if (user && justLoggedOut) {
+                // User just logged out, clear the flag
+                sessionStorage.removeItem('justLoggedOut');
+                justLoggedOut = false;
+                sessionInfo.style.display = 'none';
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+            } else {
+                sessionInfo.style.display = 'none';
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
             }
         });
 
         // =============================================================
-        // Register Form Handler
+        // Login Form Handler
         // =============================================================
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -465,70 +498,63 @@
             errorMessage.classList.remove('show');
             successMessage.classList.remove('show');
 
-            const name = nameInput.value.trim();
             const email = emailInput.value.trim();
             const password = passwordInput.value;
-            const confirm = confirmInput.value;
 
-            // Validate
-            if (!name || !email || !password || !confirm) {
+            if (!email || !password) {
                 showError('Please fill in all fields.');
                 return;
             }
 
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters long.');
-                return;
-            }
-
-            if (password !== confirm) {
-                showError('Passwords do not match.');
-                return;
-            }
-
-            if (!termsCheck.checked) {
-                showError('Please agree to the Terms of Service.');
-                return;
-            }
-
             // Show loading state
-            registerBtn.disabled = true;
-            registerText.textContent = 'Creating account...';
-            registerSpinner.style.display = 'inline-block';
+            loginBtn.disabled = true;
+            loginText.textContent = 'Signing in...';
+            loginSpinner.style.display = 'inline-block';
 
             try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-
-                // Update profile with display name
-                await userCredential.user.updateProfile({
-                    displayName: name
-                });
+                await auth.signInWithEmailAndPassword(email, password);
 
                 // Show success
-                successText.textContent = 'Account created successfully! Redirecting...';
+                successText.textContent = 'Welcome back! Redirecting...';
                 successMessage.classList.add('show');
 
                 // Redirect after a moment
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
-                }, 1500);
+                }, 1000);
 
             } catch (error) {
-                let message = 'Unable to create account. Please try again.';
-                if (error.code === 'auth/email-already-in-use') {
-                    message = 'This email is already registered. Please sign in.';
+                let message = 'Invalid email or password. Please try again.';
+                if (error.code === 'auth/user-not-found') {
+                    message = 'No account found with this email address.';
+                } else if (error.code === 'auth/wrong-password') {
+                    message = 'Incorrect password. Please try again.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = 'Too many failed attempts. Please try again later.';
                 } else if (error.code === 'auth/invalid-email') {
                     message = 'Please enter a valid email address.';
-                } else if (error.code === 'auth/weak-password') {
-                    message = 'Password is too weak. Please use at least 6 characters.';
-                } else if (error.code === 'auth/operation-not-allowed') {
-                    message = 'Email/password accounts are not enabled.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    message = 'Network error. Please check your internet connection.';
                 }
                 showError(message);
             } finally {
-                registerBtn.disabled = false;
-                registerText.textContent = 'Create Account';
-                registerSpinner.style.display = 'none';
+                loginBtn.disabled = false;
+                loginText.textContent = 'Sign In';
+                loginSpinner.style.display = 'none';
+            }
+        });
+
+        // =============================================================
+        // Logout Handler
+        // =============================================================
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                sessionStorage.setItem('justLoggedOut', 'true');
+                // Reload the page to reset everything
+                window.location.reload();
+            } catch (error) {
+                console.error('Logout error:', error);
             }
         });
 
@@ -540,7 +566,7 @@
             errorMessage.classList.add('show');
         }
 
-        console.log('📝 Registration page initialized successfully');
+        console.log('🔐 Login page initialized successfully');
     </script>
 </body>
 </html>

@@ -424,7 +424,7 @@
             transition: width 0.6s ease;
         }
 
-        /* ----- AI Mentor Quick Panel ----- */
+        /* ----- AI Mentor Panel (In-Page) ----- */
         .ai-panel {
             padding: 28px;
             background: rgba(255, 255, 255, 0.35);
@@ -432,12 +432,14 @@
             -webkit-backdrop-filter: blur(24px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: var(--radius-xl);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
         .ai-panel .ai-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            margin-bottom: 20px;
         }
         .ai-panel .ai-header i {
             font-size: 2rem;
@@ -457,19 +459,38 @@
             font-size: 0.8rem;
             color: var(--text-muted);
         }
+
         .ai-panel .ai-message {
             padding: 16px;
             background: rgba(139, 0, 255, 0.02);
             border-radius: var(--radius-md);
             border-left: 4px solid var(--violet-deep);
-            margin-bottom: 16px;
             font-size: 0.95rem;
-            min-height: 60px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-        .ai-panel .ai-message i {
+        .ai-panel .ai-message .greeting {
+            font-weight: 700;
+            color: var(--violet-deep);
+        }
+        .ai-panel .ai-message .message {
+            color: var(--text-primary);
+        }
+        .ai-panel .ai-message .recommendation {
+            color: var(--violet-deep);
+            font-weight: 600;
+        }
+        .ai-panel .ai-message .tip {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .ai-panel .ai-message .motivation {
             color: var(--gold-radiant);
-            margin-right: 8px;
+            font-weight: 600;
         }
+
         .ai-quick-actions {
             display: flex;
             flex-direction: column;
@@ -480,7 +501,198 @@
             justify-content: center;
         }
 
-        /* ---------- TOAST NOTIFICATION ---------- */
+        /* ---------- AI CHAT (In-Page) ---------- */
+        .ai-chat-container {
+            margin-top: 12px;
+            border-top: 1px solid rgba(139, 0, 255, 0.08);
+            padding-top: 12px;
+            display: none;
+        }
+        .ai-chat-container.active {
+            display: block;
+        }
+        .ai-chat-container .chat-messages {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 12px;
+        }
+        .ai-chat-container .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .ai-chat-container .chat-messages::-webkit-scrollbar-track {
+            background: rgba(139, 0, 255, 0.05);
+            border-radius: 10px;
+        }
+        .ai-chat-container .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--violet-deep);
+            border-radius: 10px;
+        }
+        .ai-chat-container .chat-message {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        .ai-chat-container .chat-message .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+        .ai-chat-container .chat-message .avatar.ai {
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            color: #fff;
+        }
+        .ai-chat-container .chat-message .avatar.user {
+            background: rgba(139, 0, 255, 0.08);
+            color: var(--violet-deep);
+        }
+        .ai-chat-container .chat-message .bubble {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            max-width: 85%;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .ai-chat-container .chat-message.ai .bubble {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+        }
+        .ai-chat-container .chat-message.user .bubble {
+            background: var(--violet-deep);
+            color: #fff;
+            margin-left: auto;
+        }
+
+        .ai-chat-container .chat-input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .ai-chat-container .chat-input-row input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        .ai-chat-container .chat-input-row input:focus {
+            outline: none;
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 4px rgba(139, 0, 255, 0.08);
+        }
+        .ai-chat-container .chat-input-row input::placeholder {
+            color: var(--text-muted);
+        }
+        .ai-chat-container .chat-input-row button {
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--violet-deep);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .ai-chat-container .chat-input-row button:hover {
+            background: #9B1DFF;
+            transform: scale(1.02);
+        }
+        .ai-chat-container .chat-input-row button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-chat-container .typing-indicator {
+            display: none;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .ai-chat-container .typing-indicator.active {
+            display: block;
+        }
+        .ai-chat-container .typing-indicator .dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+        .ai-chat-container .typing-indicator .dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .ai-chat-container .typing-indicator .dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ai-chat-container .quick-chat-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .ai-chat-container .quick-chat-buttons button {
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+        }
+        .ai-chat-container .quick-chat-buttons button:hover {
+            border-color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.05);
+            color: var(--violet-deep);
+        }
+
+        /* ---------- TOAST ---------- */
         .toast-notification {
             position: fixed;
             bottom: 24px;
@@ -538,24 +750,6 @@
         }
         .footer .gold {
             color: var(--gold-radiant);
-        }
-
-        /* ---------- LOADING SKELETON ---------- */
-        .skeleton-text {
-            height: 14px;
-            background: linear-gradient(90deg, rgba(139, 0, 255, 0.03) 25%, rgba(139, 0, 255, 0.07) 50%, rgba(139, 0, 255, 0.03) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.8s infinite;
-            border-radius: 4px;
-            margin-bottom: 6px;
-        }
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
         }
 
         /* ---------- RESPONSIVE ---------- */
@@ -621,6 +815,12 @@
             .ai-panel {
                 padding: 20px;
             }
+            .ai-chat-container .chat-input-row {
+                flex-direction: column;
+            }
+            .ai-chat-container .chat-input-row button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -642,7 +842,6 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="courses.html">Courses</a></li>
                     <li><a href="dashboard.html" class="active">Dashboard</a></li>
-                    <li><a href="#">AI Mentor</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
                     <a href="#" class="btn btn-outline-violet" id="logoutBtn">
@@ -714,7 +913,7 @@
                     </div>
                 </div>
 
-                <!-- Right: AI Mentor Panel -->
+                <!-- Right: AI Mentor Panel (In-Page) -->
                 <div class="ai-panel">
                     <div class="ai-header">
                         <i class="fas fa-robot"></i>
@@ -722,21 +921,54 @@
                             AI Mentor
                             <small>Your Spiritual Guide</small>
                         </h3>
+                        <button class="btn btn-outline-violet" onclick="toggleAIChat()" style="margin-left:auto;font-size:0.8rem;padding:6px 16px;">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
                     </div>
+
+                    <!-- AI Message Display -->
                     <div class="ai-message" id="aiMessage">
-                        <i class="fas fa-sparkles"></i> 
-                        <span id="aiAdvice">Loading your personalized guidance...</span>
+                        <div class="greeting" id="aiGreeting">Loading personalized guidance...</div>
+                        <div class="message" id="aiMessageText"></div>
+                        <div class="recommendation" id="aiRecommendation"></div>
+                        <div class="tip" id="aiTip"></div>
+                        <div class="motivation" id="aiMotivation"></div>
                     </div>
+
+                    <!-- Quick Actions -->
                     <div class="ai-quick-actions">
-                        <a href="courses.html" class="btn btn-primary">
-                            <i class="fas fa-compass"></i> Find Your Path
-                        </a>
-                        <a href="#" class="btn btn-gold">
-                            <i class="fas fa-bolt"></i> Start Today's Mission
-                        </a>
-                        <a href="#" class="btn btn-outline-violet">
-                            <i class="fas fa-history"></i> View Learning History
-                        </a>
+                        <button class="btn btn-gold" onclick="getAIRecommendation()">
+                            <i class="fas fa-lightbulb"></i> Get Course Recommendation
+                        </button>
+                        <button class="btn btn-outline-violet" onclick="getStudyTip()">
+                            <i class="fas fa-lightbulb"></i> Get Study Tip
+                        </button>
+                    </div>
+
+                    <!-- In-Page Chat -->
+                    <div class="ai-chat-container" id="aiChatContainer">
+                        <div class="quick-chat-buttons">
+                            <button onclick="sendQuickMessage('What should I learn next?')">What to learn next?</button>
+                            <button onclick="sendQuickMessage('Give me a study tip')">Study tip</button>
+                            <button onclick="sendQuickMessage('Motivate me')">Motivate me</button>
+                            <button onclick="sendQuickMessage('Recommend a course')">Recommend a course</button>
+                        </div>
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- Messages appear here -->
+                        </div>
+                        <div class="typing-indicator" id="typingIndicator">
+                            <span class="dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span> AI Mentor is thinking...
+                        </div>
+                        <div class="chat-input-row">
+                            <input type="text" id="chatInput" placeholder="Ask your AI Mentor anything..." onkeypress="if(event.key==='Enter') sendChatMessage()" />
+                            <button onclick="sendChatMessage()" id="sendChatBtn">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -752,7 +984,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- FIREBASE CDN (No module imports - works directly!)         -->
+    <!-- FIREBASE CDN                                              -->
     <!-- ========================================================== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
@@ -787,11 +1019,27 @@
         const completedCoursesEl = document.getElementById('completedCourses');
         const xpPointsEl = document.getElementById('xpPoints');
         const streakDaysEl = document.getElementById('streakDays');
-        const aiAdvice = document.getElementById('aiAdvice');
         const activityList = document.getElementById('activityList');
 
+        // AI Mentor DOM References
+        const aiGreeting = document.getElementById('aiGreeting');
+        const aiMessageText = document.getElementById('aiMessageText');
+        const aiRecommendation = document.getElementById('aiRecommendation');
+        const aiTip = document.getElementById('aiTip');
+        const aiMotivation = document.getElementById('aiMotivation');
+        const chatContainer = document.getElementById('aiChatContainer');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        let currentUserData = null;
+        let studentData = null;
+        let isChatOpen = false;
+        let isProcessing = false;
+
         // =============================================================
-        // AUTH STATE
+        // 1. AUTH STATE
         // =============================================================
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -801,12 +1049,14 @@
 
             const name = user.displayName || user.email || 'Warrior';
             userName.textContent = name;
+            currentUserData = user;
 
             await loadUserDashboard(user.uid);
+            await loadAIRecommendations(user.uid);
         });
 
         // =============================================================
-        // LOGOUT
+        // 2. LOGOUT
         // =============================================================
         logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -820,7 +1070,7 @@
         });
 
         // =============================================================
-        // TOAST NOTIFICATION
+        // 3. TOAST NOTIFICATION
         // =============================================================
         function showToast(message, type = 'success') {
             const existingToast = document.querySelector('.toast-notification');
@@ -838,32 +1088,7 @@
         }
 
         // =============================================================
-        // GET USER ENROLLMENTS
-        // =============================================================
-        async function getUserEnrollments(userId) {
-            try {
-                const snapshot = await db.collection('enrollments')
-                    .where('userId', '==', userId)
-                    .where('status', '==', 'active')
-                    .get();
-
-                const enrollments = [];
-                snapshot.forEach((doc) => {
-                    enrollments.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-
-                return enrollments;
-            } catch (error) {
-                console.error('Error getting user enrollments:', error);
-                return [];
-            }
-        }
-
-        // =============================================================
-        // LOAD USER DASHBOARD
+        // 4. LOAD USER DASHBOARD
         // =============================================================
         async function loadUserDashboard(uid) {
             try {
@@ -897,17 +1122,20 @@
                     }
                 }
 
-                // Update stats
                 enrolledCoursesEl.textContent = enrolledCount;
                 completedCoursesEl.textContent = completedCount;
                 xpPointsEl.innerHTML = `${totalXp} <span class="gold">XP</span>`;
                 streakDaysEl.innerHTML = `7 <span class="gold">🔥</span>`;
 
-                // Update AI advice
-                updateAIAdvice(enrolledCount, completedCount);
-
-                // Update activity list
                 updateActivityList(courseDetails);
+
+                studentData = {
+                    enrolledCourses: enrollments,
+                    completedCourses: enrollments.filter(e => e.completed),
+                    totalXp: totalXp,
+                    userName: currentUserData.displayName || currentUserData.email || 'Warrior',
+                    courseDetails: courseDetails
+                };
 
             } catch (error) {
                 console.warn('Could not load dashboard data:', error);
@@ -918,26 +1146,32 @@
         }
 
         // =============================================================
-        // UPDATE AI ADVICE
+        // 5. GET USER ENROLLMENTS
         // =============================================================
-        function updateAIAdvice(enrolled, completed) {
-            const name = auth.currentUser?.displayName || 'Warrior';
+        async function getUserEnrollments(uid) {
+            try {
+                const snapshot = await db.collection('enrollments')
+                    .where('userId', '==', uid)
+                    .where('status', '==', 'active')
+                    .get();
 
-            if (enrolled === 0) {
-                aiAdvice.textContent = `"Enroll in your first course to begin your sacred journey, ${name}."`;
-            } else if (completed === 0 && enrolled > 0) {
-                aiAdvice.textContent = `"You're on the path! Complete your first module to earn 50 XP."`;
-            } else if (completed > 0 && completed < enrolled) {
-                aiAdvice.textContent = `"Great progress! ${completed} courses completed. Keep going, ${name}."`;
-            } else if (completed === enrolled && enrolled > 0) {
-                aiAdvice.textContent = `"You've completed all enrolled courses! Time to explore new paths."`;
-            } else {
-                aiAdvice.textContent = `"You're making excellent progress. Stay focused on your goals."`;
+                const enrollments = [];
+                snapshot.forEach((doc) => {
+                    enrollments.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                return enrollments;
+            } catch (error) {
+                console.error('Error getting user enrollments:', error);
+                return [];
             }
         }
 
         // =============================================================
-        // UPDATE ACTIVITY LIST
+        // 6. UPDATE ACTIVITY LIST
         // =============================================================
         function updateActivityList(courses) {
             if (!courses || courses.length === 0) {
@@ -991,6 +1225,366 @@
 
             activityList.innerHTML = html;
         }
+
+        // =============================================================
+        // 7. AI MENTOR FUNCTIONS
+        // =============================================================
+
+        // Toggle Chat
+        function toggleAIChat() {
+            isChatOpen = !isChatOpen;
+            chatContainer.classList.toggle('active', isChatOpen);
+            if (isChatOpen && chatMessages.children.length === 0) {
+                addChatMessage('ai', 'Hello! 👋 I\'m your AI Mentor. Ask me anything about your learning journey!');
+            }
+            if (isChatOpen) {
+                setTimeout(() => {
+                    chatInput.focus();
+                }, 100);
+            }
+        }
+
+        // Load AI Recommendations
+        async function loadAIRecommendations(uid) {
+            try {
+                const coursesSnapshot = await db.collection('courses').get();
+                const availableCourses = [];
+                coursesSnapshot.forEach((doc) => {
+                    availableCourses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                if (studentData) {
+                    studentData.availableCourses = availableCourses;
+                }
+
+                const result = await getSmartRecommendations(studentData);
+
+                if (result.success) {
+                    updateAIMessage(result.recommendations);
+                } else {
+                    updateAIMessage(null);
+                }
+
+            } catch (error) {
+                console.error('Error loading AI recommendations:', error);
+                updateAIMessage(null);
+            }
+        }
+
+        // Get Smart Recommendations
+        async function getSmartRecommendations(studentData) {
+            if (!studentData) {
+                return {
+                    success: true,
+                    recommendations: {
+                        greeting: 'Hello, Warrior! 🌟',
+                        message: 'Welcome to Sword Institute! Your learning journey awaits.',
+                        recommendation: 'Start with "Communication Skills" or "Introduction to Community Health".',
+                        tip: 'Set aside 15-20 minutes each day for learning.',
+                        motivation: 'The first step is the hardest - but you\'ve already taken it!'
+                    }
+                };
+            }
+
+            const enrolledCount = studentData.enrolledCourses?.length || 0;
+            const completedCount = studentData.completedCourses?.length || 0;
+            const totalXp = studentData.totalXp || 0;
+            const name = studentData.userName || 'Warrior';
+
+            const enrolledIds = studentData.enrolledCourses?.map(c => c.courseId) || [];
+            const availableCourses = studentData.availableCourses || [];
+            const available = availableCourses.filter(c => !enrolledIds.includes(c.id));
+
+            let greeting = `Hello, ${name}! 🌟`;
+            let message = '';
+            let recommendation = '';
+            let tip = '';
+            let motivation = '';
+
+            if (enrolledCount === 0) {
+                message = 'Welcome to Sword Institute! Your learning journey awaits. Start with a beginner course to build your foundation.';
+                if (available.length > 0) {
+                    const firstAvailable = available[0];
+                    recommendation = `I recommend starting with "${firstAvailable.title}" - it's perfect for beginners! 📚`;
+                } else {
+                    recommendation = 'Check out our course catalogue to find your perfect starting point! 🌟';
+                }
+                tip = 'Start with "Communication Skills" or "Introduction to Community Health" - they\'re great for beginners!';
+                motivation = 'The first step is the hardest - but you\'ve already taken it! 🌟';
+            } else if (completedCount === 0 && enrolledCount > 0) {
+                message = `You're enrolled in ${enrolledCount} course${enrolledCount > 1 ? 's' : ''}! Complete your first lesson to start earning XP.`;
+                recommendation = `Focus on completing your current course${enrolledCount > 1 ? 's' : ''} before starting new ones. You're doing great! 💪`;
+                tip = 'Set aside 15-20 minutes each day for learning - consistency is key! 🗓️';
+                motivation = 'Small steps lead to big changes. Keep going! 🚀';
+            } else if (completedCount < enrolledCount) {
+                message = `You've completed ${completedCount} course${completedCount > 1 ? 's' : ''}! Keep up the momentum.`;
+                if (available.length > 0) {
+                    const priorityCategories = ['Community Development', 'Communication', 'Social Work'];
+                    let recommended = null;
+                    for (const cat of priorityCategories) {
+                        const found = available.find(c => c.category === cat);
+                        if (found) {
+                            recommended = found;
+                            break;
+                        }
+                    }
+                    if (!recommended && available.length > 0) {
+                        recommended = available[0];
+                    }
+                    if (recommended) {
+                        recommendation = `I recommend "${recommended.title}" as your next course! 📚`;
+                    } else {
+                        recommendation = 'Explore our course catalogue to find your next learning path! 🌟';
+                    }
+                } else {
+                    recommendation = 'You\'ve explored all our courses! Check back soon for new content. 🌟';
+                }
+                tip = 'Review your completed lessons to reinforce your learning. 🔄';
+                motivation = 'You\'re on a roll! Don\'t stop now! 💪';
+            } else if (completedCount > 0 && completedCount === enrolledCount && enrolledCount > 0) {
+                message = `You've completed all ${enrolledCount} enrolled course${enrolledCount > 1 ? 's' : ''}! Time to explore new paths. 🎉`;
+                if (available.length > 0) {
+                    const firstAvailable = available[0];
+                    recommendation = `I recommend "${firstAvailable.title}" - it's a great next step! 📚`;
+                } else {
+                    recommendation = 'You\'ve completed all available courses! Check back soon for new content. 🌟';
+                }
+                tip = 'Try applying what you\'ve learned to a real community project. 🌍';
+                motivation = 'You\'re a learning machine! Keep expanding your horizons. ✨';
+            } else {
+                message = 'Welcome back to Sword Institute! Explore our courses to continue your journey.';
+                recommendation = 'Check out our course catalogue to find your next learning path! 📚';
+                tip = 'Check your dashboard to track your progress. 📊';
+                motivation = 'Every moment is an opportunity to learn something new. 🌟';
+            }
+
+            return {
+                success: true,
+                recommendations: {
+                    greeting: greeting,
+                    message: message,
+                    recommendation: recommendation,
+                    tip: tip,
+                    motivation: motivation
+                }
+            };
+        }
+
+        // Update AI Message in UI
+        function updateAIMessage(data) {
+            if (data) {
+                aiGreeting.textContent = data.greeting || 'Hello, Warrior! 🌟';
+                aiMessageText.textContent = data.message || 'Welcome to your AI Mentor!';
+                aiRecommendation.textContent = data.recommendation ? '🎯 ' + data.recommendation : '';
+                aiTip.textContent = data.tip ? '💡 ' + data.tip : '';
+                aiMotivation.textContent = data.motivation ? '✨ ' + data.motivation : '';
+            } else {
+                aiGreeting.textContent = 'Hello, Warrior! 🌟';
+                aiMessageText.textContent = 'Welcome to your AI Mentor! I\'m here to help you on your learning journey.';
+                aiRecommendation.textContent = '';
+                aiTip.textContent = '💡 Start by exploring our courses and finding your path.';
+                aiMotivation.textContent = '';
+            }
+        }
+
+        // Get AI Recommendation
+        async function getAIRecommendation() {
+            const btn = event?.target?.closest('.btn') || document.querySelector('.btn-gold');
+            if (!btn) return;
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+            btn.disabled = true;
+
+            try {
+                if (currentUserData) {
+                    await loadUserDashboard(currentUserData.uid);
+                }
+
+                const coursesSnapshot = await db.collection('courses').get();
+                const availableCourses = [];
+                coursesSnapshot.forEach((doc) => {
+                    availableCourses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                if (studentData) {
+                    studentData.availableCourses = availableCourses;
+                }
+
+                const result = await getSmartRecommendations(studentData);
+
+                if (result.success && result.recommendations.recommendation) {
+                    const recommendation = result.recommendations.recommendation;
+                    aiRecommendation.textContent = '🎯 ' + recommendation;
+                    showToast('🎯 ' + recommendation);
+                } else {
+                    showToast('💡 Check out our course catalogue for great options!');
+                }
+
+            } catch (error) {
+                console.error('Error getting recommendation:', error);
+                showToast('❌ Could not get recommendation. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Get Study Tip
+        function getStudyTip() {
+            const tips = [
+                "🍅 Try the Pomodoro Technique: 25 minutes study, 5 minutes break!",
+                "📝 Take notes while learning - writing helps memory retention.",
+                "👥 Find a study buddy - learning with others boosts motivation.",
+                "🌍 Apply what you learn to real-life situations.",
+                "🔄 Review notes before starting a new lesson.",
+                "🎯 Set small daily goals - they're easier to achieve!",
+                "📅 Create a study schedule and stick to it!",
+                "🧘 Take breaks to clear your mind and refocus.",
+                "📖 Teach what you learn to someone else - it reinforces your understanding.",
+                "🎧 Try studying with background music or ambient sounds."
+            ];
+            const tip = tips[Math.floor(Math.random() * tips.length)];
+            aiTip.textContent = '💡 ' + tip;
+            showToast('💡 ' + tip);
+        }
+
+        // =============================================================
+        // 8. CHAT FUNCTIONS
+        // =============================================================
+
+        // Add Chat Message
+        function addChatMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = `avatar ${sender}`;
+            avatar.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.innerHTML = text.replace(/\n/g, '<br>');
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubble);
+            chatMessages.appendChild(messageDiv);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send Chat Message
+        async function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text || isProcessing) return;
+
+            addChatMessage('user', text);
+            chatInput.value = '';
+
+            isProcessing = true;
+            sendChatBtn.disabled = true;
+            sendChatBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            typingIndicator.classList.add('active');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Process the message with delay
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 600));
+
+            typingIndicator.classList.remove('active');
+
+            const response = await processChatMessage(text);
+            addChatMessage('ai', response);
+
+            isProcessing = false;
+            sendChatBtn.disabled = false;
+            sendChatBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+        }
+
+        // Process Chat Message
+        async function processChatMessage(text) {
+            const lowerText = text.toLowerCase();
+
+            if (lowerText.includes('recommend') || lowerText.includes('next') || lowerText.includes('what should')) {
+                const result = await getSmartRecommendations(studentData);
+                return result.recommendations.recommendation || 'I recommend exploring "Community Development Methodologies" next! 📚';
+            } else if (lowerText.includes('tip') || lowerText.includes('study') || lowerText.includes('how to')) {
+                const tips = [
+                    "Try the Pomodoro Technique: study for 25 minutes, then take a 5-minute break! 🍅",
+                    "Take notes while you learn - writing things down helps with memory retention. 📝",
+                    "Find a study buddy - learning with others can boost your motivation. 👥",
+                    "Apply what you learn to real-life situations - it makes the knowledge stick. 🌍",
+                    "Review your notes before starting a new lesson - it strengthens the connection. 🔄",
+                    "Set small daily goals - they're easier to achieve and keep you motivated. 🎯",
+                    "Create a study schedule and stick to it - consistency is key! 📅"
+                ];
+                return tips[Math.floor(Math.random() * tips.length)];
+            } else if (lowerText.includes('motivat') || lowerText.includes('encourage') || lowerText.includes('keep going')) {
+                const messages = [
+                    "You're doing amazing! 🌟 Every lesson you complete brings you closer to your goals.",
+                    "Remember: Every master was once a beginner. Keep going! 💪",
+                    "Your dedication to learning is inspiring. The world needs more people like you! 🌍",
+                    "Small steps lead to big changes. You're on the right path! 🚀",
+                    "The journey of a thousand miles begins with a single step. You've already taken it! ✨",
+                    "You have the power to create real change in your community. Keep learning! 🏛️"
+                ];
+                return messages[Math.floor(Math.random() * messages.length)];
+            } else if (lowerText.includes('hello') || lowerText.includes('hi') || lowerText.includes('hey')) {
+                return `Hello ${studentData?.userName || 'Warrior'}! 👋 How can I help you with your learning today?`;
+            } else if (lowerText.includes('progress') || lowerText.includes('how am i')) {
+                const enrolled = studentData?.enrolledCourses?.length || 0;
+                const completed = studentData?.completedCourses?.length || 0;
+                const xp = studentData?.totalXp || 0;
+
+                if (enrolled === 0) {
+                    return "You haven't started any courses yet! Check out our catalogue and enroll in your first course. 🎯";
+                }
+                return `You've enrolled in ${enrolled} course${enrolled > 1 ? 's' : ''} and completed ${completed} of them! You've earned ${xp} XP so far. Keep up the great work! 🎉`;
+            } else if (lowerText.includes('thanks') || lowerText.includes('thank you')) {
+                return "You're welcome! 🌟 I'm here to help you succeed. Is there anything else I can assist you with?";
+            } else {
+                return `That's a great question! 🤔\n\nI'd recommend exploring our courses on community development and social work. You might find "Communication Skills" or "Introduction to Community Health" particularly helpful.\n\nWould you like a specific course recommendation?`;
+            }
+        }
+
+        // Send Quick Message
+        function sendQuickMessage(text) {
+            if (!isChatOpen) {
+                toggleAIChat();
+            }
+            chatInput.value = text;
+            sendChatMessage();
+        }
+
+        // =============================================================
+        // 9. KEYBOARD SHORTCUTS
+        // =============================================================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Shift+C to toggle chat
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                toggleAIChat();
+            }
+            // Escape to close chat
+            if (e.key === 'Escape' && isChatOpen) {
+                toggleAIChat();
+            }
+        });
+
+        // =============================================================
+        // 10. MAKE FUNCTIONS GLOBALLY ACCESSIBLE
+        // =============================================================
+        window.toggleAIChat = toggleAIChat;
+        window.getAIRecommendation = getAIRecommendation;
+        window.getStudyTip = getStudyTip;
+        window.sendChatMessage = sendChatMessage;
+        window.sendQuickMessage = sendQuickMessage;
 
         console.log('🔮 Dashboard initialized successfully');
     </script>
