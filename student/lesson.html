@@ -63,8 +63,8 @@
             max-width: 1280px;
             margin: 0 auto;
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(180%);
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
@@ -120,8 +120,8 @@
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             color: var(--text-primary);
             border-color: rgba(255, 255, 255, 0.5);
         }
@@ -307,6 +307,7 @@
             gap: 20px;
             padding: 14px 20px;
             background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border-radius: var(--radius-md);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -338,6 +339,7 @@
            ============================================================ */
         .lesson-content {
             background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             border-radius: var(--radius-lg);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -470,6 +472,7 @@
 
         .sidebar-card {
             background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             border-radius: var(--radius-lg);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -527,6 +530,7 @@
         /* AI Sidebar */
         .ai-sidebar {
             background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             border-radius: var(--radius-lg);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -606,6 +610,7 @@
             background: rgba(34, 197, 94, 0.95);
             color: #fff;
             font-weight: 600;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.2);
@@ -613,6 +618,68 @@
             animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
+        }
+
+        .hidden-dashboard-btn {
+            display: none;
+        }
+        .progress-fill-initial {
+            width: 0%;
+        }
+        .loading-center-muted {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .loading-center-secondary {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .icon-large-block {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+        .icon-gold {
+            color: var(--gold-radiant);
+        }
+        .icon-violet {
+            color: var(--violet-deep);
+        }
+        .text-primary {
+            color: var(--text-primary);
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .completed-label-hidden {
+            display: none;
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .lesson-actions-spacer {
+            flex: 1;
+        }
+        .nav-hidden {
+            display: none;
+        }
+        .lesson-list-loading {
+            padding: 12px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .sparkles-gold {
+            color: var(--gold-radiant);
+        }
+        .footer-top {
+            margin-bottom: 6px;
+        }
+        .footer-heart {
+            color: var(--violet-deep);
+        }
+        .error-text-small {
+            font-size: 0.9rem;
         }
         .toast-notification.error {
             background: rgba(220, 38, 38, 0.95);
@@ -760,7 +827,7 @@
                 <div class="nav-actions" id="navActions">
                     <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
                     <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
+                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardBtn">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -809,7 +876,7 @@
                     <!-- Progress -->
                     <div class="lesson-progress">
                         <div class="progress-bar">
-                            <div class="fill" id="progressFill" style="width:0%;"></div>
+                            <div class="fill progress-fill-initial" id="progressFill"></div>
                         </div>
                         <div class="progress-label">
                             <span>Lesson Progress</span>
@@ -819,8 +886,8 @@
 
                     <!-- Content -->
                     <div class="content" id="lessonContent">
-                        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
-                            <i class="fas fa-spinner fa-spin" style="font-size:3rem;display:block;margin-bottom:16px;"></i>
+                        <div class="loading-center-muted">
+                            <i class="fas fa-spinner fa-spin icon-large-block"></i>
                             Loading lesson content...
                         </div>
                     </div>
@@ -830,15 +897,15 @@
                         <button class="btn btn-success" id="completeBtn">
                             <i class="fas fa-check"></i> Mark Complete
                         </button>
-                        <span id="completedLabel" style="display:none;color:#16a34a;font-weight:600;">
+                        <span id="completedLabel" class="completed-label-hidden">
                             <i class="fas fa-check-circle"></i> Complete!
                         </span>
-                        <div style="flex:1;"></div>
+                        <div class="lesson-actions-spacer"></div>
                         <div class="lesson-navigation">
-                            <a href="#" class="btn btn-outline-violet" id="prevBtn" style="display:none;">
+                            <a href="#" class="btn btn-outline-violet nav-hidden" id="prevBtn">
                                 <i class="fas fa-arrow-left"></i> Previous
                             </a>
-                            <a href="#" class="btn btn-primary" id="nextBtn" style="display:none;">
+                            <a href="#" class="btn btn-primary nav-hidden" id="nextBtn">
                                 Next <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -851,7 +918,7 @@
                     <div class="sidebar-card">
                         <h4><i class="fas fa-list"></i> Lessons</h4>
                         <ul class="lesson-list" id="lessonList">
-                            <li style="padding:12px;text-align:center;color:var(--text-muted);">
+                            <li class="lesson-list-loading">
                                 <i class="fas fa-spinner fa-spin"></i> Loading lessons...
                             </li>
                         </ul>
@@ -864,12 +931,12 @@
                             <h4>AI Learning Assistant</h4>
                         </div>
                         <div class="ai-message" id="aiMessage">
-                            <i class="fas fa-sparkles" style="color:var(--gold-radiant);"></i>
+                            <i class="fas fa-sparkles sparkles-gold"></i>
                             <span id="aiAdvice">Ask me anything about this lesson!</span>
                         </div>
                         <div class="ai-input-row">
                             <input type="text" id="aiInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendAIQuestion()" />
-                            <button onclick="sendAIQuestion()"><i class="fas fa-paper-plane"></i></button>
+                            <button onclick="sendAIQuestion()" title="Send AI question" aria-label="Send AI question"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -880,10 +947,10 @@
         FOOTER
         ============================================================ -->
         <div class="footer container">
-            <p style="margin-bottom:6px;">
+            <p class="footer-top">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -977,11 +1044,11 @@
 
             if (!courseId || !lessonId) {
                 lessonContent.innerHTML = `
-                        <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
-                            <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:var(--gold-radiant);display:block;margin-bottom:16px;"></i>
-                            <h3 style="color:var(--text-primary);">Missing Course or Lesson ID</h3>
+                        <div class="loading-center-secondary">
+                            <i class="fas fa-exclamation-triangle icon-large-block icon-gold"></i>
+                            <h3 class="text-primary">Missing Course or Lesson ID</h3>
                             <p>Please go back to the course page and select a lesson.</p>
-                            <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Browse Courses</a>
+                            <a href="courses.html" class="btn btn-primary mt-16">Browse Courses</a>
                         </div>
                     `;
                 return;
@@ -1006,11 +1073,11 @@
 
                 if (!lessonDoc.exists) {
                     lessonContent.innerHTML = `
-                            <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
-                                <i class="fas fa-book-open" style="font-size:3rem;color:var(--violet-deep);display:block;margin-bottom:16px;"></i>
-                                <h3 style="color:var(--text-primary);">Lesson Not Found</h3>
+                            <div class="loading-center-secondary">
+                                <i class="fas fa-book-open icon-large-block icon-violet"></i>
+                                <h3 class="text-primary">Lesson Not Found</h3>
                                 <p>This lesson may have been removed or is unavailable.</p>
-                                <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Browse Courses</a>
+                                <a href="courses.html" class="btn btn-primary mt-16">Browse Courses</a>
                             </div>
                         `;
                     return;
@@ -1033,11 +1100,11 @@
             } catch (error) {
                 console.error('Error loading lesson:', error);
                 lessonContent.innerHTML = `
-                        <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
-                            <i class="fas fa-triangle-exclamation" style="font-size:3rem;color:var(--gold-radiant);display:block;margin-bottom:16px;"></i>
-                            <h3 style="color:var(--text-primary);">Failed to Load Lesson</h3>
-                            <p id="lesson-load-error-message" style="font-size:0.9rem;"></p>
-                            <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Back to Courses</a>
+                        <div class="loading-center-secondary">
+                            <i class="fas fa-triangle-exclamation icon-large-block icon-gold"></i>
+                            <h3 class="text-primary">Failed to Load Lesson</h3>
+                            <p id="lesson-load-error-message" class="error-text-small"></p>
+                            <a href="courses.html" class="btn btn-primary mt-16">Back to Courses</a>
                         </div>
                     `;
                 const errorMessageEl = document.getElementById('lesson-load-error-message');
@@ -1068,7 +1135,7 @@
 
                 if (allLessons.length === 0) {
                     lessonList.innerHTML = `
-                            <li style="padding:12px;text-align:center;color:var(--text-muted);">
+                            <li class="lesson-list-loading">
                                 <i class="fas fa-info-circle"></i> No lessons found
                             </li>
                         `;

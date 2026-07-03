@@ -75,8 +75,8 @@
             max-width: 1280px;
             margin: 0 auto;
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(180%);
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
@@ -141,8 +141,8 @@
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             color: var(--text-primary);
             border-color: rgba(255, 255, 255, 0.5);
         }
@@ -337,8 +337,8 @@
         .ai-mentor-card {
             padding: 28px;
             background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
+            backdrop-filter: blur(24px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: var(--radius-xl);
             box-shadow: 0 12px 40px -10px rgba(139, 0, 255, 0.06);
@@ -518,6 +518,7 @@
             border-radius: var(--radius-sm);
             border: 1px solid rgba(139, 0, 255, 0.1);
             background: rgba(255, 255, 255, 0.5);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             font-size: 0.85rem;
             font-family: 'Inter', sans-serif;
@@ -569,8 +570,8 @@
             text-align: center;
             padding: 24px 12px;
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
             transition: all 0.3s ease;
@@ -647,8 +648,8 @@
             text-align: center;
             padding: 28px 16px 24px;
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
             transition: all 0.35s ease;
@@ -695,8 +696,8 @@
 
         .course-card {
             background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: var(--radius-lg);
             overflow: hidden;
@@ -815,6 +816,7 @@
         .testimonial-card {
             padding: 24px;
             background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
@@ -869,7 +871,31 @@
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             text-align: center;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
+        }
+
+        .hidden-dashboard-btn {
+            display: none;
+        }
+        .skeleton-text-short {
+            width: 70%;
+        }
+        .course-meta-skeleton {
+            border: none;
+            padding-top: 8px;
+        }
+        .skeleton-meta-short {
+            width: 40%;
+        }
+        .quote-icon-violet {
+            color: var(--violet-deep);
+        }
+        .footer-top {
+            margin-bottom: 6px;
+        }
+        .footer-heart {
+            color: var(--violet-deep);
         }
         .cta-box h2 {
             font-size: 2.4rem;
@@ -1083,7 +1109,7 @@
                 <div class="nav-actions" id="navActions">
                     <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
                     <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
+                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardBtn">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -1122,11 +1148,11 @@
                         <i class="fas fa-robot"></i>
                         <h3>
                             AI Mentor
-                            <small>Your Guide to Sword Institute</small>
+                            <small>Your Spiritual Guide</small>
                         </h3>
                         <div class="ai-status">
                             <span class="dot"></span>
-                            Online
+                            <span id="aiStatusText">Online</span>
                         </div>
                     </div>
 
@@ -1146,9 +1172,6 @@
                         <button onclick="sendAIMessage('How do I get started?')">
                             <i class="fas fa-rocket"></i> Get Started
                         </button>
-                        <button onclick="sendAIMessage('What is the AI Mentor?')">
-                            <i class="fas fa-robot"></i> About AI
-                        </button>
                         <button onclick="sendAIMessage('Recommend a course for me')">
                             <i class="fas fa-lightbulb"></i> Recommend
                         </button>
@@ -1156,7 +1179,7 @@
 
                     <!-- Input -->
                     <div class="ai-input-row">
-                        <input type="text" id="aiInput" placeholder="Ask me anything about Sword Institute..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
+                        <input type="text" id="aiInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
                         <button onclick="sendAIMessage()" id="aiSendBtn">
                             <i class="fas fa-paper-plane"></i> Ask
                         </button>
@@ -1253,10 +1276,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1265,10 +1288,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1277,10 +1300,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1289,10 +1312,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1307,7 +1330,7 @@
             <div class="container">
                 <div class="section-header">
                     <h2>
-                        <i class="fas fa-quote-left" style="color:var(--violet-deep);"></i> What Our Students Say
+                        <i class="fas fa-quote-left quote-icon-violet"></i> What Our Students Say
                     </h2>
                     <span class="sub">Real stories from real warriors <i class="fas fa-sparkles"></i></span>
                 </div>
@@ -1378,10 +1401,10 @@
                 <a href="#">About</a>
                 <a href="#">Contact</a>
             </div>
-            <p style="margin-bottom:6px;">
+            <p class="footer-top">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -1432,18 +1455,30 @@
 
         function setMentorOnline(isOnline) {
             const statusEl = document.querySelector('.ai-status');
+            const statusTextEl = document.getElementById('aiStatusText');
             if (!statusEl) return;
             statusEl.style.color = isOnline ? '#16a34a' : '#dc2626';
-            statusEl.innerHTML = `<span class="dot"></span>${isOnline ? 'Online' : 'Fallback Mode'}`;
+            if (statusTextEl) {
+                statusTextEl.textContent = isOnline ? 'Online' : 'Fallback Mode';
+            } else {
+                statusEl.innerHTML = `<span class="dot"></span><span id="aiStatusText">${isOnline ? 'Online' : 'Fallback Mode'}</span>`;
+            }
         }
 
-        function addAIMessage(type, text) {
+        // =============================================================
+        // AI MENTOR FUNCTIONS (Homepage)
+        // =============================================================
+
+        function addAIMessage(type, text, isTyping = false) {
             if (!aiMessages) return;
 
             const bubble = document.createElement('div');
             bubble.className = `ai-message-bubble ${type}`;
 
-            if (type === 'ai') {
+            if (isTyping) {
+                bubble.id = 'typingIndicator';
+                bubble.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            } else if (type === 'ai') {
                 bubble.innerHTML = String(text || '').replace(/\n/g, '<br>');
             } else {
                 bubble.textContent = text;
@@ -1453,86 +1488,83 @@
             aiMessages.scrollTop = aiMessages.scrollHeight;
         }
 
-        function showTypingIndicator() {
-            if (!aiMessages) return;
-            const existing = document.getElementById('typingIndicator');
-            if (existing) existing.remove();
-
-            const bubble = document.createElement('div');
-            bubble.className = 'ai-message-bubble ai';
-            bubble.id = 'typingIndicator';
-            bubble.innerHTML = `
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
-
-            aiMessages.appendChild(bubble);
-            aiMessages.scrollTop = aiMessages.scrollHeight;
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
         }
 
-        function hideTypingIndicator() {
-            const typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-        }
-
-        function getLocalHomepageFallback(message) {
+        function getLocalAIResponse(message) {
             const lower = String(message || '').toLowerCase();
-            if (lower.includes('course') || lower.includes('offer')) {
-                return 'We offer practical learning in community development, social work, counseling, communication, and leadership. I can recommend a course path based on your goals.';
+            if (lower.includes('tour')) {
+                return '🏛️ Welcome to Sword Institute! We offer 18 courses in Community Development, Social Work, Counseling, and more. Our AI Mentor is here to guide you. Start by exploring our course catalogue!';
+            }
+            if (lower.includes('course')) {
+                return '📚 We have 18 courses across 9 categories including Community Development, Social Work, Psychology, and Communication. Check out our course catalogue to find your perfect path!';
             }
             if (lower.includes('start') || lower.includes('begin')) {
-                return 'Start by creating an account, then enroll in one beginner-friendly course and complete the first lesson this week.';
+                return '🚀 Getting started is easy! Register for free, browse our courses, and enroll in one that interests you. Your AI Mentor will be with you every step of the way!';
             }
             if (lower.includes('recommend')) {
-                return 'A strong starting path is Communication Skills, then Community Development Methodologies.';
+                return "🎯 I recommend starting with 'Communication Skills' or 'Introduction to Community Health' - they're great foundations for your learning journey!";
             }
-            return 'I can help with course selection, getting started, and personalized study planning. Ask me what to learn first.';
+            return '🌟 I\'m your AI Mentor! Ask me about courses, getting started, or anything about Sword Institute. How can I help you today?';
         }
 
-        async function sendAIMessage(prefilledMessage) {
+        // Send AI Message
+        async function sendAIMessage(message) {
             if (isProcessing) return;
 
-            const message = (typeof prefilledMessage === 'string' ? prefilledMessage : aiInput.value).trim();
-            if (!message) return;
+            const input = aiInput;
+            const sendBtn = aiSendBtn;
+
+            if (!input || !sendBtn) return;
+
+            // Get message from input if not provided
+            if (!message) {
+                message = input.value.trim();
+                if (!message) return;
+                input.value = '';
+            } else {
+                message = String(message).trim();
+                if (!message) return;
+            }
 
             isProcessing = true;
-            if (aiSendBtn) aiSendBtn.disabled = true;
-            if (aiInput) aiInput.disabled = true;
+            if (sendBtn) {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
 
             addAIMessage('user', message);
-            if (aiInput) aiInput.value = '';
-            showTypingIndicator();
+            addAIMessage('ai', '...', true);
 
             try {
-                let responseText = getLocalHomepageFallback(message);
+                let reply;
 
-                if (typeof AIService !== 'undefined') {
-                    AIService.initAIService(window.SWORD_AI_CONFIG || {});
-                    responseText = await AIService.sendAIMessage(message, 'homepage', {
-                        userName: currentUser?.displayName || currentUser?.email || 'Seeker',
-                        courseHints: homepageCourseHints
-                    });
+                if (typeof AIService !== 'undefined' && AIService.initAIService()) {
+                    reply = await AIService.sendAIMessage(message, 'Homepage');
                     setMentorOnline(true);
                 } else {
+                    // Fallback
+                    reply = getLocalAIResponse(message);
                     setMentorOnline(false);
                 }
 
-                hideTypingIndicator();
-                addAIMessage('ai', responseText);
+                removeTypingIndicator();
+                addAIMessage('ai', reply);
             } catch (error) {
                 console.error('Homepage AI error:', error);
-                hideTypingIndicator();
+                removeTypingIndicator();
                 setMentorOnline(false);
-                addAIMessage('ai', getLocalHomepageFallback(message));
+                addAIMessage('ai', '❌ Sorry, I encountered an error. Please try again.');
             } finally {
                 isProcessing = false;
-                if (aiSendBtn) aiSendBtn.disabled = false;
-                if (aiInput) {
-                    aiInput.disabled = false;
-                    aiInput.focus();
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Ask';
+                }
+                if (input) {
+                    input.focus();
                 }
             }
         }
@@ -1551,20 +1583,19 @@
             }
         });
 
-        function initHomepageMentor() {
+        // Initialize AI
+        window.sendAIMessage = sendAIMessage;
+
+        document.addEventListener('DOMContentLoaded', function() {
             if (typeof AIService !== 'undefined') {
-                AIService.initAIService(window.SWORD_AI_CONFIG || {});
+                AIService.initAIService();
                 setMentorOnline(true);
             } else {
                 setMentorOnline(false);
             }
 
             addAIMessage('ai', 'Welcome to Sword Institute. I can help you choose courses, understand learning paths, and plan your next steps.');
-        }
-
-        window.sendAIMessage = sendAIMessage;
-
-        document.addEventListener('DOMContentLoaded', initHomepageMentor);
+        });
     </script>
 
     <script type="module" src="js/index.js"></script>

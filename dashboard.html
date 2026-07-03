@@ -71,8 +71,8 @@
             max-width: 1280px;
             margin: 0 auto;
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(180%);
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
@@ -127,8 +127,8 @@
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             color: var(--text-primary);
             border-color: rgba(255, 255, 255, 0.5);
         }
@@ -285,8 +285,8 @@
         /* ---------- GLASS CARD ---------- */
         .glass-card {
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: var(--radius-lg);
             box-shadow: var(--glass-shadow);
@@ -333,8 +333,8 @@
             text-align: center;
             padding: 24px 12px;
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
             transition: all 0.3s ease;
@@ -444,8 +444,8 @@
         .ai-panel {
             padding: 28px;
             background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
+            backdrop-filter: blur(24px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: var(--radius-xl);
         }
@@ -545,6 +545,7 @@
             background: rgba(34, 197, 94, 0.95);
             color: #fff;
             font-weight: 600;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.2);
@@ -620,6 +621,7 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -647,6 +649,41 @@
         }
         .loading-overlay.hidden {
             display: none;
+        }
+
+        .icon-violet {
+            color: var(--violet-deep);
+        }
+        .section-title {
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        .center-top-12 {
+            text-align: center;
+            margin-top: 12px;
+        }
+        .btn-sm {
+            font-size: 0.85rem;
+        }
+        .footer-top {
+            margin-bottom: 6px;
+        }
+        .footer-heart {
+            color: var(--violet-deep);
+        }
+        .courses-link {
+            color: var(--violet-deep);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .activity-time-link {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        .activity-center-item {
+            justify-content: center;
+            border-bottom: none;
+            padding-top: 8px;
         }
 
         /* ----- RESPONSIVE ----- */
@@ -772,7 +809,7 @@
             <div class="dashboard-header">
                 <div>
                     <h1>
-                        <i class="fas fa-shield-halved" style="color:var(--violet-deep);"></i>
+                        <i class="fas fa-shield-halved icon-violet"></i>
                         <span class="violet">Sacred</span> Dashboard
                     </h1>
                     <div class="welcome" id="welcomeMessage">
@@ -808,8 +845,8 @@
             <div class="dashboard-grid">
                 <!-- Left: Recent Activity -->
                 <div class="glass-card">
-                    <h3 style="margin-bottom:16px;font-size:1.2rem;">
-                        <i class="fas fa-clock" style="color:var(--violet-deep);"></i> Recent Activity
+                    <h3 class="section-title">
+                        <i class="fas fa-clock icon-violet"></i> Recent Activity
                     </h3>
                     <ul class="activity-list" id="activityList">
                         <li class="activity-item">
@@ -821,8 +858,8 @@
                             <span class="time">—</span>
                         </li>
                     </ul>
-                    <div style="text-align:center;margin-top:12px;">
-                        <a href="courses.html" class="btn btn-outline-violet" style="font-size:0.85rem;">
+                    <div class="center-top-12">
+                        <a href="courses.html" class="btn btn-outline-violet btn-sm">
                             Browse All Courses <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -869,10 +906,10 @@
         FOOTER
         ============================================================ -->
         <div class="footer container">
-            <p style="margin-bottom:6px;">
+            <p class="footer-top">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -1097,7 +1134,7 @@
                                 <h4>No activity yet</h4>
                                 <p>Enroll in a course to get started</p>
                             </div>
-                            <span class="time"><a href="courses.html" style="color:var(--violet-deep);font-weight:600;text-decoration:none;">Browse →</a></span>
+                            <span class="time"><a href="courses.html" class="courses-link">Browse →</a></span>
                         </li>
                     `;
                 return;
@@ -1123,24 +1160,29 @@
                                 </a>
                                 ${!isCompleted && progress > 0 ? `
                                         <div class="progress-bar">
-                                            <div class="fill" style="width:${progress}%;"></div>
+                                            <div class="fill js-progress-fill" data-progress="${progress}"></div>
                                         </div>
                                     ` : ''}
                             </div>
-                            <span class="time"><a href="course-view.html?id=${item.courseId}" style="color:var(--text-muted);text-decoration:none;">${timeLabel}</a></span>
+                            <span class="time"><a href="course-view.html?id=${item.courseId}" class="activity-time-link">${timeLabel}</a></span>
                         </li>
                     `;
             });
 
             html += `
-                    <li class="activity-item" style="justify-content:center;border-bottom:none;padding-top:8px;">
-                        <a href="courses.html" style="color:var(--violet-deep);font-weight:600;text-decoration:none;">
+                    <li class="activity-item activity-center-item">
+                        <a href="courses.html" class="courses-link">
                             <i class="fas fa-compass"></i> Discover More Courses
                         </a>
                     </li>
                 `;
 
             activityList.innerHTML = html;
+
+            activityList.querySelectorAll('.js-progress-fill').forEach((el) => {
+                const progressValue = Number(el.getAttribute('data-progress')) || 0;
+                el.style.width = `${progressValue}%`;
+            });
         }
 
         // =============================================================
