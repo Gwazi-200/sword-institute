@@ -1395,10 +1395,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
 
+    <script src="ai-service.js"></script>
+
     <script>
-        // =============================================================
-        // FIREBASE CONFIG
-        // =============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
             authDomain: "sword-institute-lms.firebaseapp.com",
@@ -1408,132 +1407,44 @@
             appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
 
-        // =============================================================
-        // DOM References
-        // =============================================================
+        const auth = firebase.auth();
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
         const dashboardBtn = document.getElementById('dashboardBtn');
         const aiMessages = document.getElementById('aiMessages');
         const aiInput = document.getElementById('aiInput');
         const aiSendBtn = document.getElementById('aiSendBtn');
-        const coursesContainer = document.getElementById('coursesContainer');
-        const totalStudentsEl = document.getElementById('totalStudents');
-        const totalCoursesEl = document.getElementById('totalCourses');
-        const completionRateEl = document.getElementById('completionRate');
-        const studentRatingEl = document.getElementById('studentRating');
 
         let currentUser = null;
         let isProcessing = false;
-        let userName = 'Seeker';
 
-        // =============================================================
-        // 1. AI MENTOR KNOWLEDGE BASE
-        // =============================================================
-        const aiKnowledge = {
-            greeting: {
-                keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening'],
-                responses: [
-                    "Hello, Seeker of Light! 🌟 Welcome to Sword Institute. I'm your AI Mentor, here to guide you on your sacred journey. How can I assist you today?",
-                    "Greetings, brave soul! ✨ I'm the AI Mentor of Sword Institute. Ask me anything about our courses, programs, or how to get started.",
-                    "Welcome, future Digital Warrior! 🛡️ I'm here to help you navigate Sword Institute. What would you like to know?"
-                ]
-            },
-            tour: {
-                keywords: ['tour', 'guide', 'show me around', 'introduce', 'overview', 'what is sword institute'],
-                responses: [
-                    "🏛️ **Welcome to Sword Institute!**\n\nI'm delighted to give you a tour of our sacred learning space.\n\n🎓 **What We Offer:**\n• 18+ Professional Courses\n• AI-Powered Learning\n• Community Development Programs\n• Social Work Training\n• NGO Leadership\n• Counseling & Psychology\n• And much more!\n\n🔮 **Key Features:**\n• Personalized AI Mentor\n• Progress Tracking\n• Earn XP and Badges\n• Interactive Lessons\n• Community Support\n\n💡 **Ready to start?** Ask me about courses, or click the 'Start Learning' button above!",
-                    "🌟 **Welcome to Sword Institute!**\n\nThis is a sacred space where we forge Digital Warriors for Social Good.\n\n📚 **Our Mission:**\nEmpowering individuals like you to create positive change in communities through education and AI-powered learning.\n\n✨ **What Makes Us Special:**\n• Sacred Learning Paths\n• AI Mentor Guidance\n• Practical Skills\n• Community Impact\n\nAsk me anything, and I'll guide you!"
-                ]
-            },
-            courses: {
-                keywords: ['courses', 'programs', 'offer', 'study', 'learn', 'education', 'what courses'],
-                responses: [
-                    "📚 **Our Sacred Courses**\n\nWe offer 18+ professional courses across multiple categories:\n\n**🏛️ Community Development**\n• Community Development Methodologies\n• Management of Community Concerns\n• Community Based Organisation (CBO)\n\n**🤝 Social Work**\n• Social Work Theory and Practice\n• Child Welfare Programmes\n• Legal Framework in Child Care\n\n**🧠 Psychology & Counseling**\n• Introduction to Counseling Psychology\n• Counseling Skills\n• Social Psychology & Human Development\n\n**🌿 Health & Wellbeing**\n• Introduction to Community Health\n• Substance Abuse\n\n**💼 Management & Administration**\n• Administration and Management\n• Entrepreneurship\n\n**📖 Communication & Language**\n• Communication Skills\n• English Language Skills\n\n💡 **Want a recommendation?** Tell me what you're interested in!",
-                    "🎓 **Our Course Catalogue**\n\nWe have 18 courses divided into 9 categories:\n\n1. **AI & Alchemy** - Artificial Intelligence & Machine Learning\n2. **NGO Leadership** - Community Development & Social Impact\n3. **Digital Wellbeing** - Mindfulness & Sacred Technology\n4. **Smart Governance** - Government & Policy Innovation\n5. **Sacred Business** - Ethical Entrepreneurship\n6. **Global Community** - Cross-Cultural Collaboration\n7. **Social Work** - Professional Social Work Training\n8. **Psychology & Counseling** - Mental Health & Counseling\n9. **Communication** - Professional Communication Skills\n\n🔍 **Which one interests you most?** I can help you choose!"
-                ]
-            },
-            get_started: {
-                keywords: ['start', 'begin', 'how to', 'get started', 'first steps', 'join', 'enroll'],
-                responses: [
-                    "🚀 **Getting Started at Sword Institute**\n\nHere's your path to becoming a Digital Warrior:\n\n**Step 1:** 🎯 Click 'Register' or 'Get Started' to create your free account.\n\n**Step 2:** 📚 Browse our course catalogue and find a course that excites you.\n\n**Step 3:** ✨ Enroll in your chosen course and begin your journey.\n\n**Step 4:** 🤖 Use your AI Mentor for personalized guidance.\n\n**Step 5:** 🏆 Complete lessons, earn XP, and track your progress.\n\n💡 **Pro Tip:** Start with a beginner course like 'Communication Skills' or 'Introduction to Community Health'.\n\nReady to start? Click the 'Start Learning' button above!",
-                    "🌟 **Your Journey Begins Here!**\n\nGetting started is simple:\n\n1️⃣ **Create Your Account** - Click 'Register' and join our community\n2️⃣ **Choose Your Path** - Browse our sacred learning paths\n3️⃣ **Start Learning** - Enroll in a course and begin your first lesson\n4️⃣ **Grow with AI** - Your AI Mentor will guide you\n\n🔮 **Why Join Us?**\n• Learn at your own pace\n• Get personalized guidance\n• Connect with a global community\n• Build skills that change lives\n\nTake the first step today!"
-                ]
-            },
-            ai_mentor: {
-                keywords: ['ai mentor', 'what is ai', 'how does ai', 'about ai', 'mentor'],
-                responses: [
-                    "🤖 **About Your AI Mentor**\n\nI'm your 24/7 learning companion, designed to guide you on your sacred journey at Sword Institute.\n\n**What I Can Do:**\n• 💡 Answer questions about courses\n• 🎯 Suggest personalized learning paths\n• 📊 Track your progress\n• 🏆 Motivate and encourage you\n• 🔍 Help you find the right courses\n\n**How I Work:**\nI use advanced AI technology to understand your learning needs and provide personalized guidance.\n\n**Benefits of Learning with AI:**\n• Personalized feedback\n• 24/7 availability\n• Adaptable to your pace\n• Intelligent recommendations\n\n💬 **Try me out!** Ask me about courses, get recommendations, or just say hello!"
-                ]
-            },
-            recommend: {
-                keywords: ['recommend', 'suggestion', 'advice', 'help me choose', 'which course', 'best course'],
-                responses: [
-                    "🎯 **Personalized Course Recommendations**\n\nBased on your interests, here are some great starting points:\n\n**If you're new to this field:**\n• 📖 Communication Skills\n• 🏛️ Introduction to Community Health\n\n**If you're interested in Community Work:**\n• 🤝 Community Development Methodologies\n• 🏗️ Management of Community Concerns\n\n**If you're interested in Social Work:**\n• ❤️ Social Work Theory and Practice\n• 👶 Child Welfare Programmes\n\n**If you're interested in Counseling:**\n• 🧠 Introduction to Counseling Psychology\n• 🗣️ Introduction to Counseling Skills\n\n💡 **Not sure?** Tell me more about what you do or what you're interested in, and I'll give you a tailored recommendation!",
-                    "🌟 **Your Recommended Path**\n\nI recommend starting with:\n\n**Beginner Friendly:**\n1. Communication Skills\n2. Introduction to Community Health\n\n**Then Progress To:**\n3. Community Development Methodologies\n4. Introduction to Counseling Psychology\n\n**Advanced Options:**\n5. Social Work Theory and Practice\n6. Development Economics\n\n🚀 **Why this path?** It builds a strong foundation in community development and social work skills, which are essential for making a real impact.\n\nWant to know more about any of these courses?"
-                ]
-            },
-            about: {
-                keywords: ['about', 'sword institute', 'mission', 'vision', 'what is', 'who are you'],
-                responses: [
-                    "⚔️ **About Sword Institute**\n\nWe are a premier learning institution dedicated to forging Digital Warriors for Social Good.\n\n**Our Mission:**\nEmpower individuals and communities through sacred education and AI-powered learning.\n\n**Our Vision:**\nA world where every community has leaders equipped with the skills to create positive change.\n\n**Our Values:**\n• 🕊️ **Sacred Learning** - Education as a spiritual journey\n• 🤝 **Community** - Building connections and impact\n• ✨ **Innovation** - Embracing AI and technology\n• 🌍 **Social Good** - Creating positive change\n\n**Our Team:**\nDedicated educators, AI engineers, and community development experts.\n\n💡 **Want to join us?** Start by exploring our courses!"
-                ]
-            },
-            gratitude: {
-                keywords: ['thank', 'thanks', 'appreciate', 'grateful'],
-                responses: [
-                    "You're most welcome! 🌟 It's my honor to guide you. Is there anything else I can help you with?",
-                    "Thank you for your kind words! 🙏 I'm here to serve you. What would you like to learn next?",
-                    "I appreciate your gratitude! 💜 Remember, I'm always here when you need guidance. Ask me anything!"
-                ]
-            },
-            default: [
-                "That's a wonderful question! 🤔 Let me think about that.\n\nI'd suggest exploring our course catalogue or asking me about specific topics like 'courses', 'get started', or 'recommendations'.\n\n🔍 You can also ask me about:\n• Tour of Sword Institute\n• Course recommendations\n• How to get started\n• What makes us unique\n\nWhat would you like to know more about?",
-                "I love your curiosity! 🌟 Sword Institute has so much to explore.\n\nHere are some things you can ask me:\n• 'Give me a tour'\n• 'What courses do you offer?'\n• 'How do I get started?'\n• 'Recommend a course for me'\n• 'What is the AI Mentor?'\n\nI'm here to help you find your path. What interests you most?",
-                "Great question! 💡 At Sword Institute, we're passionate about transforming lives through education.\n\nYou might find these questions helpful:\n• What courses do you offer?\n• How do I get started?\n• Can you give me a tour?\n• What makes this place special?\n\nI'm here to guide you. Ask me anything!"
-            ]
-        };
+        const homepageCourseHints = [
+            'Communication Skills',
+            'Community Development Methodologies',
+            'Social Work Theory and Practice',
+            'Introduction to Counseling Psychology',
+            'Introduction to Community Health'
+        ];
 
-        // =============================================================
-        // 2. AI MENTOR RESPONSE ENGINE
-        // =============================================================
-        function getAIResponse(message) {
-            const lower = message.toLowerCase();
-
-            // Check for keywords in each category
-            for (const category of Object.keys(aiKnowledge)) {
-                if (category === 'default') continue;
-                const data = aiKnowledge[category];
-                const matched = data.keywords.some(keyword => lower.includes(keyword));
-                if (matched) {
-                    const responses = data.responses;
-                    return responses[Math.floor(Math.random() * responses.length)];
-                }
-            }
-
-            // Default responses
-            const defaults = aiKnowledge.default;
-            return defaults[Math.floor(Math.random() * defaults.length)];
+        function setMentorOnline(isOnline) {
+            const statusEl = document.querySelector('.ai-status');
+            if (!statusEl) return;
+            statusEl.style.color = isOnline ? '#16a34a' : '#dc2626';
+            statusEl.innerHTML = `<span class="dot"></span>${isOnline ? 'Online' : 'Fallback Mode'}`;
         }
 
-        // =============================================================
-        // 3. AI MESSAGE FUNCTIONS
-        // =============================================================
         function addAIMessage(type, text) {
+            if (!aiMessages) return;
+
             const bubble = document.createElement('div');
             bubble.className = `ai-message-bubble ${type}`;
 
             if (type === 'ai') {
-                // Convert markdown-like text to HTML
-                let formatted = text
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\n/g, '<br>')
-                    .replace(/•/g, '•');
-                bubble.innerHTML = formatted;
+                bubble.innerHTML = String(text || '').replace(/\n/g, '<br>');
             } else {
                 bubble.textContent = text;
             }
@@ -1543,105 +1454,120 @@
         }
 
         function showTypingIndicator() {
+            if (!aiMessages) return;
+            const existing = document.getElementById('typingIndicator');
+            if (existing) existing.remove();
+
             const bubble = document.createElement('div');
             bubble.className = 'ai-message-bubble ai';
             bubble.id = 'typingIndicator';
             bubble.innerHTML = `
-                    <div class="typing-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
+            `;
 
-            </article>
+            aiMessages.appendChild(bubble);
+            aiMessages.scrollTop = aiMessages.scrollHeight;
+        }
 
-            <!-- Psycho -->
+        function hideTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
 
-            <article class="programme-card">
+        function getLocalHomepageFallback(message) {
+            const lower = String(message || '').toLowerCase();
+            if (lower.includes('course') || lower.includes('offer')) {
+                return 'We offer practical learning in community development, social work, counseling, communication, and leadership. I can recommend a course path based on your goals.';
+            }
+            if (lower.includes('start') || lower.includes('begin')) {
+                return 'Start by creating an account, then enroll in one beginner-friendly course and complete the first lesson this week.';
+            }
+            if (lower.includes('recommend')) {
+                return 'A strong starting path is Communication Skills, then Community Development Methodologies.';
+            }
+            return 'I can help with course selection, getting started, and personalized study planning. Ask me what to learn first.';
+        }
 
-                <div class="programme-image"></div>
+        async function sendAIMessage(prefilledMessage) {
+            if (isProcessing) return;
 
-                <div class="programme-content">
+            const message = (typeof prefilledMessage === 'string' ? prefilledMessage : aiInput.value).trim();
+            if (!message) return;
 
-                    <span class="tag">
+            isProcessing = true;
+            if (aiSendBtn) aiSendBtn.disabled = true;
+            if (aiInput) aiInput.disabled = true;
 
-                        Wellbeing
+            addAIMessage('user', message);
+            if (aiInput) aiInput.value = '';
+            showTypingIndicator();
 
-                    </span>
+            try {
+                let responseText = getLocalHomepageFallback(message);
 
-                    <h3>Psychosocial Support</h3>
+                if (typeof AIService !== 'undefined') {
+                    AIService.initAIService(window.SWORD_AI_CONFIG || {});
+                    responseText = await AIService.sendAIMessage(message, 'homepage', {
+                        userName: currentUser?.displayName || currentUser?.email || 'Seeker',
+                        courseHints: homepageCourseHints
+                    });
+                    setMentorOnline(true);
+                } else {
+                    setMentorOnline(false);
+                }
 
-                    <p>
+                hideTypingIndicator();
+                addAIMessage('ai', responseText);
+            } catch (error) {
+                console.error('Homepage AI error:', error);
+                hideTypingIndicator();
+                setMentorOnline(false);
+                addAIMessage('ai', getLocalHomepageFallback(message));
+            } finally {
+                isProcessing = false;
+                if (aiSendBtn) aiSendBtn.disabled = false;
+                if (aiInput) {
+                    aiInput.disabled = false;
+                    aiInput.focus();
+                }
+            }
+        }
 
-                        Develop counselling,
-                        emotional support
-                        and resilience-building skills
-                        for individuals and communities.
+        auth.onAuthStateChanged((user) => {
+            currentUser = user || null;
 
-                    </p>
+            if (user) {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                dashboardBtn.style.display = 'inline-flex';
+            } else {
+                loginBtn.style.display = 'inline-flex';
+                registerBtn.style.display = 'inline-flex';
+                dashboardBtn.style.display = 'none';
+            }
+        });
 
-                    <div class="programme-footer">
+        function initHomepageMentor() {
+            if (typeof AIService !== 'undefined') {
+                AIService.initAIService(window.SWORD_AI_CONFIG || {});
+                setMentorOnline(true);
+            } else {
+                setMentorOnline(false);
+            }
 
-                        <strong>Certificate Included</strong>
+            addAIMessage('ai', 'Welcome to Sword Institute. I can help you choose courses, understand learning paths, and plan your next steps.');
+        }
 
-                        <a href="register.html" class="btn btn-primary">
+        window.sendAIMessage = sendAIMessage;
 
-                            Enrol
+        document.addEventListener('DOMContentLoaded', initHomepageMentor);
+    </script>
 
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-        </div>
-
-    </div>
-
-</section>
-<div class="scroll-indicator">
-
-↓
-
-</div>
-
-<!-- ========================= -->
-<!-- NEXT SECTION PLACEHOLDER -->
-<!-- ========================= -->
-
-<section class="coming-next">
-
-<div class="container">
-
-<h2>
-
-Statistics Section Coming Next
-
-</h2>
-
-<p>
-
-In Part 2 we'll add:
-
-Animated Counters,
-
-Featured Programmes,
-
-Professional Cards,
-
-and Firestore Integration.
-
-</p>
-
-</div>
-
-</section>
-
-<script type="module" src="js/index.js"></script>
-<script type="module" src="js/homeCourses.js"></script>
+    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/homeCourses.js"></script>
 </body>
 </html>

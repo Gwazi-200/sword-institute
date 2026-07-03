@@ -6,8 +6,78 @@
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
+
+// =============================================================
+// 0. AI MENTOR PROXY (Secure OpenRouter Access)
+// =============================================================
+
+exports.aiMentorProxy = functions.https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        const openRouterKey = process.env.OPENROUTER_API_KEY ||
+            (functions.config().openrouter && functions.config().openrouter.key);
+
+        if (!openRouterKey) {
+            return res.status(500).json({ error: 'Server AI key is not configured.' });
+        }
+
+        try {
+            const body = req.body || {};
+
+            const allowedModels = new Set([
+                'openai/gpt-3.5-turbo',
+                'mistralai/mistral-7b-instruct'
+            ]);
+
+            const model = allowedModels.has(body.model)
+                ? body.model
+                : 'openai/gpt-3.5-turbo';
+
+            const messages = Array.isArray(body.messages) ? body.messages : [];
+            const temperature = typeof body.temperature === 'number' ? body.temperature : 0.6;
+            const maxTokens = Number.isInteger(body.max_tokens) ? body.max_tokens : 400;
+
+            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${openRouterKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': req.headers.origin || 'https://sword-institute.app',
+                    'X-Title': 'Sword Institute LMS'
+                },
+                body: JSON.stringify({
+                    model,
+                    messages,
+                    temperature,
+                    max_tokens: maxTokens
+                })
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok) {
+                return res.status(response.status).json({
+                    error: 'OpenRouter request failed',
+                    details: payload
+                });
+            }
+
+            return res.status(200).json(payload);
+        } catch (error) {
+            console.error('aiMentorProxy error:', error);
+            return res.status(500).json({
+                error: 'AI proxy error',
+                message: error.message || 'Unexpected AI proxy failure.'
+            });
+        }
+    });
+});
 
 // =============================================================
 // 1. VERIFY PAYMENT (Admin Only)

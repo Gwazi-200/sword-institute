@@ -1150,7 +1150,7 @@
         // Initialize AI Service
         function initAI() {
             if (typeof AIService !== 'undefined') {
-                AIService.initAIService();
+                AIService.initAIService(window.SWORD_AI_CONFIG || {});
                 console.log('🤖 AI Service initialized');
                 return true;
             } else {
@@ -1179,13 +1179,11 @@
             input.disabled = true;
 
             try {
-                let reply;
-                // Try to use real AI if available
-                if (typeof AIService !== 'undefined' && AIService.initAIService()) {
-                    reply = await AIService.sendAIMessage(message, 'Dashboard');
-                } else {
-                    // Fallback
-                    reply = getLocalResponse(message);
+                let reply = getLocalResponse(message);
+                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    reply = await AIService.sendAIMessage(message, 'dashboard', {
+                        studentData
+                    });
                 }
                 // Update the AI message panel
                 aiAdvice.innerHTML = `<div class="greeting">🤖 AI Mentor</div><div class="message">${reply}</div>`;
@@ -1245,8 +1243,12 @@
                     await loadUserDashboard(currentUserData.uid);
                 }
 
-                // Get smart recommendations
-                const result = await getSmartRecommendations(studentData);
+                let result;
+                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    result = await AIService.getLearningRecommendations(studentData || {});
+                } else {
+                    result = await getSmartRecommendations(studentData);
+                }
 
                 if (result.success && result.recommendations.recommendation) {
                     const recommendation = result.recommendations.recommendation;
@@ -1377,25 +1379,38 @@
         // STUDY TIP
         // =============================================================
         function getStudyTip() {
-            const tips = [
-                "🍅 Try the Pomodoro Technique: 25 minutes study, 5 minutes break!",
-                "📝 Take notes while learning - writing helps memory retention.",
-                "👥 Find a study buddy - learning with others boosts motivation.",
-                "🌍 Apply what you learn to real-life situations.",
-                "🔄 Review your notes before starting a new lesson.",
-                "🎯 Set small daily goals - they're easier to achieve!",
-                "📅 Create a study schedule and stick to it!",
-                "🧘 Take breaks to clear your mind and refocus.",
-                "📖 Teach what you learn to someone else - it reinforces your understanding.",
-                "🎧 Try studying with background music or ambient sounds."
-            ];
-            const tip = tips[Math.floor(Math.random() * tips.length)];
             const aiAdvice = document.getElementById('aiAdvice');
-            if (aiAdvice) {
-                const existing = aiAdvice.innerHTML;
-                aiAdvice.innerHTML = existing + `<div class="tip">💡 ${tip}</div>`;
+
+            const appendTip = (tipText) => {
+                if (aiAdvice) {
+                    const existing = aiAdvice.innerHTML;
+                    aiAdvice.innerHTML = existing + `<div class="tip">💡 ${tipText}</div>`;
+                }
+                showToast('💡 ' + tipText);
+            };
+
+            const fallbackTips = [
+                'Try the Pomodoro Technique: 25 minutes study, 5 minutes break.',
+                'Take notes while learning; writing improves memory retention.',
+                'Set one small, realistic learning goal each day.',
+                'Review your notes before starting a new lesson.',
+                'Teach one concept to someone else to reinforce understanding.'
+            ];
+
+            if (typeof AIService === 'undefined' || !AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                appendTip(fallbackTips[Math.floor(Math.random() * fallbackTips.length)]);
+                return;
             }
-            showToast('💡 ' + tip);
+
+            AIService.sendAIMessage('Give me one practical study tip for today.', 'dashboard', {
+                studentData,
+                intent: 'study_tip'
+            }).then((tip) => {
+                appendTip(tip);
+            }).catch((error) => {
+                console.error('Error loading study tip:', error);
+                appendTip(fallbackTips[Math.floor(Math.random() * fallbackTips.length)]);
+            });
         }
 
         // =============================================================
@@ -1403,7 +1418,12 @@
         // =============================================================
         async function loadAIRecommendations(uid) {
             try {
-                const result = await getSmartRecommendations(studentData);
+                let result;
+                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    result = await AIService.getLearningRecommendations(studentData || {});
+                } else {
+                    result = await getSmartRecommendations(studentData);
+                }
                 if (result.success) {
                     const data = result.recommendations;
                     const aiAdvice = document.getElementById('aiAdvice');

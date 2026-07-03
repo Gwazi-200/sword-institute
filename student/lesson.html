@@ -897,6 +897,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
 
+    <script src="../ai-service.js"></script>
+
     <script>
         // =============================================================
         // FIREBASE CONFIG
@@ -1252,33 +1254,61 @@
         // =============================================================
         // AI QUESTION
         // =============================================================
-        function sendAIQuestion() {
+        async function sendAIQuestion() {
             const question = aiInput.value.trim();
             if (!question) return;
 
-            aiAdvice.textContent = '🤔 Thinking...';
+            const sendBtn = document.querySelector('.ai-input-row button');
+
+            aiAdvice.textContent = 'Thinking...';
             aiInput.value = '';
+            aiInput.disabled = true;
+            if (sendBtn) sendBtn.disabled = true;
 
-            const lowerQuestion = question.toLowerCase();
-            let response = '';
+            const lessonSummary = (lessonContent.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 800);
 
-            if (lowerQuestion.includes('explain') || lowerQuestion.includes('what is') || lowerQuestion.includes(
-                    'meaning')) {
-                response = '🔍 Great question! This lesson covers: ' + lessonHeading.textContent +
-                    '. Try reviewing the key points above for a quick summary.';
-            } else if (lowerQuestion.includes('example') || lowerQuestion.includes('instance')) {
-                response = '💡 Here\'s a practical example: Think about how you can apply these concepts in your community work. The lesson content provides real-world applications.';
-            } else if (lowerQuestion.includes('summary') || lowerQuestion.includes('summarize')) {
-                response = '📋 Quick summary: This lesson introduces core concepts and practical applications. Check the highlighted sections above for the most important points.';
-            } else if (lowerQuestion.includes('test') || lowerQuestion.includes('quiz')) {
-                response = '🧠 Ready to test your knowledge? Complete the quiz in this lesson to earn XP!';
-            } else if (lowerQuestion.includes('hello') || lowerQuestion.includes('hi')) {
-                response = '👋 Hello! I\'m your AI Learning Assistant. Ask me anything about this lesson, and I\'ll help you understand it better.';
-            } else {
-                response = '🌟 Great question! I\'d recommend reviewing the lesson content carefully. The key concepts are highlighted in the boxes above. If you have specific questions, feel free to ask!';
+            try {
+                if (typeof AIService !== 'undefined') {
+                    AIService.initAIService(window.SWORD_AI_CONFIG || {});
+                    const reply = await AIService.sendAIMessage(question, 'lesson', {
+                        lessonContext: {
+                            courseName: courseName.textContent,
+                            lessonTitle: lessonHeading.textContent,
+                            lessonSummary: lessonSummary
+                        }
+                    });
+                    aiAdvice.textContent = reply;
+                    return;
+                }
+
+                const lowerQuestion = question.toLowerCase();
+                let response = '';
+
+                if (lowerQuestion.includes('explain') || lowerQuestion.includes('what is') || lowerQuestion.includes(
+                        'meaning')) {
+                    response = 'Great question. This lesson covers: ' + lessonHeading.textContent +
+                        '. Review the key points above for a quick summary.';
+                } else if (lowerQuestion.includes('example') || lowerQuestion.includes('instance')) {
+                    response = 'Here is a practical approach: apply one lesson concept to a real challenge in your community work and reflect on the result.';
+                } else if (lowerQuestion.includes('summary') || lowerQuestion.includes('summarize')) {
+                    response = 'Quick summary: this lesson introduces core concepts and practical applications. Focus on the highlighted sections for the main ideas.';
+                } else if (lowerQuestion.includes('test') || lowerQuestion.includes('quiz')) {
+                    response = 'Ready to test your knowledge? Complete the lesson quiz and mark this lesson complete to earn XP.';
+                } else if (lowerQuestion.includes('hello') || lowerQuestion.includes('hi')) {
+                    response = 'Hello. I am your AI Learning Assistant. Ask me anything about this lesson and I will help you understand it clearly.';
+                } else {
+                    response = 'Good question. Review the highlighted key concepts above, and ask me for a summary or example if you want deeper clarity.';
+                }
+
+                aiAdvice.textContent = response;
+            } catch (error) {
+                console.error('Lesson AI error:', error);
+                aiAdvice.textContent = 'I could not reach the AI service right now. Please try again in a moment.';
+            } finally {
+                aiInput.disabled = false;
+                if (sendBtn) sendBtn.disabled = false;
+                aiInput.focus();
             }
-
-            aiAdvice.textContent = response;
         }
 
         // =============================================================
