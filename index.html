@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
+    <link rel="stylesheet" href="css/teacherHeader.css" />
 
     <style>
         /* ==========================================================
@@ -134,97 +135,6 @@
             box-shadow: 0 20px 50px -12px rgba(139, 0, 255, 0.12);
         }
 
-        .ai-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .ai-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .mentor-title-block {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            line-height: 1.2;
-        }
-        .mentor-name {
-            display: block;
-        }
-        .ai-header h3 small {
-            display: block;
-            font-weight: 400;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .professor-emoji {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.9rem;
-            line-height: 1;
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
-            animation: professor-wave 2s ease-in-out infinite;
-            transform-origin: 70% 80%;
-            vertical-align: middle;
-        }
-        .professor-emoji img {
-            width: 1em;
-            height: 1em;
-            display: inline-block;
-        }
-        @keyframes professor-wave {
-            0%,
-            100% {
-                transform: rotate(0deg) scale(1);
-            }
-            25% {
-                transform: rotate(-7deg) scale(1.03);
-            }
-            50% {
-                transform: rotate(7deg) scale(1.06);
-            }
-            75% {
-                transform: rotate(-4deg) scale(1.03);
-            }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .professor-emoji {
-                animation: none;
-            }
-        }
-        .ai-header .ai-status {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.7rem;
-            color: #16a34a;
-            font-weight: 600;
-        }
-        .ai-header .ai-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #16a34a;
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
-            }
-        }
 
         .ai-messages {
             flex: 1;
@@ -303,30 +213,6 @@
             }
         }
 
-        .ai-quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-        }
-        .ai-quick-actions button {
-            padding: 4px 12px;
-            border-radius: 30px;
-            border: 1px solid rgba(139, 0, 255, 0.1);
-            background: rgba(255, 255, 255, 0.3);
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            white-space: nowrap;
-        }
-        .ai-quick-actions button:hover {
-            border-color: var(--violet-deep);
-            background: rgba(139, 0, 255, 0.05);
-            color: var(--violet-deep);
-            transform: scale(1.05);
-        }
 
         .ai-input-row {
             display: flex;
@@ -816,13 +702,6 @@
             .ai-messages {
                 max-height: 120px;
             }
-            .ai-quick-actions {
-                gap: 4px;
-            }
-            .ai-quick-actions button {
-                font-size: 0.65rem;
-                padding: 3px 10px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -938,7 +817,7 @@
                             <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
                             <span class="mentor-title-block">
                                 <span class="mentor-name">Professor SWORD</span>
-                                <small>Your Spiritual Guide</small>
+                                <small class="mentor-subtitle">Your Personal Learning Assistant</small>
                             </span>
                         </h3>
                         <div class="ai-status">
@@ -947,25 +826,19 @@
                         </div>
                     </div>
 
+                    <div class="teaching-modes-toolbar" id="teachingModesToolbar" data-teaching-toolbar aria-label="Teaching modes toolbar">
+                        <button type="button" class="teaching-mode-btn" data-mode="explain" aria-pressed="false">📖 Explain</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="quiz" aria-pressed="false">📝 Quiz Me</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="practice" aria-pressed="false">🎯 Practice</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="example" aria-pressed="false">💡 Give Example</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="summarize" aria-pressed="false">📚 Summarize</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="teach" aria-pressed="false">🎤 Teach Me</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="exam" aria-pressed="false">🎓 Prepare for Exam</button>
+                    </div>
+
                     <!-- Chat Messages -->
                     <div class="ai-messages" id="aiMessages">
                         <!-- Welcome message will be added by JavaScript -->
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="ai-quick-actions" id="aiQuickActions">
-                        <button onclick="sendAIMessage('Give me a tour of Sword Institute')">
-                            <i class="fas fa-compass"></i> Tour
-                        </button>
-                        <button onclick="sendAIMessage('What courses do you offer?')">
-                            <i class="fas fa-graduation-cap"></i> Courses
-                        </button>
-                        <button onclick="sendAIMessage('How do I get started?')">
-                            <i class="fas fa-rocket"></i> Get Started
-                        </button>
-                        <button onclick="sendAIMessage('Recommend a course for me')">
-                            <i class="fas fa-lightbulb"></i> Recommend
-                        </button>
                     </div>
 
                     <!-- Input -->
@@ -1214,6 +1087,7 @@
     </script>
 
     <script src="ai-service.js"></script>
+    <script src="js/components/teacherHeader.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -1385,6 +1259,13 @@
         window.sendAIMessage = sendAIMessage;
 
         document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.TeacherHeader !== 'undefined' && window.TeacherHeader.initTeacherHeader) {
+                window.TeacherHeader.initTeacherHeader({
+                    toolbarSelector: '#teachingModesToolbar',
+                    inputSelector: '#aiInput'
+                });
+            }
+
             if (window.twemoji) {
                 document.querySelectorAll('.professor-emoji').forEach((emojiEl) => {
                     window.twemoji.parse(emojiEl, {
