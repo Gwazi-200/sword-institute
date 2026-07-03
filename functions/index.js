@@ -1,471 +1,337 @@
 /**
- * functions/index.js
- * Sword Institute Cloud Functions
- * Payment, Coin, and Enrollment Management
+ * Firebase Cloud Functions - Sword Institute AI Mentor
+ * Securely handles OpenFrontier AI API calls
  */
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
 
 // =============================================================
-// 0. AI MENTOR PROXY (Secure OpenRouter Access)
+// OPENFRONTIER AI API KEY (FROM ENV / FUNCTIONS CONFIG)
 // =============================================================
+const OPENFRONTIER_API_KEY =
+    (functions.config().openfrontier && functions.config().openfrontier.key) ||
+    process.env.OPENFRONTIER_API_KEY ||
+    process.env.OPENROUTER_API_KEY ||
+    '';
 
-exports.aiMentorProxy = functions.https.onRequest((req, res) => {
-    cors(req, res, async () => {
-        if (req.method !== 'POST') {
-            return res.status(405).json({ error: 'Method not allowed' });
-        }
-
-        const openRouterKey = process.env.OPENROUTER_API_KEY ||
-            (functions.config().openrouter && functions.config().openrouter.key);
-
-        if (!openRouterKey) {
-            return res.status(500).json({ error: 'Server AI key is not configured.' });
-        }
-
-        try {
-            const body = req.body || {};
-
-            const allowedModels = new Set([
-                'openai/gpt-3.5-turbo',
-                'mistralai/mistral-7b-instruct'
-            ]);
-
-            const model = allowedModels.has(body.model)
-                ? body.model
-                : 'openai/gpt-3.5-turbo';
-
-            const messages = Array.isArray(body.messages) ? body.messages : [];
-            const temperature = typeof body.temperature === 'number' ? body.temperature : 0.6;
-            const maxTokens = Number.isInteger(body.max_tokens) ? body.max_tokens : 400;
-
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${openRouterKey}`,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': req.headers.origin || 'https://sword-institute.app',
-                    'X-Title': 'Sword Institute LMS'
-                },
-                body: JSON.stringify({
-                    model,
-                    messages,
-                    temperature,
-                    max_tokens: maxTokens
-                })
-            });
-
-            const payload = await response.json();
-
-            if (!response.ok) {
-                return res.status(response.status).json({
-                    error: 'OpenRouter request failed',
-                    details: payload
-                });
-            }
-
-            return res.status(200).json(payload);
-        } catch (error) {
-            console.error('aiMentorProxy error:', error);
-            return res.status(500).json({
-                error: 'AI proxy error',
-                message: error.message || 'Unexpected AI proxy failure.'
-            });
-        }
-    });
-});
+const AI_CONFIG = {
+    apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    model: 'openai/gpt-3.5-turbo',
+    fallbackModel: 'mistralai/mistral-7b-instruct',
+    maxTokens: 500,
+    temperature: 0.7,
+};
 
 // =============================================================
-// 1. VERIFY PAYMENT (Admin Only)
+// 1. GET AI RESPONSE (Main Function)
 // =============================================================
 
-exports.verifyPayment = functions.https.onCall(async (data, context) => {
-    // Check if user is authenticated and is admin
+exports.getAIResponse = functions.https.onCall(async (data, context) => {
+    // Check if user is authenticated
     if (!context.auth) {
         throw new functions.https.HttpsError(
             'unauthenticated',
-            'You must be logged in.'
+            'You must be logged in to use the AI Mentor.'
         );
     }
 
-    const { verificationId, approve, adminCode } = data;
+    const { message, context: userContext, lessonContent } = data || {};
 
-    // Simple admin check (you can enhance this)
-    if (adminCode !== 'SWORD2024') {
+    if (!message) {
         throw new functions.https.HttpsError(
-            'permission-denied',
-            'You do not have permission to verify payments.'
+            'invalid-argument',
+            'Message is required.'
         );
     }
+
+    if (!OPENFRONTIER_API_KEY) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'AI service key is not configured.'
+        );
+    }
+
+    let studentName = 'Warrior';
 
     try {
-        // Get verification request
-        const verificationDoc = await admin.firestore()
-            .collection('payment_verifications')
-            .doc(verificationId)
-            .get();
-
-        if (!verificationDoc.exists) {
-            throw new functions.https.HttpsError(
-                'not-found',
-                'Verification request not found.'
-            );
-        }
-
-        const verificationData = verificationDoc.data();
-
-        if (verificationData.status !== 'pending') {
-            throw new functions.https.HttpsError(
-                'failed-precondition',
-                'This verification has already been processed.'
-            );
-        }
-
-        if (approve) {
-            // APPROVE: Enroll user in course
-            const enrollmentRef = await admin.firestore()
-                .collection('enrollments')
-                .add({
-                    userId: verificationData.userId,
-                    courseId: verificationData.courseId,
-                    paymentVerified: true,
-                    paymentMethod: verificationData.method,
-                    paymentReference: verificationData.transactionCode,
-                    enrolledAt: admin.firestore.FieldValue.serverTimestamp(),
-                    completed: false,
-                    progress: 0,
-                    xpEarned: 0,
-                    status: 'active',
-                });
-
-            // Update verification status
-            await admin.firestore()
-                .collection('payment_verifications')
-                .doc(verificationId)
-                .update({
-                    status: 'approved',
-                    approvedAt: admin.firestore.FieldValue.serverTimestamp(),
-                    approvedBy: context.auth.uid,
-                    enrollmentId: enrollmentRef.id,
-                });
-
-            // Update payment record
-            await admin.firestore()
-                .collection('payments')
-                .where('courseId', '==', verificationData.courseId)
-                .where('userId', '==', verificationData.userId)
-                .get()
-                .then((snapshot) => {
-                    snapshot.forEach((doc) => {
-                        doc.ref.update({
-                            status: 'completed',
-                            verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
-                            verifiedBy: context.auth.uid,
-                            enrollmentId: enrollmentRef.id,
-                        });
-                    });
-                });
-
-            return {
-                success: true,
-                message: 'Payment verified and enrollment completed!',
-                enrollmentId: enrollmentRef.id,
-            };
-
-        } else {
-            // REJECT
-            await admin.firestore()
-                .collection('payment_verifications')
-                .doc(verificationId)
-                .update({
-                    status: 'rejected',
-                    rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
-                    rejectedBy: context.auth.uid,
-                    reason: data.reason || 'Payment could not be verified.',
-                });
-
-            return {
-                success: true,
-                message: 'Payment verification rejected.',
-            };
-        }
-
-    } catch (error) {
-        console.error('Verification Error:', error);
-        throw new functions.https.HttpsError(
-            'internal',
-            error.message || 'Error processing verification.'
-        );
-    }
-});
-
-// =============================================================
-// 2. ENROLL WITH COINS
-// =============================================================
-
-exports.enrollWithCoins = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError(
-            'unauthenticated',
-            'You must be logged in.'
-        );
-    }
-
-    const { courseId } = data;
-
-    try {
-        // Check if already enrolled
-        const existingEnrollment = await admin.firestore()
-            .collection('enrollments')
-            .where('userId', '==', context.auth.uid)
-            .where('courseId', '==', courseId)
-            .get();
-
-        if (!existingEnrollment.empty) {
-            throw new functions.https.HttpsError(
-                'failed-precondition',
-                'You are already enrolled in this course.'
-            );
-        }
-
-        // Get course details
-        const courseDoc = await admin.firestore()
-            .collection('courses')
-            .doc(courseId)
-            .get();
-
-        if (!courseDoc.exists) {
-            throw new functions.https.HttpsError(
-                'not-found',
-                'Course not found.'
-            );
-        }
-
-        const courseData = courseDoc.data();
-        const coinCost = courseData.coinCost || 30;
-
-        // Get user coins
+        // Get student data
         const userDoc = await admin.firestore()
             .collection('users')
             .doc(context.auth.uid)
             .get();
 
-        const userCoins = userDoc.data()?.coins || 0;
+        const userData = userDoc.data() || {};
+        studentName = userData.displayName || userData.name || studentName;
 
-        if (userCoins < coinCost) {
-            throw new functions.https.HttpsError(
-                'failed-precondition',
-                `You need ${coinCost} coins to enroll. You have ${userCoins} coins.`
-            );
-        }
-
-        // Deduct coins
-        await admin.firestore()
-            .collection('users')
-            .doc(context.auth.uid)
-            .update({
-                coins: admin.firestore.FieldValue.increment(-coinCost),
-            });
-
-        // Log coin transaction
-        await admin.firestore()
-            .collection('coin_transactions')
-            .add({
-                userId: context.auth.uid,
-                amount: -coinCost,
-                reason: `Enrolled in ${courseData.title}`,
-                timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                balance: userCoins - coinCost,
-            });
-
-        // Create enrollment
-        const enrollmentRef = await admin.firestore()
+        // Get enrollments
+        const enrollmentsSnapshot = await admin.firestore()
             .collection('enrollments')
-            .add({
-                userId: context.auth.uid,
-                courseId: courseId,
-                paymentVerified: true,
-                paymentMethod: 'coins',
-                paymentReference: `coin_${Date.now()}`,
-                enrolledAt: admin.firestore.FieldValue.serverTimestamp(),
-                completed: false,
-                progress: 0,
-                xpEarned: 0,
-                status: 'active',
-            });
-
-        return {
-            success: true,
-            message: `Successfully enrolled using ${coinCost} coins!`,
-            enrollmentId: enrollmentRef.id,
-            remainingCoins: userCoins - coinCost,
-        };
-
-    } catch (error) {
-        console.error('Coin Enrollment Error:', error);
-        throw new functions.https.HttpsError(
-            'internal',
-            error.message || 'Error enrolling with coins.'
-        );
-    }
-});
-
-// =============================================================
-// 3. ADD DAILY LOGIN BONUS
-// =============================================================
-
-exports.dailyLoginBonus = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError(
-            'unauthenticated',
-            'You must be logged in.'
-        );
-    }
-
-    try {
-        const userId = context.auth.uid;
-        const today = new Date().toDateString();
-
-        // Check if already claimed today
-        const lastBonusDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .collection('daily_bonuses')
-            .where('date', '==', today)
-            .get();
-
-        if (!lastBonusDoc.empty) {
-            return {
-                success: true,
-                claimed: false,
-                message: 'You already claimed your daily bonus today.',
-            };
-        }
-
-        // Add bonus
-        const bonusAmount = 2;
-        const streakBonus = 0;
-
-        // Check streak
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toDateString();
-
-        const yesterdayBonus = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .collection('daily_bonuses')
-            .where('date', '==', yesterdayStr)
-            .get();
-
-        let streak = 0;
-        if (!yesterdayBonus.empty) {
-            streak = yesterdayBonus.docs[0].data().streak || 0;
-        }
-
-        const newStreak = streak + 1;
-        let totalBonus = bonusAmount;
-
-        // Streak bonus every 7 days
-        if (newStreak % 7 === 0) {
-            totalBonus += 5;
-        }
-
-        // Add coins
-        await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .update({
-                coins: admin.firestore.FieldValue.increment(totalBonus),
-            });
-
-        // Record bonus
-        await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .collection('daily_bonuses')
-            .add({
-                date: today,
-                amount: totalBonus,
-                streak: newStreak,
-                timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            });
-
-        // Log transaction
-        await admin.firestore()
-            .collection('coin_transactions')
-            .add({
-                userId: userId,
-                amount: totalBonus,
-                reason: `Daily login bonus (Day ${newStreak})`,
-                timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            });
-
-        return {
-            success: true,
-            claimed: true,
-            bonus: totalBonus,
-            streak: newStreak,
-            message: `You earned ${totalBonus} coins! Day ${newStreak} streak!`,
-        };
-
-    } catch (error) {
-        console.error('Daily Bonus Error:', error);
-        throw new functions.https.HttpsError(
-            'internal',
-            'Error claiming daily bonus.'
-        );
-    }
-});
-
-// =============================================================
-// 4. GET PAYMENT VERIFICATION STATUS
-// =============================================================
-
-exports.getPaymentStatus = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError(
-            'unauthenticated',
-            'You must be logged in.'
-        );
-    }
-
-    const { courseId } = data;
-
-    try {
-        const snapshot = await admin.firestore()
-            .collection('payments')
             .where('userId', '==', context.auth.uid)
-            .where('courseId', '==', courseId)
-            .orderBy('createdAt', 'desc')
-            .limit(1)
+            .where('status', '==', 'active')
             .get();
 
-        if (snapshot.empty) {
-            return { status: 'none' };
+        let enrolledCount = 0;
+        let completedCount = 0;
+        let totalXp = 0;
+
+        enrollmentsSnapshot.forEach((doc) => {
+            const enrollment = doc.data();
+            enrolledCount += 1;
+            if (enrollment.completed) completedCount += 1;
+            if (enrollment.xpEarned) totalXp += enrollment.xpEarned;
+        });
+
+        // Build system prompt
+        let systemPrompt = `You are an AI Mentor for Sword Institute, a community development and social work learning platform.
+
+STUDENT INFORMATION:
+- Name: ${studentName}
+- Enrolled Courses: ${enrolledCount}
+- Completed Courses: ${completedCount}
+- Total XP: ${totalXp}
+
+Your role is to:
+1. Be warm, encouraging, and supportive
+2. Provide personalized learning advice
+3. Help students understand course content
+4. Motivate and inspire continued learning
+5. Keep responses concise (2-3 sentences for quick answers)
+
+Tone: Wise, compassionate, and empowering. Use emojis occasionally.
+
+Current Context: ${userContext || 'General learning support'}`;
+
+        if (lessonContent) {
+            systemPrompt += `\n\nLESSON CONTENT: ${String(lessonContent).substring(0, 800)}...\n\nHelp the student understand this lesson content and answer their question.`;
         }
 
-        const doc = snapshot.docs[0];
-        const paymentData = doc.data();
+        // Call OpenFrontier AI (primary)
+        const response = await fetch(AI_CONFIG.apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENFRONTIER_API_KEY}`,
+                'HTTP-Referer': 'https://sword-institute.web.app',
+                'X-Title': 'Sword Institute LMS'
+            },
+            body: JSON.stringify({
+                model: AI_CONFIG.model,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: message }
+                ],
+                max_tokens: AI_CONFIG.maxTokens,
+                temperature: AI_CONFIG.temperature,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await safeJson(response);
+            console.error('AI API Error:', errorData);
+
+            // Try fallback model
+            const fallbackResponse = await fetch(AI_CONFIG.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${OPENFRONTIER_API_KEY}`,
+                    'HTTP-Referer': 'https://sword-institute.web.app',
+                    'X-Title': 'Sword Institute LMS'
+                },
+                body: JSON.stringify({
+                    model: AI_CONFIG.fallbackModel,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: message }
+                    ],
+                    max_tokens: AI_CONFIG.maxTokens,
+                    temperature: AI_CONFIG.temperature,
+                })
+            });
+
+            if (!fallbackResponse.ok) {
+                throw new Error('Both primary and fallback models failed');
+            }
+
+            const fallbackData = await fallbackResponse.json();
+            const reply = fallbackData?.choices?.[0]?.message?.content || getFallbackResponse(message, studentName);
+
+            // Log interaction
+            await admin.firestore().collection('ai_interactions').add({
+                userId: context.auth.uid,
+                message,
+                reply,
+                context: userContext || 'General',
+                model: AI_CONFIG.fallbackModel,
+                timestamp: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            return { success: true, reply };
+        }
+
+        const responseData = await response.json();
+        const reply = responseData?.choices?.[0]?.message?.content || getFallbackResponse(message, studentName);
+
+        // Log interaction
+        await admin.firestore().collection('ai_interactions').add({
+            userId: context.auth.uid,
+            message,
+            reply,
+            context: userContext || 'General',
+            model: AI_CONFIG.model,
+            timestamp: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        return { success: true, reply };
+
+    } catch (error) {
+        console.error('AI Error:', error);
+        // Return a friendly fallback response
+        return {
+            success: true,
+            reply: getFallbackResponse(message, studentName)
+        };
+    }
+});
+
+// =============================================================
+// 2. GET AI RECOMMENDATION
+// =============================================================
+
+exports.getAIRecommendation = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError(
+            'unauthenticated',
+            'You must be logged in.'
+        );
+    }
+
+    try {
+        // Get student enrollments
+        const enrollmentsSnapshot = await admin.firestore()
+            .collection('enrollments')
+            .where('userId', '==', context.auth.uid)
+            .where('status', '==', 'active')
+            .get();
+
+        const enrollments = [];
+        enrollmentsSnapshot.forEach((doc) => {
+            enrollments.push({ id: doc.id, ...doc.data() });
+        });
+
+        const completed = enrollments.filter((e) => e.completed);
+        const enrolledIds = enrollments.map((e) => e.courseId);
+
+        // Get all available courses
+        const coursesSnapshot = await admin.firestore()
+            .collection('courses')
+            .orderBy('order', 'asc')
+            .get();
+
+        const allCourses = [];
+        coursesSnapshot.forEach((doc) => {
+            allCourses.push({ id: doc.id, ...doc.data() });
+        });
+
+        const available = allCourses.filter((c) => !enrolledIds.includes(c.id));
+
+        let recommendation = '';
+
+        if (available.length === 0) {
+            recommendation = "🌟 You've completed all available courses! Check back soon for new content.";
+        } else if (completed.length === 0 && enrollments.length === 0) {
+            recommendation = `📚 I recommend starting with "${available[0]?.title || 'the first available course'}" - it's a great foundation for your learning journey!`;
+        } else if (completed.length === 0 && enrollments.length > 0) {
+            recommendation = "💪 Focus on completing your current courses before starting new ones. You're doing great!";
+        } else {
+            // Find recommended course by category priority
+            const priorityCategories = ['Community Development', 'Communication', 'Social Work'];
+            let recommended = null;
+
+            for (const cat of priorityCategories) {
+                const found = available.find((c) => c.category === cat);
+                if (found) {
+                    recommended = found;
+                    break;
+                }
+            }
+
+            if (!recommended && available.length > 0) {
+                recommended = available[0];
+            }
+
+            if (recommended) {
+                recommendation = `🎯 Based on your progress, I recommend "${recommended.title}" - it's a great next step!`;
+            } else {
+                recommendation = '📚 Explore our course catalogue to find your next learning path!';
+            }
+        }
 
         return {
-            status: paymentData.status,
-            paymentId: doc.id,
-            transactionCode: paymentData.transactionCode || '',
-            createdAt: paymentData.createdAt,
-            amount: paymentData.amount,
-            method: paymentData.method,
+            success: true,
+            recommendation,
+            availableCourses: available.length,
+            completedCourses: completed.length,
+            enrolledCourses: enrollments.length
         };
 
     } catch (error) {
-        console.error('Payment Status Error:', error);
-        throw new functions.https.HttpsError(
-            'internal',
-            'Error checking payment status.'
-        );
+        console.error('Recommendation Error:', error);
+        return {
+            success: false,
+            error: 'Could not generate recommendation. Please try again.'
+        };
     }
 });
+
+// =============================================================
+// 3. FALLBACK RESPONSES
+// =============================================================
+
+function getFallbackResponse(message, studentName) {
+    const lower = String(message || '').toLowerCase();
+
+    if (lower.includes('recommend') || lower.includes('next')) {
+        return "🎯 Based on your progress, I recommend exploring courses in Community Development or Communication Skills. Check out 'Community Development Methodologies' or 'Communication Skills' as great next steps!";
+    }
+
+    if (lower.includes('tip') || lower.includes('study')) {
+        const tips = [
+            '🍅 Try the Pomodoro Technique: 25 minutes study, 5 minutes break!',
+            '📝 Take notes while learning - writing helps memory retention.',
+            '👥 Find a study buddy - learning with others boosts motivation.',
+            '🌍 Apply what you learn to real-life situations.',
+            '🔄 Review your notes before starting a new lesson.'
+        ];
+        return tips[Math.floor(Math.random() * tips.length)];
+    }
+
+    if (lower.includes('motivat') || lower.includes('encourage')) {
+        return `🌟 You're doing amazing, ${studentName}! Every lesson you complete brings you closer to becoming a Digital Warrior for Social Good. Keep going! 💪`;
+    }
+
+    if (lower.includes('hello') || lower.includes('hi')) {
+        return `👋 Hello ${studentName}! I'm your AI Mentor. How can I help you with your learning today?`;
+    }
+
+    if (lower.includes('progress')) {
+        return '📊 Check your dashboard to see your progress! You can view your enrolled courses, completed lessons, and XP there.';
+    }
+
+    if (lower.includes('thanks') || lower.includes('thank')) {
+        return "You're welcome! 🌟 I'm here to help you succeed. Is there anything else you'd like to know?";
+    }
+
+    return "🌟 That's a great question! I'd recommend checking the lesson content for more details, or exploring our course catalogue to find courses that interest you.";
+}
+
+async function safeJson(response) {
+    try {
+        return await response.json();
+    } catch (error) {
+        return { error: 'Failed to parse response body' };
+    }
+}

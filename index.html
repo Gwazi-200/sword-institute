@@ -16,6 +16,10 @@
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/shared-components.css" />
+    <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
+    <link rel="stylesheet" href="css/shared-utilities.css" />
+    <link rel="stylesheet" href="css/teacherHeader.css" />
 
     <style>
         /* ==========================================================
@@ -56,60 +60,6 @@
             --radius-sm: 12px;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            padding: 20px;
-            margin: 0;
-        }
-
-        /* Main iOS Glass Container */
-        .app-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: var(--radius-xl);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-            padding: 20px 32px 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Floating Orbs */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.3;
-        }
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--violet-deep);
-            top: -150px;
-            right: -100px;
-            opacity: 0.1;
-        }
-        .orb-2 {
-            width: 350px;
-            height: 350px;
-            background: var(--gold-radiant);
-            bottom: -100px;
-            left: -100px;
-            opacity: 0.12;
-        }
         .orb-3 {
             width: 200px;
             height: 200px;
@@ -119,174 +69,6 @@
             opacity: 0.08;
         }
 
-        .container {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* ==========================================================
-           BUTTONS
-           ========================================================== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        .btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-primary {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
-        }
-        .btn-primary:hover {
-            background: #9B1DFF;
-            border-color: #9B1DFF;
-            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
-            color: #fff;
-        }
-
-        .btn-gold {
-            background: var(--gold-radiant);
-            color: var(--violet-dark);
-            border-color: var(--gold-radiant);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
-        }
-        .btn-gold:hover {
-            background: #FFE44D;
-            border-color: #FFE44D;
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
-            color: var(--violet-dark);
-        }
-
-        .btn-outline-violet {
-            background: transparent;
-            border-color: rgba(139, 0, 255, 0.2);
-            color: var(--violet-deep);
-        }
-        .btn-outline-violet:hover {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: #fff;
-            border-color: #16a34a;
-        }
-        .btn-success:hover {
-            background: #22c55e;
-            border-color: #22c55e;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* ==========================================================
-           NAVIGATION
-           ========================================================== */
-        nav {
-            padding: 8px 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-        .logo i {
-            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2.2rem;
-        }
-        .logo span {
-            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-            position: relative;
-        }
-        .nav-links a:hover {
-            color: var(--violet-deep);
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--violet-deep);
-            transition: width 0.3s;
-            border-radius: 2px;
-        }
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        .nav-links a.active {
-            color: var(--violet-deep);
-            font-weight: 700;
-        }
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
 
         /* ==========================================================
            HERO SECTION
@@ -333,12 +115,12 @@
             gap: 14px;
         }
 
-        /* ----- AI Mentor Card (Interactive) ----- */
+        /* ----- Professor SWORD Card (Interactive) ----- */
         .ai-mentor-card {
             padding: 28px;
             background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
+            backdrop-filter: blur(24px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: var(--radius-xl);
             box-shadow: 0 12px 40px -10px rgba(139, 0, 255, 0.06);
@@ -353,57 +135,6 @@
             box-shadow: 0 20px 50px -12px rgba(139, 0, 255, 0.12);
         }
 
-        .ai-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .ai-header i {
-            font-size: 2rem;
-            color: var(--violet-deep);
-            background: rgba(139, 0, 255, 0.04);
-            padding: 12px;
-            border-radius: 50%;
-            border: 1px solid rgba(139, 0, 255, 0.06);
-        }
-        .ai-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        .ai-header h3 small {
-            display: block;
-            font-weight: 400;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .ai-header .ai-status {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.7rem;
-            color: #16a34a;
-            font-weight: 600;
-        }
-        .ai-header .ai-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #16a34a;
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
-            }
-        }
 
         .ai-messages {
             flex: 1;
@@ -482,30 +213,6 @@
             }
         }
 
-        .ai-quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-        }
-        .ai-quick-actions button {
-            padding: 4px 12px;
-            border-radius: 30px;
-            border: 1px solid rgba(139, 0, 255, 0.1);
-            background: rgba(255, 255, 255, 0.3);
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            white-space: nowrap;
-        }
-        .ai-quick-actions button:hover {
-            border-color: var(--violet-deep);
-            background: rgba(139, 0, 255, 0.05);
-            color: var(--violet-deep);
-            transform: scale(1.05);
-        }
 
         .ai-input-row {
             display: flex;
@@ -518,6 +225,7 @@
             border-radius: var(--radius-sm);
             border: 1px solid rgba(139, 0, 255, 0.1);
             background: rgba(255, 255, 255, 0.5);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             font-size: 0.85rem;
             font-family: 'Inter', sans-serif;
@@ -569,8 +277,8 @@
             text-align: center;
             padding: 24px 12px;
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
             transition: all 0.3s ease;
@@ -627,6 +335,7 @@
         .section-header h2 i {
             background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-right: 10px;
         }
@@ -647,8 +356,8 @@
             text-align: center;
             padding: 28px 16px 24px;
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
             transition: all 0.35s ease;
@@ -666,6 +375,7 @@
             font-size: 2.8rem;
             background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 12px;
             display: block;
@@ -695,8 +405,8 @@
 
         .course-card {
             background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: var(--radius-lg);
             overflow: hidden;
@@ -750,6 +460,7 @@
             color: var(--text-secondary);
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-bottom: 12px;
@@ -815,6 +526,7 @@
         .testimonial-card {
             padding: 24px;
             background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
@@ -869,7 +581,22 @@
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             text-align: center;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
+        }
+
+        .skeleton-text-short {
+            width: 70%;
+        }
+        .course-meta-skeleton {
+            border: none;
+            padding-top: 8px;
+        }
+        .skeleton-meta-short {
+            width: 40%;
+        }
+        .quote-icon-violet {
+            color: var(--violet-deep);
         }
         .cta-box h2 {
             font-size: 2.4rem;
@@ -895,20 +622,6 @@
         /* ==========================================================
            FOOTER
            ========================================================== */
-        .footer {
-            padding: 32px 0 8px;
-            margin-top: 40px;
-            border-top: 1px solid rgba(139, 0, 255, 0.04);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .footer i {
-            color: var(--violet-deep);
-        }
-        .footer .gold {
-            color: var(--gold-radiant);
-        }
         .footer .footer-links {
             display: flex;
             justify-content: center;
@@ -955,18 +668,6 @@
         }
 
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav-links {
-                justify-content: center;
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            .nav-actions {
-                justify-content: center;
-            }
             .hero-content h1 {
                 font-size: 2.6rem;
             }
@@ -1000,13 +701,6 @@
             }
             .ai-messages {
                 max-height: 120px;
-            }
-            .ai-quick-actions {
-                gap: 4px;
-            }
-            .ai-quick-actions button {
-                font-size: 0.65rem;
-                padding: 3px 10px;
             }
         }
 
@@ -1078,12 +772,12 @@
                     <li><a href="index.html" class="active">Home</a></li>
                     <li><a href="courses.html">Courses</a></li>
                     <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="#hero">AI Mentor</a></li>
+                    <li><a href="#hero">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
                     <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
                     <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
+                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardBtn">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -1115,19 +809,31 @@
                 </div>
 
                 <!-- ==========================================================
-                AI MENTOR CARD - Interactive
+                PROFESSOR SWORD CARD - Interactive
                 ========================================================== -->
                 <div class="ai-mentor-card" id="aiMentorCard">
                     <div class="ai-header">
-                        <i class="fas fa-robot"></i>
                         <h3>
-                            AI Mentor
-                            <small>Your Guide to Sword Institute</small>
+                            <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
+                            <span class="mentor-title-block">
+                                <span class="mentor-name">Professor SWORD</span>
+                                <small class="mentor-subtitle">Your Personal Learning Assistant</small>
+                            </span>
                         </h3>
                         <div class="ai-status">
                             <span class="dot"></span>
-                            Online
+                            <span id="aiStatusText">Online</span>
                         </div>
+                    </div>
+
+                    <div class="teaching-modes-toolbar" id="teachingModesToolbar" data-teaching-toolbar aria-label="Teaching modes toolbar">
+                        <button type="button" class="teaching-mode-btn" data-mode="explain" aria-pressed="false">📖 Explain</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="quiz" aria-pressed="false">📝 Quiz Me</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="practice" aria-pressed="false">🎯 Practice</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="example" aria-pressed="false">💡 Give Example</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="summarize" aria-pressed="false">📚 Summarize</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="teach" aria-pressed="false">🎤 Teach Me</button>
+                        <button type="button" class="teaching-mode-btn" data-mode="exam" aria-pressed="false">🎓 Prepare for Exam</button>
                     </div>
 
                     <!-- Chat Messages -->
@@ -1135,28 +841,9 @@
                         <!-- Welcome message will be added by JavaScript -->
                     </div>
 
-                    <!-- Quick Actions -->
-                    <div class="ai-quick-actions" id="aiQuickActions">
-                        <button onclick="sendAIMessage('Give me a tour of Sword Institute')">
-                            <i class="fas fa-compass"></i> Tour
-                        </button>
-                        <button onclick="sendAIMessage('What courses do you offer?')">
-                            <i class="fas fa-graduation-cap"></i> Courses
-                        </button>
-                        <button onclick="sendAIMessage('How do I get started?')">
-                            <i class="fas fa-rocket"></i> Get Started
-                        </button>
-                        <button onclick="sendAIMessage('What is the AI Mentor?')">
-                            <i class="fas fa-robot"></i> About AI
-                        </button>
-                        <button onclick="sendAIMessage('Recommend a course for me')">
-                            <i class="fas fa-lightbulb"></i> Recommend
-                        </button>
-                    </div>
-
                     <!-- Input -->
                     <div class="ai-input-row">
-                        <input type="text" id="aiInput" placeholder="Ask me anything about Sword Institute..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
+                        <input type="text" id="aiInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
                         <button onclick="sendAIMessage()" id="aiSendBtn">
                             <i class="fas fa-paper-plane"></i> Ask
                         </button>
@@ -1253,10 +940,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1265,10 +952,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1277,10 +964,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1289,10 +976,10 @@
                         <div class="course-body">
                             <div class="skeleton skeleton-title"></div>
                             <div class="skeleton skeleton-text"></div>
-                            <div class="skeleton skeleton-text" style="width:70%;"></div>
-                            <div class="course-meta" style="border:none;padding-top:8px;">
+                            <div class="skeleton skeleton-text skeleton-text-short"></div>
+                            <div class="course-meta course-meta-skeleton">
                                 <span class="skeleton skeleton-meta"></span>
-                                <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                             </div>
                         </div>
                     </div>
@@ -1307,13 +994,13 @@
             <div class="container">
                 <div class="section-header">
                     <h2>
-                        <i class="fas fa-quote-left" style="color:var(--violet-deep);"></i> What Our Students Say
+                        <i class="fas fa-quote-left quote-icon-violet"></i> What Our Students Say
                     </h2>
                     <span class="sub">Real stories from real warriors <i class="fas fa-sparkles"></i></span>
                 </div>
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
-                        <div class="quote">"Sword Institute transformed my career. The AI Mentor helped me stay on track and the courses are incredibly practical."</div>
+                        <div class="quote">"Sword Institute transformed my career. Professor SWORD helped me stay on track and the courses are incredibly practical."</div>
                         <div class="author">
                             <div class="avatar">M</div>
                             <div>
@@ -1333,7 +1020,7 @@
                         </div>
                     </div>
                     <div class="testimonial-card">
-                        <div class="quote">"I love how the AI Mentor personalizes my learning experience. It feels like having a personal guide."</div>
+                        <div class="quote">"I love how Professor SWORD personalizes my learning experience. It feels like having a personal guide."</div>
                         <div class="author">
                             <div class="avatar">J</div>
                             <div>
@@ -1374,14 +1061,14 @@
                 <a href="index.html">Home</a>
                 <a href="courses.html">Courses</a>
                 <a href="dashboard.html">Dashboard</a>
-                <a href="#hero">AI Mentor</a>
+                <a href="#hero">Professor SWORD</a>
                 <a href="#">About</a>
                 <a href="#">Contact</a>
             </div>
-            <p style="margin-bottom:6px;">
+            <p class="footer-top">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -1394,8 +1081,13 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
 
     <script src="ai-service.js"></script>
+    <script src="js/components/teacherHeader.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -1432,18 +1124,30 @@
 
         function setMentorOnline(isOnline) {
             const statusEl = document.querySelector('.ai-status');
+            const statusTextEl = document.getElementById('aiStatusText');
             if (!statusEl) return;
             statusEl.style.color = isOnline ? '#16a34a' : '#dc2626';
-            statusEl.innerHTML = `<span class="dot"></span>${isOnline ? 'Online' : 'Fallback Mode'}`;
+            if (statusTextEl) {
+                statusTextEl.textContent = isOnline ? 'Online' : 'Fallback Mode';
+            } else {
+                statusEl.innerHTML = `<span class="dot"></span><span id="aiStatusText">${isOnline ? 'Online' : 'Fallback Mode'}</span>`;
+            }
         }
 
-        function addAIMessage(type, text) {
+        // =============================================================
+        // PROFESSOR SWORD FUNCTIONS (Homepage)
+        // =============================================================
+
+        function addAIMessage(type, text, isTyping = false) {
             if (!aiMessages) return;
 
             const bubble = document.createElement('div');
             bubble.className = `ai-message-bubble ${type}`;
 
-            if (type === 'ai') {
+            if (isTyping) {
+                bubble.id = 'typingIndicator';
+                bubble.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            } else if (type === 'ai') {
                 bubble.innerHTML = String(text || '').replace(/\n/g, '<br>');
             } else {
                 bubble.textContent = text;
@@ -1453,86 +1157,86 @@
             aiMessages.scrollTop = aiMessages.scrollHeight;
         }
 
-        function showTypingIndicator() {
-            if (!aiMessages) return;
-            const existing = document.getElementById('typingIndicator');
-            if (existing) existing.remove();
-
-            const bubble = document.createElement('div');
-            bubble.className = 'ai-message-bubble ai';
-            bubble.id = 'typingIndicator';
-            bubble.innerHTML = `
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
-
-            aiMessages.appendChild(bubble);
-            aiMessages.scrollTop = aiMessages.scrollHeight;
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
         }
 
-        function hideTypingIndicator() {
-            const typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-        }
-
-        function getLocalHomepageFallback(message) {
+        function getLocalAIResponse(message) {
             const lower = String(message || '').toLowerCase();
-            if (lower.includes('course') || lower.includes('offer')) {
-                return 'We offer practical learning in community development, social work, counseling, communication, and leadership. I can recommend a course path based on your goals.';
+            if (lower.includes('tour')) {
+                return '🏛️ Welcome to Sword Institute! We offer 18 courses in Community Development, Social Work, Counseling, and more. Professor SWORD is here to guide you. Start by exploring our course catalogue!';
+            }
+            if (lower.includes('course')) {
+                return '📚 We have 18 courses across 9 categories including Community Development, Social Work, Psychology, and Communication. Check out our course catalogue to find your perfect path!';
             }
             if (lower.includes('start') || lower.includes('begin')) {
-                return 'Start by creating an account, then enroll in one beginner-friendly course and complete the first lesson this week.';
+                return '🚀 Getting started is easy! Register for free, browse our courses, and enroll in one that interests you. Professor SWORD will be with you every step of the way!';
             }
             if (lower.includes('recommend')) {
-                return 'A strong starting path is Communication Skills, then Community Development Methodologies.';
+                return "🎯 I recommend starting with 'Communication Skills' or 'Introduction to Community Health' - they're great foundations for your learning journey!";
             }
-            return 'I can help with course selection, getting started, and personalized study planning. Ask me what to learn first.';
+            return '🌟 I\'m Professor SWORD! Ask me about courses, getting started, or anything about Sword Institute. How can I help you today?';
         }
 
-        async function sendAIMessage(prefilledMessage) {
+        // Send AI Message
+        async function sendAIMessage(message) {
             if (isProcessing) return;
 
-            const message = (typeof prefilledMessage === 'string' ? prefilledMessage : aiInput.value).trim();
-            if (!message) return;
+            const input = aiInput;
+            const sendBtn = aiSendBtn;
+
+            if (!input || !sendBtn) return;
+
+            // Get message from input if not provided
+            if (!message) {
+                message = input.value.trim();
+                if (!message) return;
+                input.value = '';
+            } else {
+                message = String(message).trim();
+                if (!message) return;
+            }
 
             isProcessing = true;
-            if (aiSendBtn) aiSendBtn.disabled = true;
-            if (aiInput) aiInput.disabled = true;
+            if (sendBtn) {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
 
             addAIMessage('user', message);
-            if (aiInput) aiInput.value = '';
-            showTypingIndicator();
+            addAIMessage('ai', '...', true);
 
             try {
-                let responseText = getLocalHomepageFallback(message);
-
-                if (typeof AIService !== 'undefined') {
-                    AIService.initAIService(window.SWORD_AI_CONFIG || {});
-                    responseText = await AIService.sendAIMessage(message, 'homepage', {
-                        userName: currentUser?.displayName || currentUser?.email || 'Seeker',
-                        courseHints: homepageCourseHints
-                    });
-                    setMentorOnline(true);
-                } else {
-                    setMentorOnline(false);
+                if (typeof AIService === 'undefined' || !AIService.initAIService()) {
+                    throw new Error('AI service is unavailable on this page');
                 }
 
-                hideTypingIndicator();
-                addAIMessage('ai', responseText);
+                const result = AIService.sendAIMessageLive
+                    ? await AIService.sendAIMessageLive(message, 'Homepage')
+                    : {
+                        reply: await AIService.sendAIMessage(message, 'Homepage'),
+                        live: AIService.isLastResponseLive ? AIService.isLastResponseLive() : true,
+                        source: AIService.getLastResponseSource ? AIService.getLastResponseSource() : 'unknown'
+                    };
+
+                setMentorOnline(Boolean(result.live));
+
+                removeTypingIndicator();
+                addAIMessage('ai', result.reply);
             } catch (error) {
                 console.error('Homepage AI error:', error);
-                hideTypingIndicator();
+                removeTypingIndicator();
                 setMentorOnline(false);
-                addAIMessage('ai', getLocalHomepageFallback(message));
+                addAIMessage('ai', '❌ Live AI is temporarily unavailable. Please try again in a moment.');
             } finally {
                 isProcessing = false;
-                if (aiSendBtn) aiSendBtn.disabled = false;
-                if (aiInput) {
-                    aiInput.disabled = false;
-                    aiInput.focus();
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Ask';
+                }
+                if (input) {
+                    input.focus();
                 }
             }
         }
@@ -1551,20 +1255,35 @@
             }
         });
 
-        function initHomepageMentor() {
+        // Initialize AI
+        window.sendAIMessage = sendAIMessage;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.TeacherHeader !== 'undefined' && window.TeacherHeader.initTeacherHeader) {
+                window.TeacherHeader.initTeacherHeader({
+                    toolbarSelector: '#teachingModesToolbar',
+                    inputSelector: '#aiInput'
+                });
+            }
+
+            if (window.twemoji) {
+                document.querySelectorAll('.professor-emoji').forEach((emojiEl) => {
+                    window.twemoji.parse(emojiEl, {
+                        folder: 'svg',
+                        ext: '.svg'
+                    });
+                });
+            }
+
             if (typeof AIService !== 'undefined') {
-                AIService.initAIService(window.SWORD_AI_CONFIG || {});
-                setMentorOnline(true);
+                AIService.initAIService();
+                setMentorOnline(AIService.hasLiveProvider ? AIService.hasLiveProvider() : true);
             } else {
                 setMentorOnline(false);
             }
 
             addAIMessage('ai', 'Welcome to Sword Institute. I can help you choose courses, understand learning paths, and plan your next steps.');
-        }
-
-        window.sendAIMessage = sendAIMessage;
-
-        document.addEventListener('DOMContentLoaded', initHomepageMentor);
+        });
     </script>
 
     <script type="module" src="js/index.js"></script>
