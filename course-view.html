@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* ---------- ROOT VARIABLES ---------- */
+        /* Same glass theme styles as before - keeping it concise */
         *,
         *::before,
         *::after {
@@ -101,7 +101,6 @@
             z-index: 2;
         }
 
-        /* ---------- BUTTONS ---------- */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -173,13 +172,32 @@
             border-color: #22c55e;
         }
 
+        .btn-warning {
+            background: #f59e0b;
+            color: #fff;
+            border-color: #f59e0b;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+            border-color: #d97706;
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+        .btn-info:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
         }
 
-        /* ---------- NAVIGATION ---------- */
         nav {
             padding: 8px 0 20px;
             position: relative;
@@ -261,7 +279,7 @@
             gap: 12px;
         }
 
-        /* ---------- COURSE VIEW ---------- */
+        /* Course View */
         .course-header {
             margin-bottom: 32px;
         }
@@ -433,6 +451,220 @@
             font-weight: 600;
         }
 
+        /* Payment Modal */
+        .payment-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .payment-overlay.active {
+            display: flex;
+        }
+
+        .payment-modal {
+            background: var(--pearl-light);
+            border-radius: var(--radius-xl);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .payment-modal .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        .payment-modal .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .payment-modal h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .payment-modal .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .payment-modal .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .payment-modal .payment-method {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .payment-modal .payment-method:hover {
+            border-color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.02);
+        }
+        .payment-modal .payment-method.active {
+            border-color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.04);
+        }
+        .payment-modal .payment-method .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .payment-modal .payment-method .icon.mpesa {
+            background: rgba(0, 150, 0, 0.1);
+            color: #006600;
+        }
+        .payment-modal .payment-method .icon.kcb {
+            background: rgba(0, 100, 200, 0.1);
+            color: #0066cc;
+        }
+        .payment-modal .payment-method .icon.coins {
+            background: rgba(255, 215, 0, 0.1);
+            color: #d4a745;
+        }
+        .payment-modal .payment-method .details {
+            flex: 1;
+        }
+        .payment-modal .payment-method .details .name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .payment-modal .payment-method .details .info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .payment-modal .payment-method .check {
+            color: var(--violet-deep);
+            font-size: 1.2rem;
+        }
+
+        .payment-modal .payment-details {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+        .payment-modal .payment-details .label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .payment-modal .payment-details .value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        .payment-modal .payment-details .highlight {
+            color: var(--violet-deep);
+        }
+
+        .payment-modal .form-group {
+            margin-bottom: 16px;
+        }
+        .payment-modal .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .payment-modal .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        .payment-modal .form-group input:focus {
+            outline: none;
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 4px rgba(139, 0, 255, 0.08);
+        }
+
+        .payment-modal .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+        }
+
+        .payment-modal .coin-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            margin-bottom: 16px;
+        }
+        .payment-modal .coin-info i {
+            color: #d4a745;
+        }
+        .payment-modal .coin-info .balance {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .payment-modal .coin-info .needed {
+            color: var(--violet-deep);
+            font-weight: 700;
+        }
+        .payment-modal .coin-info .insufficient {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
         .footer {
             padding: 32px 0 8px;
             margin-top: 40px;
@@ -468,6 +700,9 @@
         }
         .toast-notification.error {
             background: rgba(220, 38, 38, 0.95);
+        }
+        .toast-notification.warning {
+            background: rgba(245, 158, 11, 0.95);
         }
 
         @keyframes slideIn {
@@ -526,11 +761,12 @@
             body {
                 padding: 10px;
             }
-            .lesson-list li {
-                flex-wrap: wrap;
+            .payment-modal {
+                padding: 24px;
+                margin: 10px;
             }
-            .lesson-list li .lesson-status {
-                margin-left: 40px;
+            .payment-modal h2 {
+                font-size: 1.5rem;
             }
         }
 
@@ -545,6 +781,12 @@
                 flex-direction: column;
                 gap: 8px;
             }
+            .payment-modal {
+                padding: 16px;
+            }
+            .payment-modal .payment-method {
+                padding: 12px 16px;
+            }
         }
     </style>
 </head>
@@ -554,7 +796,9 @@
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
 
-        <!-- ============ NAVIGATION ============ -->
+        <!-- ============================================================
+        NAVIGATION
+        ============================================================ -->
         <nav>
             <div class="container nav-container">
                 <a href="index.html" class="logo">
@@ -577,7 +821,9 @@
             </div>
         </nav>
 
-        <!-- ============ COURSE CONTENT ============ -->
+        <!-- ============================================================
+        COURSE CONTENT
+        ============================================================ -->
         <div class="container" id="courseContent">
             <div class="course-header">
                 <div class="breadcrumb">
@@ -602,8 +848,8 @@
                     <span>Level: <span class="value" id="metaLevel">—</span></span>
                 </div>
                 <div class="item">
-                    <i class="fas fa-book-open"></i>
-                    <span>Lessons: <span class="value" id="metaLessons">—</span></span>
+                    <i class="fas fa-coins" style="color:var(--gold-radiant);"></i>
+                    <span>Cost: <span class="value" id="metaCost">—</span></span>
                 </div>
             </div>
 
@@ -628,9 +874,12 @@
                         <div id="courseInfo">
                             <p style="color:var(--text-muted);">Loading course information...</p>
                         </div>
-                        <button class="btn btn-primary" id="enrollBtn" style="width:100%;margin-top:16px;">
-                            <i class="fas fa-plus"></i> Enroll in This Course
-                        </button>
+                        <div id="enrollmentActions">
+                            <button class="btn btn-primary" id="enrollBtn" style="width:100%;margin-top:16px;">
+                                <i class="fas fa-plus"></i> Enroll in This Course
+                            </button>
+                            <div id="enrollStatus" style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);text-align:center;"></div>
+                        </div>
                         <a href="dashboard.html" class="btn btn-gold" style="width:100%;margin-top:10px;">
                             <i class="fas fa-arrow-left"></i> Back to Dashboard
                         </a>
@@ -639,7 +888,31 @@
             </div>
         </div>
 
-        <!-- ============ FOOTER ============ -->
+        <!-- ============================================================
+        PAYMENT MODAL
+        ============================================================ -->
+        <div class="payment-overlay" id="paymentOverlay">
+            <div class="payment-modal">
+                <button class="close-btn" onclick="closePaymentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+
+                <h2>💳 Enroll in Course</h2>
+                <p class="subtitle" id="paymentCourseTitle">Complete payment to access this course</p>
+
+                <div class="payment-methods" id="paymentMethods">
+                    <!-- Payment methods will be inserted here -->
+                </div>
+
+                <div id="paymentDetailsContainer"></div>
+
+                <div id="paymentActions"></div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
         <div class="footer container">
             <p style="margin-bottom:6px;">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
@@ -656,6 +929,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js">
     </script>
 
     <script>
@@ -674,6 +949,7 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const functions = firebase.functions();
 
         // =============================================================
         // DOM Elements
@@ -687,14 +963,24 @@
         const metaCategory = document.getElementById('metaCategory');
         const metaDuration = document.getElementById('metaDuration');
         const metaLevel = document.getElementById('metaLevel');
-        const metaLessons = document.getElementById('metaLessons');
+        const metaCost = document.getElementById('metaCost');
         const lessonsContainer = document.getElementById('lessonsContainer');
         const courseInfo = document.getElementById('courseInfo');
         const enrollBtn = document.getElementById('enrollBtn');
+        const enrollStatus = document.getElementById('enrollStatus');
+        const paymentOverlay = document.getElementById('paymentOverlay');
+        const paymentMethods = document.getElementById('paymentMethods');
+        const paymentDetailsContainer = document.getElementById('paymentDetailsContainer');
+        const paymentActions = document.getElementById('paymentActions');
+        const paymentCourseTitle = document.getElementById('paymentCourseTitle');
 
         let courseId = null;
         let currentUser = null;
         let isEnrolled = false;
+        let courseData = null;
+        let allLessons = [];
+        let selectedPaymentMethod = null;
+        let userCoins = 0;
 
         // =============================================================
         // AUTH STATE
@@ -705,36 +991,39 @@
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
                 dashboardBtn.style.display = 'inline-flex';
+                loadUserCoins();
             } else {
                 currentUser = null;
                 loginBtn.style.display = 'inline-flex';
                 registerBtn.style.display = 'inline-flex';
                 dashboardBtn.style.display = 'none';
+                userCoins = 0;
             }
             loadCourse();
         });
 
         // =============================================================
+        // LOAD USER COINS
+        // =============================================================
+        async function loadUserCoins() {
+            if (!currentUser) return;
+
+            try {
+                const doc = await db.collection('users').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    userCoins = doc.data().coins || 0;
+                }
+            } catch (error) {
+                console.error('Error loading coins:', error);
+            }
+        }
+
+        // =============================================================
         // LOAD COURSE
         // =============================================================
-        function escapeHtml(value) {
-            return String(value)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function sanitizeId(value) {
-            if (typeof value !== 'string') return null;
-            return /^[A-Za-z0-9_-]+$/.test(value) ? value : null;
-        }
-
         async function loadCourse() {
             const params = new URLSearchParams(window.location.search);
-            const rawCourseId = params.get('id');
-            courseId = sanitizeId(rawCourseId);
+            courseId = params.get('id');
 
             if (!courseId) {
                 window.location.href = 'courses.html';
@@ -742,7 +1031,6 @@
             }
 
             try {
-                // Load course data
                 const courseDoc = await db.collection('courses').doc(courseId).get();
 
                 if (!courseDoc.exists) {
@@ -750,7 +1038,7 @@
                     return;
                 }
 
-                const courseData = courseDoc.data();
+                courseData = courseDoc.data();
 
                 // Update header
                 courseTitle.textContent = courseData.title || 'Course';
@@ -762,15 +1050,19 @@
                 metaDuration.textContent = courseData.duration || 'Self-paced';
                 metaLevel.textContent = courseData.level || 'Beginner';
 
+                // Update cost
+                const price = courseData.price || 0;
+                const coinCost = courseData.coinCost || 0;
+                if (price > 0) {
+                    metaCost.textContent = `KSh ${price}`;
+                } else if (coinCost > 0) {
+                    metaCost.innerHTML = `<span style="color:var(--gold-radiant);">${coinCost} Coins</span>`;
+                } else {
+                    metaCost.innerHTML = `<span style="color:#16a34a;">FREE</span>`;
+                }
+
                 // Load lessons
                 await loadLessons();
-
-                // Update lesson count
-                const lessonSnapshot = await db.collection('courses')
-                    .doc(courseId)
-                    .collection('lessons')
-                    .get();
-                metaLessons.textContent = lessonSnapshot.size;
 
                 // Update course info
                 courseInfo.innerHTML = `
@@ -787,34 +1079,13 @@
                             <span class="value">${courseData.category || 'General'}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Lessons</span>
-                            <span class="value">${lessonSnapshot.size}</span>
+                            <span class="label">Enrolled</span>
+                            <span class="value" id="enrollmentCount">—</span>
                         </div>
                     `;
 
                 // Check enrollment
-                if (currentUser) {
-                    const enrollmentSnapshot = await db.collection('enrollments')
-                        .where('userId', '==', currentUser.uid)
-                        .where('courseId', '==', courseId)
-                        .get();
-
-                    if (!enrollmentSnapshot.empty) {
-                        isEnrolled = true;
-                        enrollBtn.textContent = '✅ Enrolled';
-                        enrollBtn.className = 'btn btn-success';
-                        enrollBtn.style.width = '100%';
-                        enrollBtn.style.marginTop = '16px';
-                        enrollBtn.disabled = true;
-                    } else {
-                        isEnrolled = false;
-                        enrollBtn.textContent = '📚 Enroll in This Course';
-                        enrollBtn.className = 'btn btn-primary';
-                        enrollBtn.style.width = '100%';
-                        enrollBtn.style.marginTop = '16px';
-                        enrollBtn.disabled = false;
-                    }
-                }
+                await checkEnrollment();
 
             } catch (error) {
                 console.error('Error loading course:', error);
@@ -822,12 +1093,10 @@
                         <div style="text-align:center;padding:40px;color:var(--text-muted);">
                             <i class="fas fa-triangle-exclamation" style="font-size:2rem;color:var(--gold-radiant);display:block;margin-bottom:12px;"></i>
                             <h4 style="color:var(--text-primary);">Failed to load course</h4>
-                            <p id="course-load-error-message" style="font-size:0.9rem;"></p>
+                            <p style="font-size:0.9rem;">${error.message}</p>
                             <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Back to Courses</a>
                         </div>
                     `;
-                document.getElementById('course-load-error-message').textContent =
-                    (error && error.message) ? error.message : 'An unexpected error occurred.';
             }
         }
 
@@ -842,7 +1111,12 @@
                     .orderBy('order', 'asc')
                     .get();
 
-                if (snapshot.empty) {
+                allLessons = [];
+                snapshot.forEach((doc) => {
+                    allLessons.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (allLessons.length === 0) {
                     lessonsContainer.innerHTML = `
                             <div style="text-align:center;padding:40px;color:var(--text-muted);">
                                 <i class="fas fa-book-open" style="font-size:2rem;color:var(--violet-deep);display:block;margin-bottom:12px;"></i>
@@ -852,61 +1126,374 @@
                     return;
                 }
 
+                // Show course outline (first lesson only if not enrolled)
                 let html = '';
-                let index = 1;
-                snapshot.forEach((doc) => {
-                    const safeCourseId = encodeURIComponent(courseId);
-                    const safeLessonId = encodeURIComponent(lessonId);
-                    const safeTitle = escapeHtml(lesson.title || 'Lesson');
-                    const safeDescription = escapeHtml(lesson.description || '');
-                    const lesson = doc.data();
-                    const lessonId = doc.id;
+                const canView = isEnrolled || currentUser === null;
 
-                    // Determine status
-                    const isLocked = !isEnrolled && index > 1;
+                allLessons.forEach((lesson, index) => {
+                    const isLocked = !canView && index > 0;
                     const statusClass = isLocked ? 'locked' : 'unlocked';
-                    const statusIcon = isLocked ? '🔒 Locked' : '📖 Start';
-                            <a href="${isLocked ? '#' : `lesson.html?courseId=${safeCourseId}&lessonId=${safeLessonId}`}" 
+                    const statusIcon = isLocked ? '🔒 Locked' : (index === 0 ? '📖 Preview' : '📖 Start');
+
                     html += `
-                            <a href="${isLocked ? '#' : `lesson.html?courseId=${courseId}&lessonId=${lessonId}`}" 
+                            <a href="${isLocked ? '#' : `lesson.html?courseId=${courseId}&lessonId=${lesson.id}`}" 
                                style="text-decoration:none;color:var(--text-primary);cursor:${isLocked ? 'default' : 'pointer'};">
                                 <li style="${isLocked ? 'opacity:0.6;' : ''}">
                                     <div class="lesson-info">
-                                            <div class="title">${safeTitle}</div>
-                                            <div class="desc">${safeDescription}</div>
+                                        <span class="num">${index + 1}</span>
+                                        <div>
                                             <div class="title">${lesson.title || 'Lesson'}</div>
-                                            <div class="desc">${lesson.description || ''}</div>
+                                            <div class="desc">${isLocked ? '🔒 Enroll to unlock' : (lesson.description || '')}</div>
                                         </div>
                                     </div>
                                     <span class="lesson-status ${statusClass}">${statusIcon}</span>
                                 </li>
                             </a>
                         `;
-                    index++;
                 });
 
                 lessonsContainer.innerHTML = html;
+
             } catch (error) {
                 console.error('Error loading lessons:', error);
-                lessonsContainer.innerHTML = `
-                        <div style="text-align:center;padding:40px;color:var(--text-muted);">
-                            <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:var(--gold-radiant);display:block;margin-bottom:12px;"></i>
-                            <p>Error loading lessons. Please try again.</p>
-                        </div>
-                    `;
             }
         }
 
         // =============================================================
-        // ENROLL BUTTON
+        // CHECK ENROLLMENT
         // =============================================================
-        enrollBtn.addEventListener('click', async () => {
+        async function checkEnrollment() {
             if (!currentUser) {
-                window.location.href = 'login.html';
+                updateEnrollButton('Login to Enroll', false);
                 return;
             }
 
-            if (isEnrolled) return;
+            try {
+                const snapshot = await db.collection('enrollments')
+                    .where('userId', '==', currentUser.uid)
+                    .where('courseId', '==', courseId)
+                    .get();
+
+                if (!snapshot.empty) {
+                    isEnrolled = true;
+                    updateEnrollButton('✅ Enrolled', false);
+                    enrollStatus.textContent = 'You are enrolled in this course!';
+                    enrollStatus.style.color = '#16a34a';
+                    // Update lesson display
+                    await loadLessons();
+                } else {
+                    isEnrolled = false;
+                    // Check if payment is pending
+                    const paymentStatus = await checkPaymentStatus();
+                    if (paymentStatus === 'pending') {
+                        updateEnrollButton('⏳ Payment Pending', false);
+                        enrollStatus.textContent = 'Your payment is being verified. Please wait.';
+                        enrollStatus.style.color = '#f59e0b';
+                    } else if (paymentStatus === 'submitted') {
+                        updateEnrollButton('⏳ Verification Pending', false);
+                        enrollStatus.textContent = 'Payment submitted. Waiting for verification.';
+                        enrollStatus.style.color = '#f59e0b';
+                    } else {
+                        updateEnrollButton('📚 Enroll in This Course', true);
+                        enrollStatus.textContent = '';
+                    }
+                }
+
+                // Update enrollment count
+                const allEnrollments = await db.collection('enrollments')
+                    .where('courseId', '==', courseId)
+                    .get();
+                document.getElementById('enrollmentCount').textContent = allEnrollments.size;
+
+            } catch (error) {
+                console.error('Error checking enrollment:', error);
+            }
+        }
+
+        // =============================================================
+        // CHECK PAYMENT STATUS
+        // =============================================================
+        async function checkPaymentStatus() {
+            if (!currentUser) return 'none';
+
+            try {
+                const snapshot = await db.collection('payments')
+                    .where('userId', '==', currentUser.uid)
+                    .where('courseId', '==', courseId)
+                    .orderBy('createdAt', 'desc')
+                    .limit(1)
+                    .get();
+
+                if (snapshot.empty) return 'none';
+                return snapshot.docs[0].data().status;
+            } catch (error) {
+                console.error('Error checking payment:', error);
+                return 'none';
+            }
+        }
+
+        // =============================================================
+        // UPDATE ENROLL BUTTON
+        // =============================================================
+        function updateEnrollButton(text, enabled) {
+            enrollBtn.textContent = text;
+            enrollBtn.disabled = !enabled;
+            if (enabled) {
+                enrollBtn.className = 'btn btn-primary';
+                enrollBtn.style.width = '100%';
+                enrollBtn.style.marginTop = '16px';
+            } else {
+                enrollBtn.className = 'btn btn-success';
+                enrollBtn.style.width = '100%';
+                enrollBtn.style.marginTop = '16px';
+            }
+        }
+
+        // =============================================================
+        // ENROLL BUTTON CLICK
+        // =============================================================
+        enrollBtn.addEventListener('click', async () => {
+            if (!currentUser) {
+                window.location.href = `register.html?redirect=course-view.html?id=${courseId}`;
+                return;
+            }
+
+            if (isEnrolled) {
+                window.location.href = `lesson.html?courseId=${courseId}&lessonId=${allLessons[0]?.id || ''}`;
+                return;
+            }
+
+            openPaymentModal();
+        });
+
+        // =============================================================
+        // PAYMENT MODAL
+        // =============================================================
+        function openPaymentModal() {
+            paymentCourseTitle.textContent = courseData.title || 'Course';
+
+            // Check if course is free
+            const price = courseData.price || 0;
+            const coinCost = courseData.coinCost || 0;
+
+            // Build payment methods
+            let methodsHTML = '';
+
+            // Coin method (if applicable)
+            if (coinCost > 0) {
+                const canAfford = userCoins >= coinCost;
+                methodsHTML += `
+                        <div class="payment-method" data-method="coins" onclick="selectPaymentMethod('coins')">
+                            <div class="icon coins"><i class="fas fa-coins"></i></div>
+                            <div class="details">
+                                <div class="name">Pay with Coins</div>
+                                <div class="info">${coinCost} coins required ${canAfford ? `(You have ${userCoins} coins)` : `⚠️ Insufficient coins`}</div>
+                            </div>
+                            <div class="check" id="check-coins"><i class="fas fa-circle"></i></div>
+                        </div>
+                    `;
+            }
+
+            // M-Pesa method
+            if (price > 0) {
+                methodsHTML += `
+                        <div class="payment-method" data-method="mpesa" onclick="selectPaymentMethod('mpesa')">
+                            <div class="icon mpesa"><i class="fas fa-mobile-alt"></i></div>
+                            <div class="details">
+                                <div class="name">M-Pesa</div>
+                                <div class="info">Pay KSh ${price} via Till Number 3148215</div>
+                            </div>
+                            <div class="check" id="check-mpesa"><i class="fas fa-circle"></i></div>
+                        </div>
+                    `;
+            }
+
+            // KCB method
+            if (price > 0) {
+                methodsHTML += `
+                        <div class="payment-method" data-method="kcb" onclick="selectPaymentMethod('kcb')">
+                            <div class="icon kcb"><i class="fas fa-university"></i></div>
+                            <div class="details">
+                                <div class="name">KCB Paybill</div>
+                                <div class="info">Pay KSh ${price} via Paybill 522522, Account 7694372</div>
+                            </div>
+                            <div class="check" id="check-kcb"><i class="fas fa-circle"></i></div>
+                        </div>
+                    `;
+            }
+
+            // Free course
+            if (price === 0 && coinCost === 0) {
+                methodsHTML += `
+                        <div class="payment-method active" data-method="free" onclick="selectPaymentMethod('free')">
+                            <div class="icon" style="background:rgba(34,197,94,0.1);color:#16a34a;"><i class="fas fa-gift"></i></div>
+                            <div class="details">
+                                <div class="name">FREE Course</div>
+                                <div class="info">No payment required. Enroll now!</div>
+                            </div>
+                            <div class="check" id="check-free"><i class="fas fa-check-circle"></i></div>
+                        </div>
+                    `;
+            }
+
+            paymentMethods.innerHTML = methodsHTML;
+
+            // Set default selected
+            if (coinCost > 0 && userCoins >= coinCost) {
+                selectPaymentMethod('coins');
+            } else if (methodsHTML.includes('free')) {
+                selectPaymentMethod('free');
+            } else if (methodsHTML.includes('mpesa')) {
+                selectPaymentMethod('mpesa');
+            } else if (methodsHTML.includes('kcb')) {
+                selectPaymentMethod('kcb');
+            }
+
+            paymentOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // =============================================================
+        // SELECT PAYMENT METHOD
+        // =============================================================
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('active');
+            });
+            const selectedEl = document.querySelector(`.payment-method[data-method="${method}"]`);
+            if (selectedEl) selectedEl.classList.add('active');
+
+            // Update checkmarks
+            document.querySelectorAll('.payment-method .check i').forEach(el => {
+                el.className = 'fas fa-circle';
+            });
+            const checkEl = document.querySelector(`#check-${method}`);
+            if (checkEl) {
+                checkEl.innerHTML = '<i class="fas fa-check-circle"></i>';
+            }
+
+            // Show payment details
+            const price = courseData.price || 0;
+            const coinCost = courseData.coinCost || 0;
+
+            let detailsHTML = '';
+
+            if (method === 'free') {
+                detailsHTML = `
+                        <div style="text-align:center;padding:12px;background:rgba(34,197,94,0.05);border-radius:var(--radius-sm);border:1px solid rgba(34,197,94,0.1);">
+                            <i class="fas fa-gift" style="color:#16a34a;font-size:2rem;display:block;margin-bottom:8px;"></i>
+                            <p style="font-weight:600;color:#16a34a;">This course is FREE!</p>
+                            <p style="font-size:0.9rem;color:var(--text-muted);">No payment required. Click enroll to start learning.</p>
+                        </div>
+                        <button class="btn btn-success" onclick="enrollFree()" style="margin-top:16px;">
+                            <i class="fas fa-rocket"></i> Enroll Now - Free
+                        </button>
+                    `;
+                paymentDetailsContainer.innerHTML = detailsHTML;
+                return;
+            }
+
+            if (method === 'coins') {
+                const canAfford = userCoins >= coinCost;
+                detailsHTML = `
+                        <div class="coin-info">
+                            <i class="fas fa-coins" style="font-size:1.2rem;"></i>
+                            <div>
+                                You have <span class="balance">${userCoins}</span> coins
+                                ${canAfford ? `<span style="color:#16a34a;">✅ Sufficient</span>` : `<span class="insufficient">❌ Insufficient</span>`}
+                            </div>
+                        </div>
+                        <div style="padding:12px 16px;background:rgba(255,215,0,0.03);border-radius:var(--radius-sm);border:1px solid rgba(255,215,0,0.08);">
+                            <p style="font-size:0.9rem;">
+                                <i class="fas fa-info-circle" style="color:var(--violet-deep);"></i>
+                                This course costs <strong>${coinCost} coins</strong>.
+                                ${canAfford ? 'You have enough coins to enroll!' : `You need ${coinCost - userCoins} more coins.`}
+                            </p>
+                            ${!canAfford ? `
+                                <p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;">
+                                    💡 Earn coins by completing lessons, daily logins, and sharing content.
+                                </p>
+                            ` : ''}
+                        </div>
+                        <button class="btn btn-warning" onclick="enrollWithCoins()" style="margin-top:16px;" ${!canAfford ? 'disabled' : ''}>
+                            <i class="fas fa-coins"></i> ${canAfford ? 'Enroll with Coins' : 'Insufficient Coins'}
+                        </button>
+                    `;
+                paymentDetailsContainer.innerHTML = detailsHTML;
+                return;
+            }
+
+            if (method === 'mpesa' || method === 'kcb') {
+                const paymentConfig = method === 'mpesa' ?
+                    { name: 'M-Pesa', till: '3148215', icon: 'fa-mobile-alt', color: '#006600' } :
+                    { name: 'KCB Paybill', paybill: '522522', account: '7694372', icon: 'fa-university', color: '#0066cc' };
+
+                const isMpesa = method === 'mpesa';
+                detailsHTML = `
+                        <div class="payment-details">
+                            <div style="text-align:center;margin-bottom:12px;">
+                                <i class="${isMpesa ? 'fas fa-mobile-alt' : 'fas fa-university'}" style="font-size:2rem;color:${paymentConfig.color};"></i>
+                                <h4 style="margin-top:4px;font-weight:700;">${paymentConfig.name}</h4>
+                            </div>
+                            ${isMpesa ? `
+                                <div class="info-row">
+                                    <span class="label">Till Number</span>
+                                    <span class="value highlight">${paymentConfig.till}</span>
+                                </div>
+                            ` : `
+                                <div class="info-row">
+                                    <span class="label">Paybill Number</span>
+                                    <span class="value highlight">${paymentConfig.paybill}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label">Account Number</span>
+                                    <span class="value highlight">${paymentConfig.account}</span>
+                                </div>
+                            `}
+                            <div class="info-row">
+                                <span class="label">Amount</span>
+                                <span class="value highlight">KSh ${price}</span>
+                            </div>
+                            <div class="info-row" style="border-bottom:none;">
+                                <span class="label">Reference</span>
+                                <span class="value" style="font-size:0.8rem;color:var(--text-muted);">Use course code: ${courseId}</span>
+                            </div>
+                        </div>
+                        <div style="background:rgba(59,130,246,0.03);border:1px solid rgba(59,130,246,0.08);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:12px;">
+                            <p style="font-size:0.85rem;color:var(--text-secondary);">
+                                <i class="fas fa-info-circle" style="color:var(--violet-deep);"></i>
+                                After payment, enter your transaction code below to verify.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionCode">Transaction Code</label>
+                            <input type="text" id="transactionCode" placeholder="e.g., R7T9XK3M5" />
+                        </div>
+                        <button class="btn btn-primary" onclick="submitPaymentVerification('${method}')" style="margin-top:8px;">
+                            <i class="fas fa-check"></i> Submit Payment for Verification
+                        </button>
+                        <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-top:8px;">
+                            ⏳ Verification may take up to 24 hours. You'll be notified when complete.
+                        </p>
+                    `;
+                paymentDetailsContainer.innerHTML = detailsHTML;
+                return;
+            }
+
+            paymentDetailsContainer.innerHTML = '';
+        }
+
+        // =============================================================
+        // ENROLL FREE
+        // =============================================================
+        async function enrollFree() {
+            if (!currentUser) {
+                showToast('Please login to enroll.', 'error');
+                return;
+            }
 
             try {
                 enrollBtn.disabled = true;
@@ -915,31 +1502,112 @@
                 await db.collection('enrollments').add({
                     userId: currentUser.uid,
                     courseId: courseId,
+                    paymentVerified: true,
+                    paymentMethod: 'free',
+                    paymentReference: `free_${Date.now()}`,
                     enrolledAt: firebase.firestore.FieldValue.serverTimestamp(),
                     completed: false,
                     progress: 0,
                     xpEarned: 0,
-                    lastAccessed: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'active'
+                    status: 'active',
                 });
 
-                isEnrolled = true;
-                enrollBtn.textContent = '✅ Enrolled';
-                enrollBtn.className = 'btn btn-success';
-                enrollBtn.disabled = true;
-
+                closePaymentModal();
                 showToast('🎉 Successfully enrolled in this course!');
-
-                // Reload lessons to unlock them
+                await checkEnrollment();
                 await loadLessons();
 
             } catch (error) {
                 console.error('Error enrolling:', error);
                 showToast('❌ Failed to enroll. Please try again.', 'error');
+            } finally {
                 enrollBtn.disabled = false;
-                enrollBtn.innerHTML = '<i class="fas fa-plus"></i> Enroll in This Course';
+                enrollBtn.innerHTML = '📚 Enroll in This Course';
             }
-        });
+        }
+
+        // =============================================================
+        // ENROLL WITH COINS
+        // =============================================================
+        async function enrollWithCoins() {
+            if (!currentUser) {
+                showToast('Please login to enroll.', 'error');
+                return;
+            }
+
+            try {
+                const enrollCoinsFn = functions.httpsCallable('enrollWithCoins');
+                const result = await enrollCoinsFn({ courseId: courseId });
+
+                if (result.data.success) {
+                    closePaymentModal();
+                    showToast(`🎉 ${result.data.message}`);
+                    userCoins = result.data.remainingCoins;
+                    await checkEnrollment();
+                    await loadLessons();
+                }
+
+            } catch (error) {
+                console.error('Coin enrollment error:', error);
+                showToast(error.message || 'Failed to enroll with coins.', 'error');
+            }
+        }
+
+        // =============================================================
+        // SUBMIT PAYMENT VERIFICATION
+        // =============================================================
+        async function submitPaymentVerification(method) {
+            if (!currentUser) {
+                showToast('Please login to submit payment.', 'error');
+                return;
+            }
+
+            const transactionCode = document.getElementById('transactionCode')?.value.trim();
+            if (!transactionCode) {
+                showToast('Please enter your transaction code.', 'error');
+                return;
+            }
+
+            try {
+                const btn = document.querySelector('.payment-modal .btn-primary');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+                // Create payment record
+                const createPaymentFn = functions.httpsCallable('createPayment');
+                const result = await createPaymentFn({
+                    courseId: courseId,
+                    method: method,
+                    amount: courseData.price || 0,
+                    transactionCode: transactionCode,
+                });
+
+                if (result.data.success) {
+                    closePaymentModal();
+                    showToast('✅ Payment submitted for verification! You will be notified when approved.');
+                    await checkEnrollment();
+                }
+
+            } catch (error) {
+                console.error('Payment submission error:', error);
+                showToast(error.message || 'Failed to submit payment. Please try again.', 'error');
+            } finally {
+                const btn = document.querySelector('.payment-modal .btn-primary');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Submit Payment for Verification';
+                }
+            }
+        }
+
+        // =============================================================
+        // CLOSE PAYMENT MODAL
+        // =============================================================
+        function closePaymentModal() {
+            paymentOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            selectedPaymentMethod = null;
+        }
 
         // =============================================================
         // TOAST NOTIFICATION
@@ -949,17 +1617,26 @@
             if (existingToast) existingToast.remove();
 
             const toast = document.createElement('div');
-            toast.className = `toast-notification ${type === 'error' ? 'error' : ''}`;
+            toast.className = `toast-notification ${type === 'error' ? 'error' : type === 'warning' ? 'warning' : ''}`;
             toast.textContent = message;
             document.body.appendChild(toast);
 
             setTimeout(() => {
                 toast.style.animation = 'slideOut 0.3s ease forwards';
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 4000);
         }
 
-        console.log('📖 Course view initialized successfully');
+        // =============================================================
+        // MAKE FUNCTIONS GLOBALLY ACCESSIBLE
+        // =============================================================
+        window.selectPaymentMethod = selectPaymentMethod;
+        window.enrollFree = enrollFree;
+        window.enrollWithCoins = enrollWithCoins;
+        window.submitPaymentVerification = submitPaymentVerification;
+        window.closePaymentModal = closePaymentModal;
+
+        console.log('📖 Course view with payment integration initialized successfully');
     </script>
 </body>
 </html>
