@@ -1552,252 +1552,96 @@
                         <span></span>
                         <span></span>
                     </div>
-                `;
-            aiMessages.appendChild(bubble);
-            aiMessages.scrollTop = aiMessages.scrollHeight;
-        }
 
-        function removeTypingIndicator() {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                indicator.remove();
-            }
-        }
+                </div>
 
-        function sendAIMessage(message) {
-            if (isProcessing) return;
+            </article>
 
-            // Get message from input if not provided
-            if (!message) {
-                message = aiInput.value.trim();
-                if (!message) return;
-                aiInput.value = '';
-            }
+            <!-- Psycho -->
 
-            // Add user message
-            addAIMessage('user', message);
+            <article class="programme-card">
 
-            // Show typing indicator
-            isProcessing = true;
-            aiSendBtn.disabled = true;
-            showTypingIndicator();
+                <div class="programme-image"></div>
 
-            // Simulate thinking delay
-            const delay = 500 + Math.random() * 1000;
-            setTimeout(() => {
-                removeTypingIndicator();
+                <div class="programme-content">
 
-                // Get AI response
-                const response = getAIResponse(message);
+                    <span class="tag">
 
-                // Add AI response with formatting
-                addAIMessage('ai', response);
+                        Wellbeing
 
-                isProcessing = false;
-                aiSendBtn.disabled = false;
-                aiInput.focus();
-            }, delay);
-        }
+                    </span>
 
-        // =============================================================
-        // 4. AUTH STATE
-        // =============================================================
-        auth.onAuthStateChanged((user) => {
-            currentUser = user;
+                    <h3>Psychosocial Support</h3>
 
-            if (user) {
-                userName = user.displayName || user.email || 'Warrior';
-                const hour = new Date().getHours();
-                let timeGreeting = 'Good Evening';
-                if (hour < 12) timeGreeting = 'Good Morning';
-                else if (hour < 17) timeGreeting = 'Good Afternoon';
+                    <p>
 
-                // Update navigation
-                loginBtn.style.display = 'none';
-                registerBtn.style.display = 'none';
-                dashboardBtn.style.display = 'inline-flex';
+                        Develop counselling,
+                        emotional support
+                        and resilience-building skills
+                        for individuals and communities.
 
-                // Update AI welcome
-                setTimeout(() => {
-                    addAIMessage('ai',
-                        `${timeGreeting}, ${userName}! 🌟 Welcome back to Sword Institute. How can I assist you on your sacred journey today?`
-                        );
-                }, 500);
+                    </p>
 
-            } else {
-                // Update navigation
-                loginBtn.style.display = 'inline-flex';
-                registerBtn.style.display = 'inline-flex';
-                dashboardBtn.style.display = 'none';
+                    <div class="programme-footer">
 
-                // Update AI welcome for visitors
-                setTimeout(() => {
-                    addAIMessage('ai',
-                        '🌟 Welcome to Sword Institute, Seeker of Light! I\'m your AI Mentor. 🧙‍♂️ I can give you a tour, help you find courses, or answer any questions. What would you like to know?'
-                        );
-                }, 500);
-            }
-        });
+                        <strong>Certificate Included</strong>
 
-        // =============================================================
-        // 5. LOAD FEATURED COURSES
-        // =============================================================
-        async function loadFeaturedCourses() {
-            try {
-                const snapshot = await db.collection('courses')
-                    .orderBy('order', 'asc')
-                    .limit(4)
-                    .get();
+                        <a href="register.html" class="btn btn-primary">
 
-                if (snapshot.empty) {
-                    coursesContainer.innerHTML = `
-                            <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
-                                <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
-                                <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
-                                <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
-                            </div>
-                        `;
-                    return;
-                }
+                            Enrol
 
-                let html = '';
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const title = data.title || 'Untitled Scroll';
-                    const description = data.description || 'No wisdom shared yet.';
-                    const category = data.category || 'General';
-                    const duration = data.duration || 'Self-paced';
-                    const icon = data.icon || 'fa-book';
-                    const level = data.level || 'Beginner';
+                        </a>
 
-                    html += `
-                            <a href="course-view.html?id=${doc.id}" class="course-card">
-                                <div class="course-thumb">
-                                    <i class="fas ${icon}"></i>
-                                    <span class="badge">${level}</span>
-                                </div>
-                                <div class="course-body">
-                                    <h4>${title}</h4>
-                                    <p>${description}</p>
-                                    <div class="course-meta">
-                                        <span><i class="fas fa-tag"></i> ${category}</span>
-                                        <span><i class="fas fa-clock"></i> ${duration}</span>
-                                    </div>
-                                </div>
-                            </a>
-                        `;
-                });
+                    </div>
 
-                coursesContainer.innerHTML = html;
+                </div>
 
-            } catch (error) {
-                console.error('Error loading courses:', error);
-                coursesContainer.innerHTML = `
-                        <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
-                            <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
-                            <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
-                            <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
-                            <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
-                        </div>
-                    `;
-            }
-        }
+            </article>
 
-        // =============================================================
-        // 6. LOAD STATISTICS
-        // =============================================================
-        async function loadStatistics() {
-            try {
-                const statsRef = db.collection('app_metadata').doc('stats');
-                const statsSnap = await statsRef.get();
+        </div>
 
-                if (statsSnap.exists) {
-                    const data = statsSnap.data();
+    </div>
 
-                    if (data.totalStudents) {
-                        totalStudentsEl.innerHTML = `${data.totalStudents.toLocaleString()}<span class="violet">+</span>`;
-                    }
-                    if (data.totalCourses) {
-                        totalCoursesEl.textContent = data.totalCourses;
-                    }
-                    if (data.completionRate) {
-                        completionRateEl.innerHTML = `${data.completionRate}<span class="gold">%</span>`;
-                    }
-                    if (data.studentRating) {
-                        studentRatingEl.innerHTML = `${data.studentRating}<span class="gold">★</span>`;
-                    }
-                }
-            } catch (error) {
-                console.warn('Could not load statistics:', error);
-            }
-        }
+</section>
+<div class="scroll-indicator">
 
-        // =============================================================
-        // 7. COUNTER ANIMATION
-        // =============================================================
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-number');
-            counters.forEach(counter => {
-                const text = counter.textContent;
-                const number = parseInt(text.replace(/[^0-9.]/g, ''));
-                if (isNaN(number)) return;
+↓
 
-                let current = 0;
-                const speed = number / 60;
-                const suffix = text.replace(/[0-9.]/g, '');
+</div>
 
-                function update() {
-                    current += speed;
-                    if (current < number) {
-                        counter.innerHTML = Math.floor(current) + suffix;
-                        requestAnimationFrame(update);
-                    } else {
-                        counter.innerHTML = number.toLocaleString() + suffix;
-                    }
-                }
-                update();
-            });
-        }
+<!-- ========================= -->
+<!-- NEXT SECTION PLACEHOLDER -->
+<!-- ========================= -->
 
-        // =============================================================
-        // 8. SMOOTH SCROLL
-        // =============================================================
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
+<section class="coming-next">
 
-        // =============================================================
-        // 9. KEYBOARD SHORTCUTS
-        // =============================================================
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+Shift+A to focus AI input
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                e.preventDefault();
-                aiInput.focus();
-            }
-        });
+<div class="container">
 
-        // =============================================================
-        // 10. INITIALIZE
-        // =============================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            loadFeaturedCourses();
-            loadStatistics();
-            animateCounters();
-            console.log('🏛️ Sword Institute Homepage initialized successfully');
-            console.log('🤖 AI Mentor ready to assist!');
-        });
+<h2>
 
-        // =============================================================
-        // 11. EXPOSE FUNCTIONS GLOBALLY
-        // =============================================================
-        window.sendAIMessage = sendAIMessage;
-    </script>
+Statistics Section Coming Next
+
+</h2>
+
+<p>
+
+In Part 2 we'll add:
+
+Animated Counters,
+
+Featured Programmes,
+
+Professional Cards,
+
+and Firestore Integration.
+
+</p>
+
+</div>
+
+</section>
+
+<script type="module" src="js/index.js"></script>
+<script type="module" src="js/homeCourses.js"></script>
 </body>
 </html>

@@ -45,9 +45,11 @@ const mentorMessage = document.getElementById('mentorMessage');
 const mentorTip = document.getElementById('mentorTip');
 const mentorRefreshBtn = document.getElementById('mentorRefreshBtn');
 
+
 function elPresent(el) {
     return !!el;
 }
+
 
 // ============================================================
 // AUTH
@@ -530,4 +532,5 @@ function setupEventListeners() {
         loadCourses();
     });
 }
+
 
