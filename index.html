@@ -16,6 +16,9 @@
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/shared-components.css" />
+    <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
+    <link rel="stylesheet" href="css/shared-utilities.css" />
 
     <style>
         /* ==========================================================
@@ -56,60 +59,6 @@
             --radius-sm: 12px;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            padding: 20px;
-            margin: 0;
-        }
-
-        /* Main iOS Glass Container */
-        .app-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-            background: var(--glass-bg);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            backdrop-filter: blur(40px) saturate(180%);
-            border-radius: var(--radius-xl);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-            padding: 20px 32px 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Floating Orbs */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.3;
-        }
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--violet-deep);
-            top: -150px;
-            right: -100px;
-            opacity: 0.1;
-        }
-        .orb-2 {
-            width: 350px;
-            height: 350px;
-            background: var(--gold-radiant);
-            bottom: -100px;
-            left: -100px;
-            opacity: 0.12;
-        }
         .orb-3 {
             width: 200px;
             height: 200px;
@@ -119,174 +68,6 @@
             opacity: 0.08;
         }
 
-        .container {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* ==========================================================
-           BUTTONS
-           ========================================================== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.4);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-            color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        .btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-primary {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
-        }
-        .btn-primary:hover {
-            background: #9B1DFF;
-            border-color: #9B1DFF;
-            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
-            color: #fff;
-        }
-
-        .btn-gold {
-            background: var(--gold-radiant);
-            color: var(--violet-dark);
-            border-color: var(--gold-radiant);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
-        }
-        .btn-gold:hover {
-            background: #FFE44D;
-            border-color: #FFE44D;
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
-            color: var(--violet-dark);
-        }
-
-        .btn-outline-violet {
-            background: transparent;
-            border-color: rgba(139, 0, 255, 0.2);
-            color: var(--violet-deep);
-        }
-        .btn-outline-violet:hover {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: #fff;
-            border-color: #16a34a;
-        }
-        .btn-success:hover {
-            background: #22c55e;
-            border-color: #22c55e;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* ==========================================================
-           NAVIGATION
-           ========================================================== */
-        nav {
-            padding: 8px 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-        .logo i {
-            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2.2rem;
-        }
-        .logo span {
-            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-            position: relative;
-        }
-        .nav-links a:hover {
-            color: var(--violet-deep);
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--violet-deep);
-            transition: width 0.3s;
-            border-radius: 2px;
-        }
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        .nav-links a.active {
-            color: var(--violet-deep);
-            font-weight: 700;
-        }
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
 
         /* ==========================================================
            HERO SECTION
@@ -333,7 +114,7 @@
             gap: 14px;
         }
 
-        /* ----- AI Mentor Card (Interactive) ----- */
+        /* ----- Professor SWORD Card (Interactive) ----- */
         .ai-mentor-card {
             padding: 28px;
             background: rgba(255, 255, 255, 0.35);
@@ -370,12 +151,51 @@
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .ai-header h3 small {
             display: block;
             font-weight: 400;
             font-size: 0.8rem;
             color: var(--text-muted);
+        }
+        .professor-emoji {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.9rem;
+            line-height: 1;
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
+            animation: professor-wave 2s ease-in-out infinite;
+            transform-origin: 70% 80%;
+            vertical-align: middle;
+        }
+        .professor-emoji img {
+            width: 1em;
+            height: 1em;
+            display: inline-block;
+        }
+        @keyframes professor-wave {
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+            25% {
+                transform: rotate(-7deg) scale(1.03);
+            }
+            50% {
+                transform: rotate(7deg) scale(1.06);
+            }
+            75% {
+                transform: rotate(-4deg) scale(1.03);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .professor-emoji {
+                animation: none;
+            }
         }
         .ai-header .ai-status {
             margin-left: auto;
@@ -628,6 +448,7 @@
         .section-header h2 i {
             background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-right: 10px;
         }
@@ -667,6 +488,7 @@
             font-size: 2.8rem;
             background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 12px;
             display: block;
@@ -751,6 +573,7 @@
             color: var(--text-secondary);
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-bottom: 12px;
@@ -875,9 +698,6 @@
             backdrop-filter: blur(8px);
         }
 
-        .hidden-dashboard-btn {
-            display: none;
-        }
         .skeleton-text-short {
             width: 70%;
         }
@@ -889,12 +709,6 @@
             width: 40%;
         }
         .quote-icon-violet {
-            color: var(--violet-deep);
-        }
-        .footer-top {
-            margin-bottom: 6px;
-        }
-        .footer-heart {
             color: var(--violet-deep);
         }
         .cta-box h2 {
@@ -921,20 +735,6 @@
         /* ==========================================================
            FOOTER
            ========================================================== */
-        .footer {
-            padding: 32px 0 8px;
-            margin-top: 40px;
-            border-top: 1px solid rgba(139, 0, 255, 0.04);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .footer i {
-            color: var(--violet-deep);
-        }
-        .footer .gold {
-            color: var(--gold-radiant);
-        }
         .footer .footer-links {
             display: flex;
             justify-content: center;
@@ -981,18 +781,6 @@
         }
 
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav-links {
-                justify-content: center;
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            .nav-actions {
-                justify-content: center;
-            }
             .hero-content h1 {
                 font-size: 2.6rem;
             }
@@ -1104,7 +892,7 @@
                     <li><a href="index.html" class="active">Home</a></li>
                     <li><a href="courses.html">Courses</a></li>
                     <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="#hero">AI Mentor</a></li>
+                    <li><a href="#hero">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
                     <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
@@ -1141,13 +929,14 @@
                 </div>
 
                 <!-- ==========================================================
-                AI MENTOR CARD - Interactive
+                PROFESSOR SWORD CARD - Interactive
                 ========================================================== -->
                 <div class="ai-mentor-card" id="aiMentorCard">
                     <div class="ai-header">
                         <i class="fas fa-robot"></i>
                         <h3>
-                            AI Mentor
+                            <span class="professor-emoji" role="img" aria-label="Smiling professor">🧑‍🏫</span>
+                            Professor SWORD
                             <small>Your Spiritual Guide</small>
                         </h3>
                         <div class="ai-status">
@@ -1336,7 +1125,7 @@
                 </div>
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
-                        <div class="quote">"Sword Institute transformed my career. The AI Mentor helped me stay on track and the courses are incredibly practical."</div>
+                        <div class="quote">"Sword Institute transformed my career. Professor SWORD helped me stay on track and the courses are incredibly practical."</div>
                         <div class="author">
                             <div class="avatar">M</div>
                             <div>
@@ -1356,7 +1145,7 @@
                         </div>
                     </div>
                     <div class="testimonial-card">
-                        <div class="quote">"I love how the AI Mentor personalizes my learning experience. It feels like having a personal guide."</div>
+                        <div class="quote">"I love how Professor SWORD personalizes my learning experience. It feels like having a personal guide."</div>
                         <div class="author">
                             <div class="avatar">J</div>
                             <div>
@@ -1397,7 +1186,7 @@
                 <a href="index.html">Home</a>
                 <a href="courses.html">Courses</a>
                 <a href="dashboard.html">Dashboard</a>
-                <a href="#hero">AI Mentor</a>
+                <a href="#hero">Professor SWORD</a>
                 <a href="#">About</a>
                 <a href="#">Contact</a>
             </div>
@@ -1416,6 +1205,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous" referrerpolicy="no-referrer">
     </script>
 
     <script src="ai-service.js"></script>
@@ -1466,7 +1259,7 @@
         }
 
         // =============================================================
-        // AI MENTOR FUNCTIONS (Homepage)
+        // PROFESSOR SWORD FUNCTIONS (Homepage)
         // =============================================================
 
         function addAIMessage(type, text, isTyping = false) {
@@ -1496,18 +1289,18 @@
         function getLocalAIResponse(message) {
             const lower = String(message || '').toLowerCase();
             if (lower.includes('tour')) {
-                return '🏛️ Welcome to Sword Institute! We offer 18 courses in Community Development, Social Work, Counseling, and more. Our AI Mentor is here to guide you. Start by exploring our course catalogue!';
+                return '🏛️ Welcome to Sword Institute! We offer 18 courses in Community Development, Social Work, Counseling, and more. Professor SWORD is here to guide you. Start by exploring our course catalogue!';
             }
             if (lower.includes('course')) {
                 return '📚 We have 18 courses across 9 categories including Community Development, Social Work, Psychology, and Communication. Check out our course catalogue to find your perfect path!';
             }
             if (lower.includes('start') || lower.includes('begin')) {
-                return '🚀 Getting started is easy! Register for free, browse our courses, and enroll in one that interests you. Your AI Mentor will be with you every step of the way!';
+                return '🚀 Getting started is easy! Register for free, browse our courses, and enroll in one that interests you. Professor SWORD will be with you every step of the way!';
             }
             if (lower.includes('recommend')) {
                 return "🎯 I recommend starting with 'Communication Skills' or 'Introduction to Community Health' - they're great foundations for your learning journey!";
             }
-            return '🌟 I\'m your AI Mentor! Ask me about courses, getting started, or anything about Sword Institute. How can I help you today?';
+            return '🌟 I\'m Professor SWORD! Ask me about courses, getting started, or anything about Sword Institute. How can I help you today?';
         }
 
         // Send AI Message
@@ -1539,24 +1332,27 @@
             addAIMessage('ai', '...', true);
 
             try {
-                let reply;
-
-                if (typeof AIService !== 'undefined' && AIService.initAIService()) {
-                    reply = await AIService.sendAIMessage(message, 'Homepage');
-                    setMentorOnline(true);
-                } else {
-                    // Fallback
-                    reply = getLocalAIResponse(message);
-                    setMentorOnline(false);
+                if (typeof AIService === 'undefined' || !AIService.initAIService()) {
+                    throw new Error('AI service is unavailable on this page');
                 }
 
+                const result = AIService.sendAIMessageLive
+                    ? await AIService.sendAIMessageLive(message, 'Homepage')
+                    : {
+                        reply: await AIService.sendAIMessage(message, 'Homepage'),
+                        live: AIService.isLastResponseLive ? AIService.isLastResponseLive() : true,
+                        source: AIService.getLastResponseSource ? AIService.getLastResponseSource() : 'unknown'
+                    };
+
+                setMentorOnline(Boolean(result.live));
+
                 removeTypingIndicator();
-                addAIMessage('ai', reply);
+                addAIMessage('ai', result.reply);
             } catch (error) {
                 console.error('Homepage AI error:', error);
                 removeTypingIndicator();
                 setMentorOnline(false);
-                addAIMessage('ai', '❌ Sorry, I encountered an error. Please try again.');
+                addAIMessage('ai', '❌ Live AI is temporarily unavailable. Please try again in a moment.');
             } finally {
                 isProcessing = false;
                 if (sendBtn) {
@@ -1587,9 +1383,18 @@
         window.sendAIMessage = sendAIMessage;
 
         document.addEventListener('DOMContentLoaded', function() {
+            if (window.twemoji) {
+                document.querySelectorAll('.professor-emoji').forEach((emojiEl) => {
+                    window.twemoji.parse(emojiEl, {
+                        folder: 'svg',
+                        ext: '.svg'
+                    });
+                });
+            }
+
             if (typeof AIService !== 'undefined') {
                 AIService.initAIService();
-                setMentorOnline(true);
+                setMentorOnline(AIService.hasLiveProvider ? AIService.hasLiveProvider() : true);
             } else {
                 setMentorOnline(false);
             }

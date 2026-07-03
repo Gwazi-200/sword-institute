@@ -1,0 +1,60 @@
+.hidden-dashboard-btn {
+    display: none;
+}
+
+.footer-top {
+    margin-bottom: 6px;
+}
+
+.footer-heart {
+    color: var(--violet-deep);
+}
+
+.icon-violet {
+    color: var(--violet-deep);
+}
+
+.text-primary {
+    color: var(--text-primary);
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.lesson-list-loading {
+    padding: 12px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.section-title {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+}
+
+.center-top-12 {
+    text-align: center;
+    margin-top: 12px;
+}
+
+.btn-sm {
+    font-size: 0.85rem;
+}
+
+.courses-link {
+    color: var(--violet-deep);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.activity-time-link {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.activity-center-item {
+    justify-content: center;
+    border-bottom: none;
+    padding-top: 8px;
+}

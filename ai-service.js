@@ -10,6 +10,27 @@
 
 let isInitialized = false;
 let currentUser = null;
+let lastResponseSource = 'fallback';
+const OPENFRONTIER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENFRONTIER_MODEL = 'openai/gpt-3.5-turbo';
+
+function resolveOpenFrontierApiKey() {
+    const windowKey = typeof window !== 'undefined'
+        ? (window.OPENFRONTIER_API_KEY || window.OPENROUTER_API_KEY || '')
+        : '';
+
+    const storageKey = typeof localStorage !== 'undefined'
+        ? (localStorage.getItem('OPENFRONTIER_API_KEY') || localStorage.getItem('OPENROUTER_API_KEY') || '')
+        : '';
+
+    return windowKey || storageKey || '';
+}
+
+function hasLiveProvider() {
+    const hasClientKey = Boolean(resolveOpenFrontierApiKey());
+    const hasCallable = typeof firebase !== 'undefined' && !!firebase.functions;
+    return hasClientKey || hasCallable;
+}
 
 // =============================================================
 // INITIALIZATION
@@ -75,37 +96,128 @@ async function sendAIMessage(message, context = 'General', lessonContent = '') {
 
     const userToken = await getUserToken();
 
-    if (!currentUser || !userToken) {
-        return getFallbackResponse(message);
+    // Keep server-side callable for authenticated users.
+    if (currentUser && userToken && typeof firebase !== 'undefined' && firebase.functions) {
+        try {
+            const functions = firebase.functions();
+            const getAIResponse = functions.httpsCallable('getAIResponse');
+
+            // Compatibility: accept object payload used by lesson/dashboard integrations.
+            let normalizedLessonContent = lessonContent;
+            if (lessonContent && typeof lessonContent === 'object') {
+                const lessonCtx = lessonContent.lessonContext || {};
+                normalizedLessonContent = lessonCtx.lessonSummary || '';
+            }
+
+            const result = await getAIResponse({
+                message: message,
+                context: context,
+                lessonContent: normalizedLessonContent,
+                userToken: userToken
+            });
+
+            if (result.data && result.data.success) {
+                lastResponseSource = 'callable';
+                return result.data.reply;
+            }
+
+            throw new Error('AI service returned an error');
+        } catch (error) {
+            console.error('Callable AI Error:', error);
+        }
     }
 
+    // For homepage guests, use direct async fetch with OpenFrontier/OpenRouter key.
     try {
-        const functions = firebase.functions();
-        const getAIResponse = functions.httpsCallable('getAIResponse');
-
-        // Compatibility: accept object payload used by lesson/dashboard integrations.
-        let normalizedLessonContent = lessonContent;
-        if (lessonContent && typeof lessonContent === 'object') {
-            const lessonCtx = lessonContent.lessonContext || {};
-            normalizedLessonContent = lessonCtx.lessonSummary || '';
-        }
-
-        const result = await getAIResponse({
-            message: message,
-            context: context,
-            lessonContent: normalizedLessonContent,
-            userToken: userToken
-        });
-
-        if (result.data && result.data.success) {
-            return result.data.reply;
-        }
-
-        throw new Error('AI service returned an error');
+        const reply = await callOpenFrontierDirect(message, context, lessonContent);
+        lastResponseSource = 'direct';
+        return reply;
     } catch (error) {
-        console.error('AI Error:', error);
+        console.error('Direct AI Error:', error);
+        lastResponseSource = 'fallback';
         return getFallbackResponse(message);
     }
+}
+
+async function sendAIMessageLive(message, context = 'General', lessonContent = '') {
+    const reply = await sendAIMessage(message, context, lessonContent);
+    return {
+        reply,
+        live: isLastResponseLive(),
+        source: getLastResponseSource()
+    };
+}
+
+function getLastResponseSource() {
+    return lastResponseSource;
+}
+
+function isLastResponseLive() {
+    return lastResponseSource === 'callable' || lastResponseSource === 'direct';
+}
+
+async function callOpenFrontierDirect(message, context = 'Homepage', lessonContent = '') {
+    const apiKey = resolveOpenFrontierApiKey();
+
+    if (!apiKey) {
+        throw new Error('OpenFrontier API key not configured on client');
+    }
+
+    let lessonSnippet = '';
+    if (lessonContent && typeof lessonContent === 'string') {
+        lessonSnippet = lessonContent.slice(0, 600);
+    } else if (lessonContent && typeof lessonContent === 'object') {
+        lessonSnippet = JSON.stringify(lessonContent).slice(0, 600);
+    }
+
+    const systemPrompt = [
+        'You are Sword Institute AI Mentor.',
+        'Be concise, practical, warm, and encouraging.',
+        'Keep most answers within 2-4 short sentences.',
+        `Context: ${context || 'General'}`,
+        lessonSnippet ? `Lesson context: ${lessonSnippet}` : ''
+    ].filter(Boolean).join('\n');
+
+    const response = await fetch(OPENFRONTIER_API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'https://sword-institute.web.app',
+            'X-Title': 'Sword Institute Homepage Mentor'
+        },
+        body: JSON.stringify({
+            model: OPENFRONTIER_MODEL,
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: String(message) }
+            ],
+            temperature: 0.7,
+            max_tokens: 350
+        })
+    });
+
+    if (!response.ok) {
+        let details = '';
+        try {
+            const errData = await response.json();
+            details = errData && errData.error ? `: ${errData.error.message || ''}` : '';
+        } catch (parseErr) {
+            details = '';
+        }
+        throw new Error(`OpenFrontier request failed (${response.status})${details}`);
+    }
+
+    const data = await response.json();
+    const reply = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content
+        ? data.choices[0].message.content
+        : '';
+
+    if (!reply) {
+        throw new Error('OpenFrontier returned empty reply');
+    }
+
+    return reply.trim();
 }
 
 // =============================================================
@@ -212,6 +324,10 @@ function getFallbackResponse(message) {
 if (typeof window !== 'undefined') {
     window.AIService = {
         initAIService,
+        hasLiveProvider,
+        getLastResponseSource,
+        isLastResponseLive,
+        sendAIMessageLive,
         sendAIMessage,
         getRecommendation,
         getLearningRecommendations,
