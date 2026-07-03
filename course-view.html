@@ -807,10 +807,12 @@
                         <div style="text-align:center;padding:40px;color:var(--text-muted);">
                             <i class="fas fa-triangle-exclamation" style="font-size:2rem;color:var(--gold-radiant);display:block;margin-bottom:12px;"></i>
                             <h4 style="color:var(--text-primary);">Failed to load course</h4>
-                            <p style="font-size:0.9rem;">${error.message}</p>
+                            <p id="course-load-error-message" style="font-size:0.9rem;"></p>
                             <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Back to Courses</a>
                         </div>
                     `;
+                document.getElementById('course-load-error-message').textContent =
+                    (error && error.message) ? error.message : 'An unexpected error occurred.';
             }
         }
 
