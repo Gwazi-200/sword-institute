@@ -1,843 +1,391 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sword Institute | Course Catalogue</title>
+﻿<!-- ========================================================== -->
+<!-- REPLACE the JavaScript section in courses.html              -->
+<!-- ========================================================== -->
+<script type="module">
+    import {
+        auth,
+        db,
+        onAuthStateChanged,
+        collection,
+        query,
+        orderBy,
+        getDocs,
+        where,
+        doc,
+        getDoc
+    } from './firebase.js';
+    
+    // Import enrollment functions
+    import {
+        enrollInCourse,
+        checkEnrollment,
+        getUserEnrollments,
+        getBulkEnrollmentStatus
+    } from './enrollmentService.js';
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    // DOM Elements
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const coursesContainer = document.getElementById('coursesContainer');
+    const courseCount = document.getElementById('courseCount');
+    const filterButtons = document.querySelectorAll('.filter-btn');
 
-    <style>
-        /* ---------- Same root variables as homepage ---------- */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    let allCourses = [];
+    let currentFilter = 'all';
+    let currentUser = null;
+    let enrollmentCache = {}; // Cache for quick enrollment checks
 
-        :root {
-            --pearl-light: #FCFAF5;
-            --pearl-mid: #F5F2EB;
-            --pearl-shadow: #E8E2D8;
-            --violet-deep: #8B00FF;
-            --violet-glow: rgba(139, 0, 255, 0.12);
-            --violet-soft: #A855F7;
-            --violet-dark: #3B0764;
-            --gold-radiant: #FFD700;
-            --gold-soft: #FDE68A;
-            --gold-glow: rgba(255, 215, 0, 0.2);
-            --text-primary: #1E1029;
-            --text-secondary: #4B3A5C;
-            --text-muted: #7A6A8A;
-            --glass-bg: rgba(255, 255, 255, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.7);
-            --glass-shadow: 0 8px 32px rgba(139, 0, 255, 0.06);
-            --radius-xl: 28px;
-            --radius-lg: 20px;
-            --radius-md: 16px;
-            --radius-sm: 12px;
+    // =============================================================
+    // AUTH STATE
+    // =============================================================
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            loginBtn.textContent = 'Dashboard';
+            loginBtn.href = 'dashboard.html';
+            loginBtn.className = 'btn btn-primary';
+            registerBtn.textContent = 'Logout';
+            registerBtn.href = '#';
+            registerBtn.className = 'btn btn-outline-violet';
+            registerBtn.onclick = (e) => {
+                e.preventDefault();
+                auth.signOut();
+            };
+            
+            // Load enrollment statuses for all courses
+            await loadEnrollmentStatuses();
+        } else {
+            currentUser = null;
+            enrollmentCache = {};
+            loginBtn.textContent = 'Login';
+            loginBtn.href = 'login.html';
+            loginBtn.className = 'btn btn-outline-violet';
+            registerBtn.textContent = 'Register';
+            registerBtn.href = 'register.html';
+            registerBtn.className = 'btn btn-primary';
+            registerBtn.onclick = null;
+            
+            // Re-render courses without enrollment status
+            renderCourses(allCourses);
         }
+    });
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            padding: 20px;
-            margin: 0;
-        }
-
-        .app-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: var(--radius-xl);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-            padding: 20px 32px 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.3;
-        }
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--violet-deep);
-            top: -150px;
-            right: -100px;
-            opacity: 0.1;
-        }
-        .orb-2 {
-            width: 350px;
-            height: 350px;
-            background: var(--gold-radiant);
-            bottom: -100px;
-            left: -100px;
-            opacity: 0.12;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* ---------- BUTTONS ---------- */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        .btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-        }
-        .btn-primary {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
-        }
-        .btn-primary:hover {
-            background: #9B1DFF;
-            border-color: #9B1DFF;
-            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
-            color: #fff;
-        }
-        .btn-gold {
-            background: var(--gold-radiant);
-            color: var(--violet-dark);
-            border-color: var(--gold-radiant);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
-        }
-        .btn-gold:hover {
-            background: #FFE44D;
-            border-color: #FFE44D;
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
-            color: var(--violet-dark);
-        }
-        .btn-outline-violet {
-            background: transparent;
-            border-color: rgba(139, 0, 255, 0.2);
-            color: var(--violet-deep);
-        }
-        .btn-outline-violet:hover {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-        }
-
-        /* ---------- NAVIGATION ---------- */
-        nav {
-            padding: 8px 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-        .logo i {
-            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2.2rem;
-        }
-        .logo span {
-            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-            position: relative;
-        }
-        .nav-links a:hover {
-            color: var(--violet-deep);
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--violet-deep);
-            transition: width 0.3s;
-            border-radius: 2px;
-        }
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        .nav-links a.active {
-            color: var(--violet-deep);
-            font-weight: 700;
-        }
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* ---------- COURSE CATALOGUE ---------- */
-        .catalogue-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-        .catalogue-header h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-        .catalogue-header h1 .violet {
-            color: var(--violet-deep);
-        }
-        .catalogue-header .sub {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-        }
-        .catalogue-header .sub i {
-            color: var(--gold-radiant);
-        }
-
-        .filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 32px;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: var(--radius-md);
-        }
-        .filter-bar .filter-label {
-            font-weight: 600;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .filter-bar .filter-label i {
-            color: var(--violet-deep);
-        }
-        .filter-bar .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .filter-btn {
-            padding: 6px 16px;
-            border-radius: 30px;
-            border: 1px solid rgba(139, 0, 255, 0.1);
-            background: transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .filter-btn:hover {
-            border-color: var(--violet-deep);
-            color: var(--violet-deep);
-        }
-        .filter-btn.active {
-            background: var(--violet-deep);
-            color: #fff;
-            border-color: var(--violet-deep);
-        }
-
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 28px;
-        }
-
-        .course-card {
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            transition: all 0.35s ease;
-            box-shadow: var(--glass-shadow);
-        }
-        .course-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--violet-deep);
-            box-shadow: 0 20px 40px -12px rgba(139, 0, 255, 0.15);
-        }
-
-        .course-thumb {
-            height: 160px;
-            background: linear-gradient(135deg, rgba(139, 0, 255, 0.05), rgba(255, 215, 0, 0.05));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3.5rem;
-            color: var(--violet-deep);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-        }
-        .course-thumb .badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--gold-radiant);
-            color: var(--violet-dark);
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 30px;
-            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
-        }
-
-        .course-body {
-            padding: 20px 20px 24px;
-        }
-        .course-body h4 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-        }
-        .course-body p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .course-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(139, 0, 255, 0.04);
-            padding-top: 12px;
-            margin-bottom: 12px;
-        }
-        .course-meta i {
-            color: var(--violet-deep);
-            margin-right: 4px;
-        }
-        .course-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .course-actions .btn {
-            flex: 1;
-            justify-content: center;
-            font-size: 0.85rem;
-            padding: 8px 16px;
-        }
-
-        /* Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, rgba(139, 0, 255, 0.03) 25%, rgba(139, 0, 255, 0.07) 50%, rgba(139, 0, 255, 0.03) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.8s infinite;
-            border-radius: 8px;
-        }
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
-        .skeleton-thumb {
-            height: 160px;
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        }
-        .skeleton-title {
-            height: 20px;
-            width: 80%;
-            margin-bottom: 8px;
-        }
-        .skeleton-text {
-            height: 14px;
-            width: 90%;
-            margin-bottom: 4px;
-        }
-        .skeleton-meta {
-            height: 16px;
-            width: 60%;
-        }
-        .skeleton-btn {
-            height: 38px;
-            width: 100%;
-            border-radius: 30px;
-        }
-
-        /* ---------- FOOTER ---------- */
-        .footer {
-            padding: 32px 0 8px;
-            margin-top: 40px;
-            border-top: 1px solid rgba(139, 0, 255, 0.04);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .footer i {
-            color: var(--violet-deep);
-        }
-        .footer .gold {
-            color: var(--gold-radiant);
-        }
-
-        /* ---------- RESPONSIVE ---------- */
-        @media (max-width: 1024px) {
-            .app-wrapper {
-                padding: 16px;
-                border-radius: var(--radius-lg);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav-links {
-                justify-content: center;
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            .nav-actions {
-                justify-content: center;
-            }
-            .catalogue-header h1 {
-                font-size: 1.8rem;
-            }
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-bar .filter-group {
-                justify-content: center;
-            }
-            .courses-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            body {
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .courses-grid {
-                grid-template-columns: 1fr;
-            }
-            .app-wrapper {
-                padding: 12px;
-            }
-            .catalogue-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .course-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="app-wrapper">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-
-        <!-- ============ NAVIGATION ============ -->
-        <nav>
-            <div class="container nav-container">
-                <a href="index.html" class="logo">
-                    <i class="fas fa-shield-halved"></i>
-                    Sword<span>Institute</span>
-                </a>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html" class="active">Courses</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="#">AI Mentor</a></li>
-                </ul>
-                <div class="nav-actions" id="navActions">
-                    <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
-                    <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- ============ COURSE CATALOGUE ============ -->
-        <div class="container">
-            <div class="catalogue-header">
-                <div>
-                    <h1>
-                        <i class="fas fa-graduation-cap" style="color:var(--violet-deep);"></i>
-                        <span class="violet">Sacred</span> Course Catalogue
-                    </h1>
-                    <div class="sub">
-                        <i class="fas fa-sparkles"></i> Choose your path to enlightenment
-                    </div>
-                </div>
-                <div>
-                    <span style="color:var(--text-muted);font-size:0.9rem;" id="courseCount">0 courses</span>
-                </div>
-            </div>
-
-            <!-- Filter Bar -->
-            <div class="filter-bar">
-                <div class="filter-label">
-                    <i class="fas fa-sliders-h"></i> Filter:
-                </div>
-                <div class="filter-group" id="filterGroup">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="AI & Alchemy">AI & Alchemy</button>
-                    <button class="filter-btn" data-filter="NGO Leadership">NGO Leadership</button>
-                    <button class="filter-btn" data-filter="Digital Wellbeing">Digital Wellbeing</button>
-                    <button class="filter-btn" data-filter="Smart Governance">Smart Governance</button>
-                    <button class="filter-btn" data-filter="Sacred Business">Sacred Business</button>
-                    <button class="filter-btn" data-filter="Global Community">Global Community</button>
-                </div>
-            </div>
-
-            <!-- Courses Grid -->
-            <div class="courses-grid" id="coursesContainer">
-                <!-- Skeleton Loaders -->
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
-                        </div>
-                        <div class="skeleton skeleton-btn"></div>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
-                        </div>
-                        <div class="skeleton skeleton-btn"></div>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
-                        </div>
-                        <div class="skeleton skeleton-btn"></div>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
-                        </div>
-                        <div class="skeleton skeleton-btn"></div>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
-                        </div>
-                        <div class="skeleton skeleton-btn"></div>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
-                        </div>
-                        <div class="skeleton skeleton-btn"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============ FOOTER ============ -->
-        <div class="footer container">
-            <p style="margin-bottom:6px;">
-                <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
-            </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
-        </div>
-    </div>
-
-    <!-- ========================================================== -->
-    <!-- MODULAR JAVASCRIPT -->
-    <!-- ========================================================== -->
-    <script type="module">
-        import {
-            auth,
-            db,
-            onAuthStateChanged,
-            collection,
-            query,
-            orderBy,
-            getDocs,
-            where
-        } from './firebase.js';
-
-        // DOM Elements
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const coursesContainer = document.getElementById('coursesContainer');
-        const courseCount = document.getElementById('courseCount');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-
-        let allCourses = [];
-        let currentFilter = 'all';
-
-        // =============================================================
-        // AUTH STATE
-        // =============================================================
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginBtn.textContent = 'Dashboard';
-                loginBtn.href = 'dashboard.html';
-                loginBtn.className = 'btn btn-primary';
-                registerBtn.textContent = 'Logout';
-                registerBtn.href = '#';
-                registerBtn.className = 'btn btn-outline-violet';
-                registerBtn.onclick = (e) => {
-                    e.preventDefault();
-                    auth.signOut();
+    // =============================================================
+    // LOAD ENROLLMENT STATUSES
+    // =============================================================
+    async function loadEnrollmentStatuses() {
+        if (!currentUser) return;
+        
+        try {
+            // Get all course IDs
+            const courseIds = allCourses.map(c => c.id);
+            if (courseIds.length === 0) return;
+            
+            // Bulk check enrollment
+            const enrollmentsRef = collection(db, 'enrollments');
+            const q = query(
+                enrollmentsRef,
+                where('userId', '==', currentUser.uid),
+                where('courseId', 'in', courseIds)
+            );
+            const snapshot = await getDocs(q);
+            
+            enrollmentCache = {};
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                enrollmentCache[data.courseId] = {
+                    enrolled: true,
+                    enrollmentId: doc.id,
+                    progress: data.progress || 0,
+                    completed: data.completed || false
                 };
-            } else {
-                loginBtn.textContent = 'Login';
-                loginBtn.href = 'login.html';
-                loginBtn.className = 'btn btn-outline-violet';
-                registerBtn.textContent = 'Register';
-                registerBtn.href = 'register.html';
-                registerBtn.className = 'btn btn-primary';
-                registerBtn.onclick = null;
-            }
-        });
-
-        // =============================================================
-        // LOAD COURSES
-        // =============================================================
-        async function loadCourses() {
-            try {
-                const coursesRef = collection(db, 'courses');
-                const q = query(coursesRef, orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    coursesContainer.innerHTML = `
-                        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
-                            <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
-                            <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
-                            <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
-                        </div>
-                    `;
-                    courseCount.textContent = '0 courses';
-                    return;
-                }
-
-                allCourses = [];
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    allCourses.push({
-                        id: doc.id,
-                        ...data
-                    });
-                });
-
-                courseCount.textContent = `${allCourses.length} courses`;
-                renderCourses(allCourses);
-
-            } catch (error) {
-                console.error('Error loading courses:', error);
-                coursesContainer.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
-                        <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
-                        <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
-                        <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
-                        <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
-                    </div>
-                `;
-            }
+            });
+            
+            // Re-render with enrollment status
+            renderCourses(allCourses);
+        } catch (error) {
+            console.warn('Could not load enrollment statuses:', error);
         }
+    }
 
-        // =============================================================
-        // RENDER COURSES
-        // =============================================================
-        function renderCourses(courses) {
-            if (courses.length === 0) {
+    // =============================================================
+    // HANDLE ENROLLMENT
+    // =============================================================
+    async function handleEnrollment(courseId, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        if (!currentUser) {
+            // Redirect to login
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // Check if already enrolled
+        if (enrollmentCache[courseId]?.enrolled) {
+            // Already enrolled - navigate to course or dashboard
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        // Show loading state on button
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enrolling...';
+        btn.disabled = true;
+        
+        try {
+            const result = await enrollInCourse(courseId);
+            
+            if (result.success) {
+                // Update cache
+                enrollmentCache[courseId] = {
+                    enrolled: true,
+                    enrollmentId: result.enrollmentId,
+                    progress: 0,
+                    completed: false
+                };
+                
+                // Show success toast
+                showToast('🎉 Successfully enrolled! Redirecting to dashboard...', 'success');
+                
+                // Update button
+                btn.innerHTML = '<i class="fas fa-arrow-right"></i> Continue Learning';
+                btn.className = 'btn btn-gold';
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    window.location.href = 'dashboard.html';
+                };
+                
+                // Redirect after 1.5 seconds
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+            } else {
+                showToast(`❌ ${result.error || 'Failed to enroll'}`, 'error');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        } catch (error) {
+            showToast('❌ An error occurred. Please try again.', 'error');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // =============================================================
+    // TOAST NOTIFICATION
+    // =============================================================
+    function showToast(message, type = 'success') {
+        // Remove existing toast
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) existingToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: ${type === 'success' ? 'rgba(34, 197, 94, 0.95)' : 'rgba(220, 38, 38, 0.95)'};
+            color: #fff;
+            font-weight: 600;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 60px -12px rgba(0,0,0,0.2);
+            z-index: 9999;
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        `;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100px); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // =============================================================
+    // LOAD COURSES
+    // =============================================================
+    async function loadCourses() {
+        try {
+            const coursesRef = collection(db, 'courses');
+            const q = query(coursesRef, orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
                 coursesContainer.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
-                        <i class="fas fa-filter" style="font-size:2.5rem;color:var(--violet-deep);margin-bottom:12px;display:block;"></i>
-                        <h4 style="color:var(--text-primary);">No courses match this filter</h4>
-                        <p>Try selecting a different category.</p>
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
+                        <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
+                        <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
                     </div>
                 `;
+                courseCount.textContent = '0 courses';
                 return;
             }
 
-            let html = '';
-            courses.forEach((course) => {
-                const title = course.title || 'Untitled Scroll';
-                const description = course.description || 'No wisdom shared yet.';
-                const category = course.category || 'General';
-                const duration = course.duration || 'Self-paced';
-                const icon = course.icon || 'fa-book';
-                const level = course.level || 'Beginner';
-
-                html += `
-                    <div class="course-card">
-                        <div class="course-thumb">
-                            <i class="fas ${icon}"></i>
-                            <span class="badge">${level}</span>
-                        </div>
-                        <div class="course-body">
-                            <h4>${title}</h4>
-                            <p>${description}</p>
-                            <div class="course-meta">
-                                <span><i class="fas fa-tag"></i> ${category}</span>
-                                <span><i class="fas fa-clock"></i> ${duration}</span>
-                            </div>
-                            <div class="course-actions">
-                                <a href="#" class="btn btn-primary">Enroll <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            allCourses = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                allCourses.push({
+                    id: doc.id,
+                    ...data
+                });
             });
 
-            coursesContainer.innerHTML = html;
+            courseCount.textContent = `${allCourses.length} courses`;
+            
+            // Load enrollment statuses if user is logged in
+            if (currentUser) {
+                await loadEnrollmentStatuses();
+            } else {
+                renderCourses(allCourses);
+            }
+
+        } catch (error) {
+            console.error('Error loading courses:', error);
+            coursesContainer.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
+                    <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
+                    <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
+                    <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
+                    <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    // =============================================================
+    // RENDER COURSES
+    // =============================================================
+    function renderCourses(courses) {
+        if (courses.length === 0) {
+            coursesContainer.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
+                    <i class="fas fa-filter" style="font-size:2.5rem;color:var(--violet-deep);margin-bottom:12px;display:block;"></i>
+                    <h4 style="color:var(--text-primary);">No courses match this filter</h4>
+                    <p>Try selecting a different category.</p>
+                </div>
+            `;
+            return;
         }
 
-        // =============================================================
-        // FILTER HANDLING
-        // =============================================================
-        filterButtons.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                // Update active state
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        let html = '';
+        courses.forEach((course) => {
+            const title = course.title || 'Untitled Scroll';
+            const description = course.description || 'No wisdom shared yet.';
+            const category = course.category || 'General';
+            const duration = course.duration || 'Self-paced';
+            const icon = course.icon || 'fa-book';
+            const level = course.level || 'Beginner';
+            
+            // Check enrollment status
+            const isEnrolled = enrollmentCache[course.id]?.enrolled || false;
+            const progress = enrollmentCache[course.id]?.progress || 0;
+            const isCompleted = enrollmentCache[course.id]?.completed || false;
+            
+            // Determine button state
+            let buttonHtml = '';
+            if (isEnrolled) {
+                const progressText = isCompleted ? '🎓 Completed' : `${progress}% Complete`;
+                buttonHtml = `
+                    <a href="dashboard.html" class="btn btn-gold">
+                        <i class="fas fa-arrow-right"></i> Continue Learning
+                    </a>
+                    <div style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-top:4px;">
+                        ${progressText}
+                    </div>
+                `;
+            } else {
+                buttonHtml = `
+                    <a href="#" class="btn btn-primary" onclick="window.handleEnrollment('${course.id}', event)">
+                        <i class="fas fa-plus"></i> Enroll
+                    </a>
+                `;
+            }
 
-                const filter = btn.dataset.filter;
-                currentFilter = filter;
-
-                if (filter === 'all') {
-                    renderCourses(allCourses);
-                } else {
-                    const filtered = allCourses.filter(course =>
-                        course.category && course.category === filter
-                    );
-                    renderCourses(filtered);
-                }
-            });
+            html += `
+                <div class="course-card" data-course-id="${course.id}">
+                    <div class="course-thumb">
+                        <i class="fas ${icon}"></i>
+                        <span class="badge">${level}</span>
+                        ${isEnrolled ? '<span class="badge" style="background:var(--violet-deep);color:#fff;right:auto;left:12px;">✓ Enrolled</span>' : ''}
+                    </div>
+                    <div class="course-body">
+                        <h4>${title}</h4>
+                        <p>${description}</p>
+                        <div class="course-meta">
+                            <span><i class="fas fa-tag"></i> ${category}</span>
+                            <span><i class="fas fa-clock"></i> ${duration}</span>
+                        </div>
+                        <div class="course-actions" style="display:flex;flex-direction:column;gap:6px;">
+                            ${buttonHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
         });
 
-        // =============================================================
-        // INITIALIZE
-        // =============================================================
-        document.addEventListener('DOMContentLoaded', loadCourses);
-    </script>
-</body>
-</html>
+        coursesContainer.innerHTML = html;
+        
+        // Attach event listeners for enroll buttons
+        document.querySelectorAll('.course-actions .btn-primary').forEach((btn) => {
+            const card = btn.closest('.course-card');
+            if (card) {
+                const courseId = card.dataset.courseId;
+                btn.onclick = (e) => handleEnrollment(courseId, e);
+            }
+        });
+    }
+
+    // =============================================================
+    // FILTER HANDLING
+    // =============================================================
+    filterButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.dataset.filter;
+            currentFilter = filter;
+
+            if (filter === 'all') {
+                renderCourses(allCourses);
+            } else {
+                const filtered = allCourses.filter(course =>
+                    course.category && course.category === filter
+                );
+                renderCourses(filtered);
+            }
+        });
+    });
+
+    // =============================================================
+    // INITIALIZE
+    // =============================================================
+    document.addEventListener('DOMContentLoaded', loadCourses);
+</script>
