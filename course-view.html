@@ -717,9 +717,24 @@
         // =============================================================
         // LOAD COURSE
         // =============================================================
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function sanitizeId(value) {
+            if (typeof value !== 'string') return null;
+            return /^[A-Za-z0-9_-]+$/.test(value) ? value : null;
+        }
+
         async function loadCourse() {
             const params = new URLSearchParams(window.location.search);
-            courseId = params.get('id');
+            const rawCourseId = params.get('id');
+            courseId = sanitizeId(rawCourseId);
 
             if (!courseId) {
                 window.location.href = 'courses.html';
@@ -807,10 +822,12 @@
                         <div style="text-align:center;padding:40px;color:var(--text-muted);">
                             <i class="fas fa-triangle-exclamation" style="font-size:2rem;color:var(--gold-radiant);display:block;margin-bottom:12px;"></i>
                             <h4 style="color:var(--text-primary);">Failed to load course</h4>
-                            <p style="font-size:0.9rem;">${error.message}</p>
+                            <p id="course-load-error-message" style="font-size:0.9rem;"></p>
                             <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Back to Courses</a>
                         </div>
                     `;
+                document.getElementById('course-load-error-message').textContent =
+                    (error && error.message) ? error.message : 'An unexpected error occurred.';
             }
         }
 
@@ -838,6 +855,10 @@
                 let html = '';
                 let index = 1;
                 snapshot.forEach((doc) => {
+                    const safeCourseId = encodeURIComponent(courseId);
+                    const safeLessonId = encodeURIComponent(lessonId);
+                    const safeTitle = escapeHtml(lesson.title || 'Lesson');
+                    const safeDescription = escapeHtml(lesson.description || '');
                     const lesson = doc.data();
                     const lessonId = doc.id;
 
@@ -845,14 +866,14 @@
                     const isLocked = !isEnrolled && index > 1;
                     const statusClass = isLocked ? 'locked' : 'unlocked';
                     const statusIcon = isLocked ? '🔒 Locked' : '📖 Start';
-
+                            <a href="${isLocked ? '#' : `lesson.html?courseId=${safeCourseId}&lessonId=${safeLessonId}`}" 
                     html += `
                             <a href="${isLocked ? '#' : `lesson.html?courseId=${courseId}&lessonId=${lessonId}`}" 
                                style="text-decoration:none;color:var(--text-primary);cursor:${isLocked ? 'default' : 'pointer'};">
                                 <li style="${isLocked ? 'opacity:0.6;' : ''}">
                                     <div class="lesson-info">
-                                        <span class="num">${index}</span>
-                                        <div>
+                                            <div class="title">${safeTitle}</div>
+                                            <div class="desc">${safeDescription}</div>
                                             <div class="title">${lesson.title || 'Lesson'}</div>
                                             <div class="desc">${lesson.description || ''}</div>
                                         </div>

@@ -555,7 +555,8 @@
             
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
-            bubble.innerHTML = text.replace(/\n/g, '<br>');
+            bubble.textContent = text;
+            bubble.style.whiteSpace = 'pre-line';
             
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(bubble);
