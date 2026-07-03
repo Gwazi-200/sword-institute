@@ -1034,10 +1034,14 @@
                         <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
                             <i class="fas fa-triangle-exclamation" style="font-size:3rem;color:var(--gold-radiant);display:block;margin-bottom:16px;"></i>
                             <h3 style="color:var(--text-primary);">Failed to Load Lesson</h3>
-                            <p style="font-size:0.9rem;">${error.message}</p>
+                            <p id="lesson-load-error-message" style="font-size:0.9rem;"></p>
                             <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Back to Courses</a>
                         </div>
                     `;
+                const errorMessageEl = document.getElementById('lesson-load-error-message');
+                if (errorMessageEl) {
+                    errorMessageEl.textContent = (error && error.message) ? error.message : 'An unexpected error occurred.';
+                }
             }
         }
 
