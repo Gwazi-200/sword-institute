@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sword Institute | Lesson</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* Same root variables as course-view.html */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pearl-light: #FCFAF5;
+            --pearl-mid: #F5F2EB;
+            --pearl-shadow: #E8E2D8;
+            --violet-deep: #8B00FF;
+            --violet-glow: rgba(139, 0, 255, 0.12);
+            --violet-soft: #A855F7;
+            --violet-dark: #3B0764;
+            --gold-radiant: #FFD700;
+            --gold-soft: #FDE68A;
+            --gold-glow: rgba(255, 215, 0, 0.2);
+            --text-primary: #1E1029;
+            --text-secondary: #4B3A5C;
+            --text-muted: #7A6A8A;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --glass-shadow: 0 8px 32px rgba(139, 0, 255, 0.06);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .app-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            padding: 20px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--violet-deep);
+            top: -150px;
+            right: -100px;
+            opacity: 0.1;
+        }
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: var(--gold-radiant);
+            bottom: -100px;
+            left: -100px;
+            opacity: 0.12;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ---------- BUTTONS ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--violet-deep);
+            color: #fff;
+            border-color: var(--violet-deep);
+            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
+        }
+        .btn-primary:hover {
+            background: #9B1DFF;
+            border-color: #9B1DFF;
+            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
+            color: #fff;
+        }
+
+        .btn-gold {
+            background: var(--gold-radiant);
+            color: var(--violet-dark);
+            border-color: var(--gold-radiant);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
+        }
+        .btn-gold:hover {
+            background: #FFE44D;
+            border-color: #FFE44D;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
+            color: var(--violet-dark);
+        }
+
+        .btn-outline-violet {
+            background: transparent;
+            border-color: rgba(139, 0, 255, 0.2);
+            color: var(--violet-deep);
+        }
+        .btn-outline-violet:hover {
+            background: var(--violet-deep);
+            color: #fff;
+            border-color: var(--violet-deep);
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        .btn-success:hover {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ---------- NAVIGATION ---------- */
+        nav {
+            padding: 8px 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .logo i {
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+        }
+        .logo span {
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: var(--violet-deep);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--violet-deep);
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-links a.active {
+            color: var(--violet-deep);
+            font-weight: 700;
+        }
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ---------- LESSON CONTENT ---------- */
+        .lesson-header {
+            margin-bottom: 32px;
+        }
+        .lesson-header .breadcrumb {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .lesson-header .breadcrumb a {
+            color: var(--violet-deep);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .lesson-header .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .lesson-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+        .lesson-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .lesson-content-card {
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+            min-height: 300px;
+        }
+        .lesson-content-card .content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        .lesson-content-card .content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            margin-top: 24px;
+        }
+        .lesson-content-card .content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+        .lesson-content-card .content p {
+            margin-bottom: 12px;
+        }
+        .lesson-content-card .content ul,
+        .lesson-content-card .content ol {
+            margin-left: 24px;
+            margin-bottom: 12px;
+        }
+        .lesson-content-card .content li {
+            margin-bottom: 4px;
+        }
+
+        .lesson-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(139, 0, 255, 0.04);
+        }
+        .lesson-actions .btn {
+            min-width: 140px;
+        }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* ---------- TOAST ---------- */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: rgba(34, 197, 94, 0.95);
+            color: #fff;
+            font-weight: 600;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+        .toast-notification.error {
+            background: rgba(220, 38, 38, 0.95);
+        }
+        .toast-notification .xp-badge {
+            background: var(--gold-radiant);
+            color: var(--violet-dark);
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* ---------- FOOTER ---------- */
+        .footer {
+            padding: 32px 0 8px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(139, 0, 255, 0.04);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .footer i {
+            color: var(--violet-deep);
+        }
+        .footer .gold {
+            color: var(--gold-radiant);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .app-wrapper {
+                padding: 16px;
+                border-radius: var(--radius-lg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .nav-actions {
+                justify-content: center;
+            }
+            .lesson-header h1 {
+                font-size: 1.8rem;
+            }
+            .lesson-content-card {
+                padding: 20px;
+            }
+            .lesson-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .lesson-nav .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-wrapper {
+                padding: 12px;
+            }
+            .lesson-header h1 {
+                font-size: 1.4rem;
+            }
+            .lesson-actions {
+                flex-direction: column;
+            }
+            .lesson-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+
+        <!-- ============ NAVIGATION ============ -->
+        <nav>
+            <div class="container nav-container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-shield-halved"></i>
+                    Sword<span>Institute</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="#">AI Mentor</a></li>
+                </ul>
+                <div class="nav-actions" id="navActions">
+                    <a href="#" class="btn btn-outline-violet" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ============ LESSON CONTENT ============ -->
+        <div class="container">
+            <!-- Header -->
+            <div class="lesson-header">
+                <div class="breadcrumb">
+                    <a href="courses.html">Courses</a> &gt;
+                    <a href="#" id="courseLink">Course</a> &gt;
+                    <span id="lessonTitle">Lesson</span>
+                </div>
+                <h1 id="lessonHeading">Loading lesson...</h1>
+                <div class="subtitle" id="lessonSubtitle">Loading...</div>
+            </div>
+
+            <!-- Content -->
+            <div class="lesson-content-card">
+                <div class="content" id="lessonContent">
+                    <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin" style="font-size:3rem;display:block;margin-bottom:16px;"></i>
+                        Loading lesson content...
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="lesson-actions">
+                    <div id="completeSection">
+                        <button class="btn btn-success" id="completeBtn">
+                            <i class="fas fa-check"></i> Mark Complete
+                        </button>
+                        <span id="completedLabel" style="display:none;color:#16a34a;font-weight:600;">
+                            <i class="fas fa-check-circle"></i> Complete!
+                        </span>
+                    </div>
+                    <div style="flex:1;"></div>
+                    <div class="lesson-nav">
+                        <button class="btn btn-outline-violet" id="prevBtn" style="display:none;">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button class="btn btn-primary" id="nextBtn" style="display:none;">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" id="backToCourse" class="btn btn-gold" style="width:100%;">
+                <i class="fas fa-arrow-left"></i> Back to Course
+            </a>
+        </div>
+
+        <!-- ============ FOOTER ============ -->
+        <div class="footer container">
+            <p style="margin-bottom:6px;">
+                <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
+            </p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- FIREBASE CDN                                              -->
+    <!-- ========================================================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        // =============================================================
+        // FIREBASE CONFIG
+        // =============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
+            authDomain: "sword-institute-lms.firebaseapp.com",
+            projectId: "sword-institute-lms",
+            storageBucket: "sword-institute-lms.firebasestorage.app",
+            messagingSenderId: "478896038426",
+            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // =============================================================
+        // DOM References
+        // =============================================================
+        const logoutBtn = document.getElementById('logoutBtn');
+        const courseLink = document.getElementById('courseLink');
+        const lessonTitle = document.getElementById('lessonTitle');
+        const lessonHeading = document.getElementById('lessonHeading');
+        const lessonSubtitle = document.getElementById('lessonSubtitle');
+        const lessonContent = document.getElementById('lessonContent');
+        const completeBtn = document.getElementById('completeBtn');
+        const completedLabel = document.getElementById('completedLabel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const backToCourse = document.getElementById('backToCourse');
+
+        let courseId = null;
+        let lessonId = null;
+        let currentUser = null;
+        let lessonData = null;
+        let courseData = null;
+        let enrollmentData = null;
+        let allLessons = [];
+        let currentLessonIndex = -1;
+        let isCompleted = false;
+        let completionDocId = null;
+
+        // =============================================================
+        // AUTH STATE
+        // =============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = user;
+
+            const params = new URLSearchParams(window.location.search);
+            courseId = params.get('courseId');
+            lessonId = params.get('lessonId');
+
+            if (!courseId || !lessonId) {
+                window.location.href = 'courses.html';
+                return;
+            }
+
+            await loadLessonData();
+        });
+
+        // =============================================================
+        // LOGOUT
+        // =============================================================
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await auth.signOut();
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('Error logging out. Please try again.', 'error');
+            }
+        });
+
+        // =============================================================
+        // TOAST NOTIFICATION
+        // =============================================================
+        function showToast(message, type = 'success') {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type === 'error' ? 'error' : ''}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // =============================================================
+        // LOAD LESSON DATA
+        // =============================================================
+        async function loadLessonData() {
+            try {
+                // Load course details
+                const courseDoc = await db.collection('courses').doc(courseId).get();
+                if (courseDoc.exists) {
+                    courseData = courseDoc.data();
+                    courseLink.textContent = courseData.title || 'Course';
+                    courseLink.href = `course-view.html?id=${courseId}`;
+                    backToCourse.href = `course-view.html?id=${courseId}`;
+                }
+
+                // Load lesson
+                const lessonDoc = await db.collection('courses')
+                    .doc(courseId)
+                    .collection('lessons')
+                    .doc(lessonId)
+                    .get();
+
+                if (!lessonDoc.exists) {
+                    window.location.href = `course-view.html?id=${courseId}`;
+                    return;
+                }
+
+                lessonData = lessonDoc.data();
+                lessonTitle.textContent = lessonData.title || 'Lesson';
+                lessonHeading.textContent = lessonData.title || 'Lesson';
+                lessonSubtitle.textContent = lessonData.description || '';
+
+                // Load lesson content
+                lessonContent.innerHTML = lessonData.content || '<p>No content available for this lesson.</p>';
+
+                // Load all lessons for navigation
+                const lessonsSnapshot = await db.collection('courses')
+                    .doc(courseId)
+                    .collection('lessons')
+                    .orderBy('order', 'asc')
+                    .get();
+
+                allLessons = [];
+                lessonsSnapshot.forEach((doc) => {
+                    allLessons.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Find current lesson index
+                currentLessonIndex = allLessons.findIndex(l => l.id === lessonId);
+
+                // Setup navigation
+                if (currentLessonIndex > 0) {
+                    prevBtn.style.display = 'inline-flex';
+                    prevBtn.onclick = () => {
+                        window.location.href =
+                            `lesson.html?courseId=${courseId}&lessonId=${allLessons[currentLessonIndex - 1].id}`;
+                    };
+                }
+
+                if (currentLessonIndex < allLessons.length - 1) {
+                    nextBtn.style.display = 'inline-flex';
+                    nextBtn.onclick = () => {
+                        window.location.href =
+                            `lesson.html?courseId=${courseId}&lessonId=${allLessons[currentLessonIndex + 1].id}`;
+                    };
+                }
+
+                // Load enrollment data
+                const enrollmentSnapshot = await db.collection('enrollments')
+                    .where('userId', '==', currentUser.uid)
+                    .where('courseId', '==', courseId)
+                    .get();
+
+                if (!enrollmentSnapshot.empty) {
+                    enrollmentData = enrollmentSnapshot.docs[0];
+                    const enrollmentId = enrollmentData.id;
+
+                    // Check if lesson is completed
+                    const completionDoc = await db.collection('enrollments')
+                        .doc(enrollmentId)
+                        .collection('completedLessons')
+                        .doc(lessonId)
+                        .get();
+
+                    if (completionDoc.exists) {
+                        isCompleted = true;
+                        completionDocId = completionDoc.id;
+                        completeBtn.style.display = 'none';
+                        completedLabel.style.display = 'inline';
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error loading lesson:', error);
+                showToast('Error loading lesson. Please try again.', 'error');
+            }
+        }
+
+        // =============================================================
+        // MARK LESSON COMPLETE
+        // =============================================================
+        completeBtn.addEventListener('click', async () => {
+            if (!enrollmentData) {
+                showToast('Please enroll in this course first.', 'error');
+                return;
+            }
+
+            if (isCompleted) {
+                return;
+            }
+
+            const enrollmentId = enrollmentData.id;
+
+            try {
+                // Mark lesson as complete
+                await db.collection('enrollments')
+                    .doc(enrollmentId)
+                    .collection('completedLessons')
+                    .doc(lessonId)
+                    .set({
+                        completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lessonId: lessonId,
+                        lessonTitle: lessonData.title || 'Lesson'
+                    });
+
+                // Update XP (10 XP per lesson)
+                const xpEarned = 10;
+                await db.collection('enrollments')
+                    .doc(enrollmentId)
+                    .update({
+                        xpEarned: firebase.firestore.FieldValue.increment(xpEarned),
+                        progress: firebase.firestore.FieldValue.increment(
+                            (1 / allLessons.length) * 100
+                        ),
+                        lastAccessed: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                isCompleted = true;
+                completeBtn.style.display = 'none';
+                completedLabel.style.display = 'inline';
+
+                showToast(`
+                        ✅ Lesson complete! 
+                        <span class="xp-badge">+${xpEarned} XP</span>
+                    `);
+
+                // Update progress if all lessons complete
+                const progress = ((allLessons.length) / allLessons.length) * 100;
+                if (progress >= 100) {
+                    // Mark course as complete
+                    await db.collection('enrollments')
+                        .doc(enrollmentId)
+                        .update({
+                            completed: true,
+                            completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    showToast('🎉 Course Complete! You\'ve mastered this path!');
+                }
+
+            } catch (error) {
+                console.error('Error completing lesson:', error);
+                showToast('Error marking lesson complete. Please try again.', 'error');
+            }
+        });
+
+        console.log('📝 Lesson view initialized successfully');
+    </script>
+</body>
+</html>

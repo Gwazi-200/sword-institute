@@ -47,3 +47,27 @@ export default {
     getStudent,
     deleteStudent
 };
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Courses - anyone can read
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == 'YOUR_ADMIN_UID';
+    }
+    
+    // Enrollments - users can only read/write their own
+    match /enrollments/{enrollmentId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // App metadata - anyone can read
+    match /app_metadata/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == 'YOUR_ADMIN_UID';
+    }
+  }
+}
