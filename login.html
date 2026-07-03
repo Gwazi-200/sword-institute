@@ -245,16 +245,6 @@
             transform: none;
         }
 
-        .btn-danger {
-            background: #dc2626;
-            color: #fff;
-            border-color: #dc2626;
-        }
-        .btn-danger:hover {
-            background: #ef4444;
-            border-color: #ef4444;
-        }
-
         .auth-footer {
             text-align: center;
             margin-top: 24px;
@@ -304,19 +294,6 @@
             margin-right: 8px;
         }
 
-        .info-message {
-            background: rgba(59, 130, 246, 0.05);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            color: #3b82f6;
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-        }
-        .info-message i {
-            margin-right: 8px;
-        }
-
         .spinner {
             display: inline-block;
             width: 20px;
@@ -359,11 +336,6 @@
                 <p>Sign in to continue your sacred journey</p>
             </div>
 
-            <div id="sessionInfo" class="info-message" style="display:none;">
-                <i class="fas fa-info-circle"></i>
-                <span id="sessionText">You are already logged in.</span>
-            </div>
-
             <div id="errorMessage" class="error-message">
                 <i class="fas fa-exclamation-circle"></i>
                 <span id="errorText">Invalid credentials</span>
@@ -403,12 +375,6 @@
                     <span id="loginText">Sign In</span>
                     <span id="loginSpinner" style="display:none;"><span class="spinner"></span></span>
                 </button>
-
-                <div style="margin-top:12px;text-align:center;">
-                    <button type="button" class="btn btn-danger" id="logoutBtn" style="display:none;width:auto;padding:8px 20px;font-size:0.85rem;">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
             </form>
 
             <div class="auth-footer">
@@ -453,38 +419,17 @@
         const loginBtn = document.getElementById('loginBtn');
         const loginText = document.getElementById('loginText');
         const loginSpinner = document.getElementById('loginSpinner');
-        const logoutBtn = document.getElementById('logoutBtn');
         const errorMessage = document.getElementById('errorMessage');
         const errorText = document.getElementById('errorText');
         const successMessage = document.getElementById('successMessage');
         const successText = document.getElementById('successText');
-        const sessionInfo = document.getElementById('sessionInfo');
-        const sessionText = document.getElementById('sessionText');
-
-        // Flag to track if user just logged out
-        let justLoggedOut = sessionStorage.getItem('justLoggedOut') === 'true';
 
         // =============================================================
-        // Check if user is already logged in (show info, but don't redirect)
+        // Check if user is already logged in (redirect to dashboard)
         // =============================================================
         auth.onAuthStateChanged((user) => {
-            if (user && !justLoggedOut) {
-                // Show that user is already logged in
-                sessionInfo.style.display = 'block';
-                sessionText.textContent = 'You are already logged in as ' + (user.email || 'User');
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-flex';
-            } else if (user && justLoggedOut) {
-                // User just logged out, clear the flag
-                sessionStorage.removeItem('justLoggedOut');
-                justLoggedOut = false;
-                sessionInfo.style.display = 'none';
-                loginBtn.style.display = 'block';
-                logoutBtn.style.display = 'none';
-            } else {
-                sessionInfo.style.display = 'none';
-                loginBtn.style.display = 'block';
-                logoutBtn.style.display = 'none';
+            if (user) {
+                window.location.href = 'dashboard.html';
             }
         });
 
@@ -521,7 +466,7 @@
                 // Redirect after a moment
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
-                }, 1000);
+                }, 1500);
 
             } catch (error) {
                 let message = 'Invalid email or password. Please try again.';
@@ -541,20 +486,6 @@
                 loginBtn.disabled = false;
                 loginText.textContent = 'Sign In';
                 loginSpinner.style.display = 'none';
-            }
-        });
-
-        // =============================================================
-        // Logout Handler
-        // =============================================================
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await auth.signOut();
-                sessionStorage.setItem('justLoggedOut', 'true');
-                // Reload the page to reset everything
-                window.location.reload();
-            } catch (error) {
-                console.error('Logout error:', error);
             }
         });
 
