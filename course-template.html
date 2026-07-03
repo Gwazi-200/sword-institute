@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lesson | Sword Institute</title>
+    <title>[[COURSE_TITLE]] | Sword Institute</title>
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
@@ -26,16 +29,20 @@
             --pearl-light: #FCFAF5;
             --pearl-mid: #F5F2EB;
             --pearl-shadow: #E8E2D8;
+
             --violet-deep: #8B00FF;
             --violet-glow: rgba(139, 0, 255, 0.12);
             --violet-soft: #A855F7;
             --violet-dark: #3B0764;
+
             --gold-radiant: #FFD700;
             --gold-soft: #FDE68A;
             --gold-glow: rgba(255, 215, 0, 0.2);
+
             --text-primary: #1E1029;
             --text-secondary: #4B3A5C;
             --text-muted: #7A6A8A;
+
             --glass-bg: rgba(255, 255, 255, 0.45);
             --glass-border: rgba(255, 255, 255, 0.7);
             --glass-shadow: 0 8px 32px rgba(139, 0, 255, 0.06);
@@ -73,6 +80,7 @@
             overflow: hidden;
         }
 
+        /* Floating Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -268,66 +276,69 @@
         }
 
         /* ============================================================
-           LESSON PAGE LAYOUT
+           COURSE PAGE LAYOUT
            ============================================================ */
-        .lesson-header {
+        .course-header {
             margin-bottom: 32px;
         }
 
-        .lesson-header .breadcrumb {
+        .course-header .breadcrumb {
             font-size: 0.9rem;
             color: var(--text-muted);
             margin-bottom: 8px;
         }
-        .lesson-header .breadcrumb a {
+        .course-header .breadcrumb a {
             color: var(--violet-deep);
             text-decoration: none;
             font-weight: 600;
         }
-        .lesson-header .breadcrumb a:hover {
+        .course-header .breadcrumb a:hover {
             text-decoration: underline;
         }
 
-        .lesson-header h1 {
-            font-size: 2.4rem;
+        .course-header h1 {
+            font-size: 2.8rem;
             font-weight: 800;
             letter-spacing: -1px;
             margin-bottom: 8px;
             line-height: 1.1;
         }
-        .lesson-header .subtitle {
-            font-size: 1.05rem;
+        .course-header h1 .violet {
+            color: var(--violet-deep);
+        }
+        .course-header .subtitle {
+            font-size: 1.1rem;
             color: var(--text-secondary);
             max-width: 700px;
         }
 
-        .lesson-meta-bar {
+        .course-meta-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            padding: 14px 20px;
+            gap: 24px;
+            padding: 16px 20px;
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(8px);
             border-radius: var(--radius-md);
             border: 1px solid rgba(255, 255, 255, 0.5);
             margin-bottom: 32px;
         }
-        .lesson-meta-bar .item {
+        .course-meta-bar .item {
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        .lesson-meta-bar .item i {
+        .course-meta-bar .item i {
             color: var(--violet-deep);
         }
-        .lesson-meta-bar .item .value {
+        .course-meta-bar .item .value {
             font-weight: 600;
             color: var(--text-primary);
         }
 
-        .lesson-grid {
+        .course-grid {
             display: grid;
             grid-template-columns: 1fr 320px;
             gap: 28px;
@@ -388,6 +399,12 @@
             margin-top: 24px;
             color: var(--violet-deep);
         }
+        .lesson-content .content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
         .lesson-content .content p {
             margin-bottom: 16px;
         }
@@ -416,6 +433,9 @@
             display: block;
             margin-bottom: 4px;
         }
+        .lesson-content .content .highlight-box.gold .label {
+            color: var(--gold-radiant);
+        }
         .lesson-content .content .definition-box {
             padding: 16px 20px;
             background: rgba(255, 255, 255, 0.5);
@@ -427,6 +447,7 @@
             font-weight: 700;
             color: var(--violet-deep);
         }
+
         .lesson-content .content .key-points {
             padding: 16px 20px;
             background: rgba(139, 0, 255, 0.02);
@@ -439,6 +460,9 @@
             color: var(--violet-deep);
             display: block;
             margin-bottom: 8px;
+        }
+        .lesson-content .content .key-points ul {
+            margin-bottom: 0;
         }
 
         .lesson-actions {
@@ -524,7 +548,6 @@
             font-weight: 600;
         }
 
-        /* AI Sidebar */
         .ai-sidebar {
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(12px);
@@ -594,7 +617,7 @@
         }
 
         /* ============================================================
-           TOAST
+           TOAST NOTIFICATION
            ============================================================ */
         .toast-notification {
             position: fixed;
@@ -640,24 +663,6 @@
         }
 
         /* ============================================================
-           FOOTER
-           ============================================================ */
-        .footer {
-            padding: 32px 0 8px;
-            margin-top: 40px;
-            border-top: 1px solid rgba(139, 0, 255, 0.04);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .footer i {
-            color: var(--violet-deep);
-        }
-        .footer .gold {
-            color: var(--gold-radiant);
-        }
-
-        /* ============================================================
            RESPONSIVE
            ============================================================ */
         @media (max-width: 1024px) {
@@ -665,11 +670,11 @@
                 padding: 16px;
                 border-radius: var(--radius-lg);
             }
-            .lesson-grid {
+            .course-grid {
                 grid-template-columns: 1fr;
             }
-            .lesson-header h1 {
-                font-size: 2rem;
+            .course-header h1 {
+                font-size: 2.2rem;
             }
             .lesson-content {
                 padding: 24px;
@@ -689,10 +694,10 @@
             .nav-actions {
                 justify-content: center;
             }
-            .lesson-header h1 {
-                font-size: 1.6rem;
+            .course-header h1 {
+                font-size: 1.8rem;
             }
-            .lesson-meta-bar {
+            .course-meta-bar {
                 gap: 12px;
             }
             .lesson-content {
@@ -717,10 +722,10 @@
             .app-wrapper {
                 padding: 12px;
             }
-            .lesson-header h1 {
-                font-size: 1.3rem;
+            .course-header h1 {
+                font-size: 1.5rem;
             }
-            .lesson-meta-bar {
+            .course-meta-bar {
                 flex-direction: column;
                 gap: 8px;
             }
@@ -739,6 +744,7 @@
 <body>
 
     <div class="app-wrapper">
+        <!-- Floating Orbs -->
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
 
@@ -747,20 +753,20 @@
         ============================================================ -->
         <nav>
             <div class="container nav-container">
-                <a href="index.html" class="logo">
+                <a href="/index.html" class="logo">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html">Courses</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="#ai-section">AI Mentor</a></li>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/courses.html">Courses</a></li>
+                    <li><a href="/dashboard.html">Dashboard</a></li>
+                    <li><a href="/ai-message.html" target="_blank">AI Mentor</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
-                    <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
-                    <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
+                    <a href="/login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
+                    <a href="/register.html" class="btn btn-primary" id="registerBtn">Register</a>
+                    <a href="/dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -768,33 +774,33 @@
         </nav>
 
         <!-- ============================================================
-        LESSON CONTENT
+        COURSE CONTENT
         ============================================================ -->
         <div class="container">
             <!-- Header -->
-            <div class="lesson-header">
+            <div class="course-header">
                 <div class="breadcrumb">
-                    <a href="courses.html">Courses</a> &gt;
-                    <a href="#" id="courseLink">Course</a> &gt;
-                    <span id="lessonTitle">Loading...</span>
+                    <a href="/courses.html">Courses</a> &gt;
+                    <a href="/course-view.html?id=[[COURSE_ID]]">[[COURSE_TITLE]]</a> &gt;
+                    <span>[[LESSON_TITLE]]</span>
                 </div>
-                <h1 id="lessonHeading">Loading...</h1>
-                <div class="subtitle" id="lessonSubtitle">Loading lesson content...</div>
+                <h1>[[LESSON_TITLE]]</h1>
+                <div class="subtitle">[[LESSON_SUBTITLE]]</div>
             </div>
 
             <!-- Meta Bar -->
-            <div class="lesson-meta-bar">
+            <div class="course-meta-bar">
                 <div class="item">
                     <i class="fas fa-book-open"></i>
-                    <span>Course: <span class="value" id="courseName">Loading...</span></span>
+                    <span>Course: <span class="value">[[COURSE_TITLE]]</span></span>
                 </div>
                 <div class="item">
                     <i class="fas fa-clock"></i>
-                    <span>Est. Time: <span class="value" id="lessonTime">25 min</span></span>
+                    <span>Est. Time: <span class="value">[[LESSON_TIME]]</span></span>
                 </div>
                 <div class="item">
                     <i class="fas fa-star"></i>
-                    <span>XP: <span class="value" id="lessonXp">10 XP</span></span>
+                    <span>XP: <span class="value">[[LESSON_XP]] XP</span></span>
                 </div>
                 <div class="item">
                     <i class="fas fa-check-circle"></i>
@@ -803,7 +809,7 @@
             </div>
 
             <!-- Main Grid -->
-            <div class="lesson-grid">
+            <div class="course-grid">
                 <!-- Left: Lesson Content -->
                 <div class="lesson-content">
                     <!-- Progress -->
@@ -818,11 +824,8 @@
                     </div>
 
                     <!-- Content -->
-                    <div class="content" id="lessonContent">
-                        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
-                            <i class="fas fa-spinner fa-spin" style="font-size:3rem;display:block;margin-bottom:16px;"></i>
-                            Loading lesson content...
-                        </div>
+                    <div class="content">
+                        [[LESSON_CONTENT]]
                     </div>
 
                     <!-- Actions -->
@@ -851,14 +854,12 @@
                     <div class="sidebar-card">
                         <h4><i class="fas fa-list"></i> Lessons</h4>
                         <ul class="lesson-list" id="lessonList">
-                            <li style="padding:12px;text-align:center;color:var(--text-muted);">
-                                <i class="fas fa-spinner fa-spin"></i> Loading lessons...
-                            </li>
+                            [[LESSON_LIST]]
                         </ul>
                     </div>
 
                     <!-- AI Mentor -->
-                    <div class="ai-sidebar" id="ai-section">
+                    <div class="ai-sidebar">
                         <div class="ai-header">
                             <i class="fas fa-robot"></i>
                             <h4>AI Learning Assistant</h4>
@@ -887,9 +888,9 @@
         </div>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- FIREBASE + JAVASCRIPT                                      -->
-    <!-- ========================================================== -->
+    <!-- ============================================================
+    FIREBASE + JAVASCRIPT
+    ============================================================ -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
@@ -915,7 +916,7 @@
         const db = firebase.firestore();
 
         // =============================================================
-        // DOM References
+        // DOM REFERENCES
         // =============================================================
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
@@ -927,25 +928,12 @@
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         const lessonStatus = document.getElementById('lessonStatus');
-        const courseName = document.getElementById('courseName');
-        const lessonTitle = document.getElementById('lessonTitle');
-        const lessonHeading = document.getElementById('lessonHeading');
-        const lessonSubtitle = document.getElementById('lessonSubtitle');
-        const lessonContent = document.getElementById('lessonContent');
-        const lessonList = document.getElementById('lessonList');
-        const courseLink = document.getElementById('courseLink');
         const aiInput = document.getElementById('aiInput');
         const aiAdvice = document.getElementById('aiAdvice');
-        const lessonTime = document.getElementById('lessonTime');
-        const lessonXp = document.getElementById('lessonXp');
 
         let currentUser = null;
-        let courseId = null;
-        let lessonId = null;
-        let allLessons = [];
-        let currentLessonIndex = -1;
-        let isCompleted = false;
-        let enrollmentId = null;
+        let currentLessonId = '[[LESSON_ID]]';
+        let courseId = '[[COURSE_ID]]';
 
         // =============================================================
         // AUTH STATE
@@ -956,214 +944,64 @@
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
                 dashboardBtn.style.display = 'inline-flex';
+                loadLessonProgress();
             } else {
                 currentUser = null;
                 loginBtn.style.display = 'inline-flex';
                 registerBtn.style.display = 'inline-flex';
                 dashboardBtn.style.display = 'none';
             }
-            loadLesson();
         });
 
         // =============================================================
-        // LOAD LESSON
+        // LOAD LESSON PROGRESS
         // =============================================================
-        async function loadLesson() {
-            const params = new URLSearchParams(window.location.search);
-            courseId = params.get('courseId');
-            lessonId = params.get('lessonId');
-
-            if (!courseId || !lessonId) {
-                lessonContent.innerHTML = `
-                        <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
-                            <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:var(--gold-radiant);display:block;margin-bottom:16px;"></i>
-                            <h3 style="color:var(--text-primary);">Missing Course or Lesson ID</h3>
-                            <p>Please go back to the course page and select a lesson.</p>
-                            <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Browse Courses</a>
-                        </div>
-                    `;
-                return;
-            }
+        async function loadLessonProgress() {
+            if (!currentUser) return;
 
             try {
-                // Load course data
-                const courseDoc = await db.collection('courses').doc(courseId).get();
-                if (courseDoc.exists) {
-                    const data = courseDoc.data();
-                    courseName.textContent = data.title || 'Course';
-                    courseLink.textContent = data.title || 'Course';
-                    courseLink.href = `course-view.html?id=${courseId}`;
-                }
-
-                // Load lesson data
-                const lessonDoc = await db.collection('courses')
-                    .doc(courseId)
-                    .collection('lessons')
-                    .doc(lessonId)
-                    .get();
-
-                if (!lessonDoc.exists) {
-                    lessonContent.innerHTML = `
-                            <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
-                                <i class="fas fa-book-open" style="font-size:3rem;color:var(--violet-deep);display:block;margin-bottom:16px;"></i>
-                                <h3 style="color:var(--text-primary);">Lesson Not Found</h3>
-                                <p>This lesson may have been removed or is unavailable.</p>
-                                <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Browse Courses</a>
-                            </div>
-                        `;
-                    return;
-                }
-
-                const lessonData = lessonDoc.data();
-                lessonTitle.textContent = lessonData.title || 'Lesson';
-                lessonHeading.textContent = lessonData.title || 'Lesson';
-                lessonSubtitle.textContent = lessonData.description || '';
-                lessonContent.innerHTML = lessonData.content || '<p>No content available.</p>';
-                lessonTime.textContent = lessonData.duration || '25 min';
-                lessonXp.textContent = (lessonData.xp || 10) + ' XP';
-
-                // Load all lessons for navigation
-                await loadLessonList();
-
-                // Load completion status
-                await loadCompletionStatus();
-
-            } catch (error) {
-                console.error('Error loading lesson:', error);
-                lessonContent.innerHTML = `
-                        <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
-                            <i class="fas fa-triangle-exclamation" style="font-size:3rem;color:var(--gold-radiant);display:block;margin-bottom:16px;"></i>
-                            <h3 style="color:var(--text-primary);">Failed to Load Lesson</h3>
-                            <p id="lesson-load-error-message" style="font-size:0.9rem;"></p>
-                            <a href="courses.html" class="btn btn-primary" style="margin-top:16px;">Back to Courses</a>
-                        </div>
-                    `;
-                const errorMessageEl = document.getElementById('lesson-load-error-message');
-                if (errorMessageEl) {
-                    errorMessageEl.textContent = (error && error.message) ? error.message : 'An unexpected error occurred.';
-                }
-            }
-        }
-
-        // =============================================================
-        // LOAD LESSON LIST
-        // =============================================================
-        async function loadLessonList() {
-            try {
-                const snapshot = await db.collection('courses')
-                    .doc(courseId)
-                    .collection('lessons')
-                    .orderBy('order', 'asc')
-                    .get();
-
-                allLessons = [];
-                snapshot.forEach((doc) => {
-                    allLessons.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-
-                if (allLessons.length === 0) {
-                    lessonList.innerHTML = `
-                            <li style="padding:12px;text-align:center;color:var(--text-muted);">
-                                <i class="fas fa-info-circle"></i> No lessons found
-                            </li>
-                        `;
-                    return;
-                }
-
-                // Find current lesson index
-                currentLessonIndex = allLessons.findIndex(l => l.id === lessonId);
-
-                // Render lesson list
-                let html = '';
-                allLessons.forEach((lesson, index) => {
-                    const isActive = lesson.id === lessonId;
-                    const isCompleted = false; // Will be updated by completion check
-                    const isLocked = index > 0 && !isCompleted;
-
-                    html += `
-                            <li class="${isActive ? 'active' : ''}" onclick="navigateToLesson('${lesson.id}')">
-                                <span>${index + 1}. ${lesson.title || 'Lesson'}</span>
-                                <span class="status ${isActive ? 'active' : (isCompleted ? 'completed' : 'locked')}">
-                                    ${isActive ? '📖' : (isCompleted ? '✅' : '🔒')}
-                                </span>
-                            </li>
-                        `;
-                });
-
-                lessonList.innerHTML = html;
-
-                // Setup navigation buttons
-                if (currentLessonIndex > 0) {
-                    prevBtn.style.display = 'inline-flex';
-                    prevBtn.href = `lesson.html?courseId=${courseId}&lessonId=${allLessons[currentLessonIndex - 1].id}`;
-                }
-
-                if (currentLessonIndex < allLessons.length - 1) {
-                    nextBtn.style.display = 'inline-flex';
-                    nextBtn.href = `lesson.html?courseId=${courseId}&lessonId=${allLessons[currentLessonIndex + 1].id}`;
-                }
-
-            } catch (error) {
-                console.error('Error loading lesson list:', error);
-            }
-        }
-
-        // =============================================================
-        // LOAD COMPLETION STATUS
-        // =============================================================
-        async function loadCompletionStatus() {
-            if (!currentUser) {
-                lessonStatus.textContent = '🔒 Login to track progress';
-                return;
-            }
-
-            try {
+                // Check enrollment
                 const enrollmentSnapshot = await db.collection('enrollments')
                     .where('userId', '==', currentUser.uid)
                     .where('courseId', '==', courseId)
                     .get();
 
                 if (enrollmentSnapshot.empty) {
-                    lessonStatus.textContent = '🔒 Enroll to start';
+                    lessonStatus.textContent = '🔒 Not Enrolled';
                     return;
                 }
 
-                enrollmentId = enrollmentSnapshot.docs[0].id;
+                const enrollmentId = enrollmentSnapshot.docs[0].id;
 
+                // Check if lesson is completed
                 const completionDoc = await db.collection('enrollments')
                     .doc(enrollmentId)
                     .collection('completedLessons')
-                    .doc(lessonId)
+                    .doc(currentLessonId)
                     .get();
 
                 if (completionDoc.exists) {
-                    isCompleted = true;
                     completeBtn.style.display = 'none';
                     completedLabel.style.display = 'inline';
                     lessonStatus.textContent = '✅ Completed';
                     progressFill.style.width = '100%';
                     progressText.textContent = '100%';
                 } else {
-                    // Calculate overall progress
-                    const allCompleted = await db.collection('enrollments')
-                        .doc(enrollmentId)
-                        .collection('completedLessons')
-                        .get();
-
-                    const completedCount = allCompleted.size;
-                    const totalLessons = allLessons.length || 1;
-                    const progress = Math.round((completedCount / totalLessons) * 100);
+                    // Check overall progress
+                    const allLessons = document.querySelectorAll('.lesson-list li');
+                    const completedCount = allLessons.length > 0 ?
+                        document.querySelectorAll('.lesson-list li .status.completed').length :
+                        0;
+                    const progress = allLessons.length > 0 ?
+                        Math.round((completedCount / allLessons.length) * 100) :
+                        0;
                     progressFill.style.width = progress + '%';
                     progressText.textContent = progress + '%';
                     lessonStatus.textContent = '📖 In Progress';
                 }
 
             } catch (error) {
-                console.error('Error loading completion status:', error);
-                lessonStatus.textContent = '⚠️ Error loading progress';
+                console.error('Error loading progress:', error);
             }
         }
 
@@ -1176,78 +1014,69 @@
                 return;
             }
 
-            if (!enrollmentId) {
-                showToast('Please enroll in this course first.', 'error');
-                return;
-            }
-
-            if (isCompleted) return;
-
             try {
+                // Get enrollment
+                const enrollmentSnapshot = await db.collection('enrollments')
+                    .where('userId', '==', currentUser.uid)
+                    .where('courseId', '==', courseId)
+                    .get();
+
+                if (enrollmentSnapshot.empty) {
+                    showToast('Please enroll in this course first.', 'error');
+                    return;
+                }
+
+                const enrollmentId = enrollmentSnapshot.docs[0].id;
+
                 // Mark lesson as complete
                 await db.collection('enrollments')
                     .doc(enrollmentId)
                     .collection('completedLessons')
-                    .doc(lessonId)
+                    .doc(currentLessonId)
                     .set({
                         completedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        lessonId: lessonId,
-                        lessonTitle: lessonHeading.textContent
+                        lessonId: currentLessonId,
+                        lessonTitle: document.querySelector('h1').textContent
                     });
 
-                const xpValue = parseInt(lessonXp.textContent) || 10;
-
-                // Update XP and progress
+                // Update XP (+10)
                 await db.collection('enrollments')
                     .doc(enrollmentId)
                     .update({
-                        xpEarned: firebase.firestore.FieldValue.increment(xpValue),
+                        xpEarned: firebase.firestore.FieldValue.increment(10),
                         progress: firebase.firestore.FieldValue.increment(
-                            (1 / allLessons.length) * 100
+                            (1 / document.querySelectorAll('.lesson-list li').length) * 100
                         ),
                         lastAccessed: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                isCompleted = true;
                 completeBtn.style.display = 'none';
                 completedLabel.style.display = 'inline';
                 lessonStatus.textContent = '✅ Completed';
                 progressFill.style.width = '100%';
                 progressText.textContent = '100%';
 
-                showToast(`🎉 Lesson complete! +${xpValue} XP`);
+                showToast('🎉 Lesson complete! +10 XP');
 
-                // Check if all lessons are complete
-                const allCompleted = await db.collection('enrollments')
-                    .doc(enrollmentId)
-                    .collection('completedLessons')
-                    .get();
+                // Check if course is complete
+                const totalLessons = document.querySelectorAll('.lesson-list li').length;
+                const completedCount = document.querySelectorAll('.lesson-list li .status.completed').length + 1;
 
-                if (allCompleted.size === allLessons.length) {
+                if (completedCount === totalLessons) {
                     await db.collection('enrollments')
                         .doc(enrollmentId)
                         .update({
                             completed: true,
                             completedAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                    showToast('🎓 Course Complete! You\'ve mastered this path! 🏆');
+                    showToast('🎓 Course Complete! You\'ve mastered this path!');
                 }
-
-                // Update lesson list
-                await loadLessonList();
 
             } catch (error) {
                 console.error('Error completing lesson:', error);
                 showToast('Error marking lesson complete. Please try again.', 'error');
             }
         });
-
-        // =============================================================
-        // NAVIGATE TO LESSON
-        // =============================================================
-        function navigateToLesson(lessonId) {
-            window.location.href = `lesson.html?courseId=${courseId}&lessonId=${lessonId}`;
-        }
 
         // =============================================================
         // AI QUESTION
@@ -1259,23 +1088,30 @@
             aiAdvice.textContent = '🤔 Thinking...';
             aiInput.value = '';
 
+            // Simple AI responses based on keywords
             const lowerQuestion = question.toLowerCase();
             let response = '';
 
             if (lowerQuestion.includes('explain') || lowerQuestion.includes('what is') || lowerQuestion.includes(
                     'meaning')) {
-                response = '🔍 Great question! This lesson covers: ' + lessonHeading.textContent +
-                    '. Try reviewing the key points above for a quick summary.';
+                response = 'Great question! Let me break this down for you. ' +
+                    '🔍 This lesson covers the foundational concepts of ' +
+                    document.querySelector('h1').textContent +
+                    '. Try reading the key points section for a quick summary.';
             } else if (lowerQuestion.includes('example') || lowerQuestion.includes('instance')) {
-                response = '💡 Here\'s a practical example: Think about how you can apply these concepts in your community work. The lesson content provides real-world applications.';
+                response = '💡 Here\'s a practical example: In real-world applications, ' +
+                    'these concepts are used by professionals to solve problems every day. ' +
+                    'Think about how you might apply this in your community work.';
             } else if (lowerQuestion.includes('summary') || lowerQuestion.includes('summarize')) {
-                response = '📋 Quick summary: This lesson introduces core concepts and practical applications. Check the highlighted sections above for the most important points.';
+                response = '📋 Here\'s a quick summary: This lesson introduces the core ideas and practical applications. ' +
+                    'Check the key points highlighted in the content above for a quick recap.';
             } else if (lowerQuestion.includes('test') || lowerQuestion.includes('quiz')) {
-                response = '🧠 Ready to test your knowledge? Complete the quiz in this lesson to earn XP!';
-            } else if (lowerQuestion.includes('hello') || lowerQuestion.includes('hi')) {
-                response = '👋 Hello! I\'m your AI Learning Assistant. Ask me anything about this lesson, and I\'ll help you understand it better.';
+                response = '🧠 Ready to test your knowledge? Complete the quiz at the end of this lesson ' +
+                    'to earn XP and track your progress!';
             } else {
-                response = '🌟 Great question! I\'d recommend reviewing the lesson content carefully. The key concepts are highlighted in the boxes above. If you have specific questions, feel free to ask!';
+                response = '🌟 That\'s a thoughtful question! I\'d recommend reviewing the lesson content ' +
+                    'carefully and taking notes on the key concepts. If you have specific questions, ' +
+                    'feel free to ask!';
             }
 
             aiAdvice.textContent = response;

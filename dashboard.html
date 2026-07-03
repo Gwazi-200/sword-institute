@@ -1,206 +1,1318 @@
-﻿<!-- dashboard.html – Sword Institute LMS -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sword Institute · LMS</title>
-    <!-- Google Fonts (Inter) -->
+    <title>Sword Institute | Dashboard</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-    <!-- Font Awesome 6 (free) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="css/dashboard.css" />
+
+    <style>
+        /* ============================================================
+           ROOT: PEARLESCENT + VIOLET + GOLD
+           ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pearl-light: #FCFAF5;
+            --pearl-mid: #F5F2EB;
+            --pearl-shadow: #E8E2D8;
+
+            --violet-deep: #8B00FF;
+            --violet-glow: rgba(139, 0, 255, 0.12);
+            --violet-soft: #A855F7;
+            --violet-dark: #3B0764;
+
+            --gold-radiant: #FFD700;
+            --gold-soft: #FDE68A;
+            --gold-glow: rgba(255, 215, 0, 0.2);
+
+            --text-primary: #1E1029;
+            --text-secondary: #4B3A5C;
+            --text-muted: #7A6A8A;
+
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --glass-shadow: 0 8px 32px rgba(139, 0, 255, 0.06);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Main iOS Glass Container */
+        .app-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            padding: 20px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--violet-deep);
+            top: -150px;
+            right: -100px;
+            opacity: 0.1;
+        }
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: var(--gold-radiant);
+            bottom: -100px;
+            left: -100px;
+            opacity: 0.12;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--violet-deep);
+            color: #fff;
+            border-color: var(--violet-deep);
+            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
+        }
+        .btn-primary:hover {
+            background: #9B1DFF;
+            border-color: #9B1DFF;
+            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
+            color: #fff;
+        }
+
+        .btn-gold {
+            background: var(--gold-radiant);
+            color: var(--violet-dark);
+            border-color: var(--gold-radiant);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
+        }
+        .btn-gold:hover {
+            background: #FFE44D;
+            border-color: #FFE44D;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
+            color: var(--violet-dark);
+        }
+
+        .btn-outline-violet {
+            background: transparent;
+            border-color: rgba(139, 0, 255, 0.2);
+            color: var(--violet-deep);
+        }
+        .btn-outline-violet:hover {
+            background: var(--violet-deep);
+            color: #fff;
+            border-color: var(--violet-deep);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+        .btn-danger:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        .btn-success:hover {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ============================================================
+           NAVIGATION
+           ============================================================ */
+        nav {
+            padding: 8px 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .logo i {
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+        }
+        .logo span {
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: var(--violet-deep);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--violet-deep);
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-links a.active {
+            color: var(--violet-deep);
+            font-weight: 700;
+        }
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ============================================================
+           GLASS CARD
+           ============================================================ */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 24px;
+        }
+        .glass-card:hover {
+            border-color: rgba(139, 0, 255, 0.2);
+            box-shadow: 0 20px 40px -12px rgba(139, 0, 255, 0.12);
+        }
+
+        /* ============================================================
+           DASHBOARD LAYOUT
+           ============================================================ */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .dashboard-header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .dashboard-header h1 .violet {
+            color: var(--violet-deep);
+        }
+        .dashboard-header .welcome {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .dashboard-header .welcome i {
+            color: var(--gold-radiant);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 24px 12px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: var(--violet-deep);
+            transform: translateY(-4px);
+        }
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .stat-number .violet {
+            color: var(--violet-deep);
+        }
+        .stat-number .gold {
+            color: var(--gold-radiant);
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .stat-label i {
+            color: var(--violet-deep);
+            margin-right: 6px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 28px;
+        }
+
+        /* ----- Recent Activity / Courses ----- */
+        .activity-list {
+            list-style: none;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(139, 0, 255, 0.04);
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(139, 0, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--violet-deep);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .activity-item .content {
+            flex: 1;
+        }
+        .activity-item .content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .activity-item .content p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .activity-item .time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .activity-item .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(139, 0, 255, 0.08);
+            border-radius: 4px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .activity-item .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--violet-deep), var(--gold-radiant));
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .activity-item a {
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .activity-item a:hover h4 {
+            color: var(--violet-deep);
+        }
+
+        /* ----- AI Mentor Panel ----- */
+        .ai-panel {
+            padding: 28px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-xl);
+        }
+        .ai-panel .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .ai-panel .ai-header i {
+            font-size: 2rem;
+            color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.04);
+            padding: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 0, 255, 0.06);
+        }
+        .ai-panel .ai-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .ai-panel .ai-header h3 small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .ai-panel .ai-header .chat-btn {
+            margin-left: auto;
+            background: var(--violet-deep);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .ai-panel .ai-header .chat-btn:hover {
+            background: #9B1DFF;
+            transform: scale(1.05);
+        }
+
+        .ai-panel .ai-message {
+            padding: 16px;
+            background: rgba(139, 0, 255, 0.02);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--violet-deep);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .ai-panel .ai-message .greeting {
+            font-weight: 700;
+            color: var(--violet-deep);
+        }
+        .ai-panel .ai-message .message {
+            color: var(--text-primary);
+        }
+        .ai-panel .ai-message .recommendation {
+            color: var(--violet-deep);
+            font-weight: 600;
+        }
+        .ai-panel .ai-message .tip {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .ai-panel .ai-message .motivation {
+            color: var(--gold-radiant);
+            font-weight: 600;
+        }
+
+        .ai-quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ai-quick-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ----- TOAST ----- */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: rgba(34, 197, 94, 0.95);
+            color: #fff;
+            font-weight: 600;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+        .toast-notification.error {
+            background: rgba(220, 38, 38, 0.95);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            padding: 32px 0 8px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(139, 0, 255, 0.04);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .footer i {
+            color: var(--violet-deep);
+        }
+        .footer .gold {
+            color: var(--gold-radiant);
+        }
+
+        /* ----- LOADING SKELETON ----- */
+        .skeleton-text {
+            height: 14px;
+            background: linear-gradient(90deg, rgba(139, 0, 255, 0.03) 25%, rgba(139, 0, 255, 0.07) 50%, rgba(139, 0, 255, 0.03) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s infinite;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .app-wrapper {
+                padding: 16px;
+                border-radius: var(--radius-lg);
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .nav-actions {
+                justify-content: center;
+            }
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-item {
+                padding: 14px 8px;
+            }
+            .stat-number {
+                font-size: 1.4rem;
+            }
+            .app-wrapper {
+                padding: 12px;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .ai-panel {
+                padding: 20px;
+            }
+            .ai-panel .ai-header {
+                flex-wrap: wrap;
+            }
+            .ai-panel .ai-header .chat-btn {
+                margin-left: 0;
+                width: 100%;
+            }
+            .activity-item {
+                flex-wrap: wrap;
+            }
+            .activity-item .time {
+                margin-left: 58px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Main app wrapper -->
-    <div id="app" class="app">
 
-        <!-- ===== SIDEBAR ===== -->
-        <aside id="sidebar" class="sidebar" role="navigation" aria-label="Main navigation">
-            <div class="sidebar-brand">
-                <i class="fas fa-sword brand-icon"></i>
-                <span class="brand-name">Sword Institute</span>
-            </div>
-            <nav class="sidebar-nav">
-                <ul class="nav-list">
-                    <li class="nav-item active"><a href="#dashboard"><i class="fas fa-gavel"></i> Dashboard</a></li>
-                    <li class="nav-item"><a href="#my-courses"><i class="fas fa-book-open"></i> My Courses</a></li>
-                    <li class="nav-item"><a href="#learning-journey"><i class="fas fa-route"></i> Learning Journey</a></li>
-                    <li class="nav-item"><a href="#certificates"><i class="fas fa-certificate"></i> Certificates</a></li>
-                    <li class="nav-item"><a href="#achievements"><i class="fas fa-trophy"></i> Achievements</a></li>
-                    <li class="nav-item"><a href="#community"><i class="fas fa-globe-asia"></i> Community</a></li>
-                    <li class="nav-item"><a href="#ai-mentor"><i class="fas fa-robot"></i> AI Mentor</a></li>
-                    <li class="nav-item"><a href="#downloads"><i class="fas fa-download"></i> Downloads</a></li>
-                    <li class="nav-item"><a href="#profile"><i class="fas fa-user-circle"></i> Profile</a></li>
-                    <li class="nav-item"><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
-                    <li class="nav-item logout-item"><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    <div class="app-wrapper">
+        <!-- Floating Orbs -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+
+        <!-- ============================================================
+        NAVIGATION
+        ============================================================ -->
+        <nav>
+            <div class="container nav-container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-shield-halved"></i>
+                    Sword<span>Institute</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="ai-message.html" target="_blank">AI Mentor</a></li>
                 </ul>
-            </nav>
-        </aside>
-
-        <!-- ===== MAIN CONTENT ===== -->
-        <main class="main-content">
-
-            <!-- ===== TOP HEADER ===== -->
-            <header class="top-header">
-                <div class="header-left">
-                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-                    <span class="welcome-text">Welcome back, <span id="studentNameHeader">Student</span></span>
+                <div class="nav-actions" id="navActions">
+                    <a href="#" class="btn btn-outline-violet" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
                 </div>
-                <div class="header-right">
-                    <span class="current-date" id="currentDate"></span>
-                    <button class="notification-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="badge">3</span></button>
-                    <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
-                    <div class="avatar-wrapper">
-                        <img id="studentAvatar" src="https://ui-avatars.com/api/?name=Student&background=7C3AED&color=fff&size=40" alt="Student avatar" />
-                    </div>
-                </div>
-            </header>
+            </div>
+        </nav>
 
-            <!-- ===== DASHBOARD CONTENT ===== -->
-            <section class="dashboard-grid">
-
-                <!-- HERO SECTION -->
-                <div class="hero-section glass">
-                    <div class="hero-text">
-                        <h1>Welcome back, <span id="studentNameHero">Warrior</span></h1>
-                        <p>Forging Digital Warriors for Social Good</p>
-                    </div>
-                    <div class="hero-stats">
-                        <div class="hero-stat"><span id="streakCount">12</span> Day Streak</div>
-                        <div class="hero-stat"><span id="coursesEnrolledCount">8</span> Enrolled</div>
-                        <div class="hero-stat"><span id="coursesCompletedCount">5</span> Completed</div>
-                        <div class="hero-stat"><span id="certificatesCount">3</span> Certificates</div>
-                        <div class="hero-stat"><span id="learningProgressPercent">68%</span> Progress</div>
-                    </div>
-                    <div class="hero-progress">
-                        <label for="overallProgress">Overall Progress</label>
-                        <progress id="overallProgress" value="68" max="100"></progress>
+        <!-- ============================================================
+        DASHBOARD CONTENT
+        ============================================================ -->
+        <div class="container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1>
+                        <i class="fas fa-shield-halved" style="color:var(--violet-deep);"></i>
+                        <span class="violet">Sacred</span> Dashboard
+                    </h1>
+                    <div class="welcome" id="welcomeMessage">
+                        <i class="fas fa-sparkles"></i> Welcome back, <strong id="userName">Warrior</strong>
                     </div>
                 </div>
+                <a href="courses.html" class="btn btn-gold">
+                    <i class="fas fa-plus"></i> Continue Learning
+                </a>
+            </div>
 
-                <!-- COURSES SECTION -->
-                <section class="courses-section">
-                    <h2><i class="fas fa-book-open"></i> Your Courses</h2>
-                    <div class="courses-grid" id="coursesGrid">
-                        <!-- Courses will be populated by JS or static placeholders -->
-                        <!-- We'll generate cards via JS with data array for consistency -->
-                    </div>
-                </section>
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="enrolledCourses">—</div>
+                    <div class="stat-label"><i class="fas fa-book-open"></i>Enrolled Courses</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedCourses">—</div>
+                    <div class="stat-label"><i class="fas fa-check-circle"></i>Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="xpPoints">— <span class="gold">XP</span></div>
+                    <div class="stat-label"><i class="fas fa-star"></i>Divine XP</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="streakDays">— <span class="gold">🔥</span></div>
+                    <div class="stat-label"><i class="fas fa-fire"></i>Learning Streak</div>
+                </div>
+            </div>
 
-                <!-- AI MENTOR PANEL (right side floating) -->
-                <aside class="ai-mentor-panel glass" id="aiMentorPanel">
-                    <div class="mentor-avatar">
-                        <img src="https://placehold.co/80x80/7C3AED/FFFFFF?text=AI" alt="AI Mentor" />
-                    </div>
-                    <div class="mentor-greeting" id="mentorGreeting">Hello, Warrior</div>
-                    <div class="mentor-message" id="mentorMessage">You are doing great today!</div>
-                    <div class="mentor-tip" id="mentorTip">💡 Tip: Take breaks to boost focus.</div>
-                    <div class="mentor-advice" id="mentorAdvice">📈 Career advice: Keep learning AI skills.</div>
-                    <div class="mentor-quote" id="mentorQuote">“The only way to do great work is to love what you do.”</div>
-                </aside>
-
-                <!-- ANNOUNCEMENTS -->
-                <section class="announcements-section">
-                    <h2><i class="fas fa-bullhorn"></i> Announcements</h2>
-                    <div class="announcements-grid" id="announcementsGrid">
-                        <div class="announcement-card glass">
-                            <h3>New Course: AI for Social Good</h3>
-                            <p>Learn how AI can drive social impact.</p>
-                            <time>Today</time>
-                        </div>
-                        <div class="announcement-card glass">
-                            <h3>Live Webinar: Community Leadership</h3>
-                            <p>Join us this Friday at 3 PM.</p>
-                            <time>Tomorrow</time>
-                        </div>
-                        <div class="announcement-card glass">
-                            <h3>Certificate Upload</h3>
-                            <p>Your Child Welfare certificate is ready.</p>
-                            <time>2 days ago</time>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ACHIEVEMENTS -->
-                <section class="achievements-section">
-                    <h2><i class="fas fa-trophy"></i> Achievements</h2>
-                    <div class="achievements-grid" id="achievementsGrid">
-                        <div class="achievement-item glass"><i class="fas fa-star"></i> 5 Stars</div>
-                        <div class="achievement-item glass"><i class="fas fa-medal"></i> Bronze</div>
-                        <div class="achievement-item glass"><i class="fas fa-medal"></i> Silver</div>
-                        <div class="achievement-item glass"><i class="fas fa-medal"></i> Gold</div>
-                        <div class="achievement-item glass"><i class="fas fa-certificate"></i> 3 Certs</div>
-                        <div class="achievement-item glass"><i class="fas fa-shield-alt"></i> Mentor</div>
-                    </div>
-                </section>
-
-                <!-- LEARNING PROGRESS (circular + weekly chart) -->
-                <section class="progress-section">
-                    <h2><i class="fas fa-chart-line"></i> Learning Progress</h2>
-                    <div class="progress-content">
-                        <div class="circular-progress" data-progress="68">
-                            <svg viewBox="0 0 120 120">
-                                <circle cx="60" cy="60" r="54" fill="none" stroke="#e0e0e0" stroke-width="8" />
-                                <circle cx="60" cy="60" r="54" fill="none" stroke="#7C3AED" stroke-width="8" stroke-dasharray="339.292" stroke-dashoffset="108.573" transform="rotate(-90 60 60)" />
-                            </svg>
-                            <span class="progress-value">68%</span>
-                        </div>
-                        <div class="weekly-chart">
-                            <!-- Placeholder for chart (we'll draw with CSS bars) -->
-                            <div class="chart-bars">
-                                <div class="bar" style="height: 70%;"><span>Mon</span></div>
-                                <div class="bar" style="height: 50%;"><span>Tue</span></div>
-                                <div class="bar" style="height: 90%;"><span>Wed</span></div>
-                                <div class="bar" style="height: 30%;"><span>Thu</span></div>
-                                <div class="bar" style="height: 80%;"><span>Fri</span></div>
-                                <div class="bar" style="height: 60%;"><span>Sat</span></div>
-                                <div class="bar" style="height: 40%;"><span>Sun</span></div>
+            <!-- Main Grid -->
+            <div class="dashboard-grid">
+                <!-- Left: Recent Activity -->
+                <div class="glass-card">
+                    <h3 style="margin-bottom:16px;font-size:1.2rem;">
+                        <i class="fas fa-clock" style="color:var(--violet-deep);"></i> Recent Activity
+                    </h3>
+                    <ul class="activity-list" id="activityList">
+                        <li class="activity-item">
+                            <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
+                            <div class="content">
+                                <h4>Loading your courses...</h4>
+                                <p>Please wait</p>
                             </div>
+                            <span class="time">—</span>
+                        </li>
+                    </ul>
+                    <div style="text-align:center;margin-top:12px;">
+                        <a href="courses.html" class="btn btn-outline-violet" style="font-size:0.85rem;">
+                            Browse All Courses <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: AI Mentor Panel -->
+                <div class="ai-panel">
+                    <div class="ai-header">
+                        <i class="fas fa-robot"></i>
+                        <h3>
+                            AI Mentor
+                            <small>Your Spiritual Guide</small>
+                        </h3>
+                        <button class="chat-btn" onclick="openAIChat()">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
+                    </div>
+                    <div class="ai-message" id="aiMessage">
+                        <i class="fas fa-sparkles"></i>
+                        <div class="ai-text" id="aiAdvice">
+                            <div class="greeting">Loading personalized guidance...</div>
+                            <div class="message"></div>
+                            <div class="recommendation"></div>
+                            <div class="tip"></div>
+                            <div class="motivation"></div>
                         </div>
                     </div>
-                </section>
-
-                <!-- QUICK ACTIONS -->
-                <section class="quick-actions">
-                    <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
-                    <div class="actions-grid">
-                        <button class="action-btn glass"><i class="fas fa-play"></i> Continue Learning</button>
-                        <button class="action-btn glass"><i class="fas fa-download"></i> Download Notes</button>
-                        <button class="action-btn glass"><i class="fas fa-users"></i> Join Community</button>
-                        <button class="action-btn glass"><i class="fas fa-calendar-check"></i> Book Mentor Session</button>
+                    <div class="ai-quick-actions">
+                        <button class="btn btn-primary" onclick="openAIChat()">
+                            <i class="fas fa-comment"></i> Chat with AI Mentor
+                        </button>
+                        <button class="btn btn-gold" onclick="getAIRecommendation()">
+                            <i class="fas fa-lightbulb"></i> Get Recommendation
+                        </button>
+                        <button class="btn btn-outline-violet" onclick="getStudyTip()">
+                            <i class="fas fa-lightbulb"></i> Get Study Tip
+                        </button>
                     </div>
-                </section>
+                </div>
+            </div>
+        </div>
 
-                <!-- PROFILE CARD -->
-                <section class="profile-card glass">
-                    <h2><i class="fas fa-user-circle"></i> Profile</h2>
-                    <img id="profileAvatar" src="https://ui-avatars.com/api/?name=Student&background=7C3AED&color=fff&size=80" alt="Profile" />
-                    <div class="profile-info">
-                        <p><strong>Name:</strong> <span id="profileName">Student</span></p>
-                        <p><strong>Email:</strong> <span id="profileEmail">student@sword.institute</span></p>
-                        <p><strong>Country:</strong> <span id="profileCountry">Kenya</span></p>
-                        <p><strong>Learning Goal:</strong> <span id="profileGoal">Master AI for Social Good</span></p>
-                        <p><strong>Level:</strong> <span id="profileLevel">Gold Warrior</span></p>
-                    </div>
-                </section>
-
-            </section>
-
-            <!-- ===== FOOTER ===== -->
-            <footer class="app-footer">
-                <p>&copy; 2025 Sword Institute – Forging Digital Warriors for Social Good</p>
-                <p><i class="fas fa-bolt"></i> Powered by Firebase · AI Learning Ecosystem</p>
-            </footer>
-        </main>
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
+        <div class="footer container">
+            <p style="margin-bottom:6px;">
+                <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
+            </p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+        </div>
     </div>
 
-    <!-- ===== JAVASCRIPT (ES Module) ===== -->
-    <script type="module" src="js/dashboard-fixed.js"></script>
+    <!-- ========================================================== -->
+    <!-- FIREBASE CDN                                              -->
+    <!-- ========================================================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
 
+    <script>
+        // =============================================================
+        // FIREBASE CONFIG
+        // =============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
+            authDomain: "sword-institute-lms.firebaseapp.com",
+            projectId: "sword-institute-lms",
+            storageBucket: "sword-institute-lms.firebasestorage.app",
+            messagingSenderId: "478896038426",
+            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // =============================================================
+        // DOM References
+        // =============================================================
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userName = document.getElementById('userName');
+        const enrolledCoursesEl = document.getElementById('enrolledCourses');
+        const completedCoursesEl = document.getElementById('completedCourses');
+        const xpPointsEl = document.getElementById('xpPoints');
+        const streakDaysEl = document.getElementById('streakDays');
+        const activityList = document.getElementById('activityList');
+        const aiAdvice = document.getElementById('aiAdvice');
+
+        let currentUserData = null;
+        let studentData = null;
+
+        // =============================================================
+        // 1. AUTH STATE
+        // =============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const name = user.displayName || user.email || 'Warrior';
+            userName.textContent = name;
+            currentUserData = user;
+
+            await loadUserDashboard(user.uid);
+            await loadAIRecommendations(user.uid);
+        });
+
+        // =============================================================
+        // 2. LOGOUT
+        // =============================================================
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await auth.signOut();
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('Error logging out. Please try again.', 'error');
+            }
+        });
+
+        // =============================================================
+        // 3. TOAST NOTIFICATION
+        // =============================================================
+        function showToast(message, type = 'success') {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type === 'error' ? 'error' : ''}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // =============================================================
+        // 4. LOAD USER DASHBOARD
+        // =============================================================
+        async function loadUserDashboard(uid) {
+            try {
+                const enrollments = await getUserEnrollments(uid);
+
+                let enrolledCount = enrollments.length;
+                let completedCount = 0;
+                let totalXp = 0;
+
+                const courseDetails = [];
+                for (const enrollment of enrollments) {
+                    try {
+                        const courseDoc = await db.collection('courses').doc(enrollment.courseId).get();
+
+                        if (courseDoc.exists) {
+                            const courseData = courseDoc.data();
+                            courseDetails.push({
+                                ...enrollment,
+                                course: courseData,
+                                courseId: enrollment.courseId
+                            });
+
+                            if (enrollment.completed) {
+                                completedCount++;
+                            }
+                            if (enrollment.xpEarned) {
+                                totalXp += enrollment.xpEarned;
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Could not load course:', enrollment.courseId);
+                    }
+                }
+
+                // Update stats with animation
+                animateCounter(enrolledCoursesEl, enrolledCount);
+                animateCounter(completedCoursesEl, completedCount);
+                xpPointsEl.innerHTML = `${totalXp} <span class="gold">XP</span>`;
+                streakDaysEl.innerHTML = `7 <span class="gold">🔥</span>`;
+
+                updateActivityList(courseDetails);
+
+                studentData = {
+                    enrolledCourses: enrollments,
+                    completedCourses: enrollments.filter(e => e.completed),
+                    totalXp: totalXp,
+                    userName: currentUserData.displayName || currentUserData.email || 'Warrior',
+                    courseDetails: courseDetails
+                };
+
+            } catch (error) {
+                console.warn('Could not load dashboard data:', error);
+                enrolledCoursesEl.textContent = '—';
+                completedCoursesEl.textContent = '—';
+                xpPointsEl.innerHTML = '— <span class="gold">XP</span>';
+            }
+        }
+
+        // =============================================================
+        // 5. GET USER ENROLLMENTS
+        // =============================================================
+        async function getUserEnrollments(uid) {
+            try {
+                const snapshot = await db.collection('enrollments')
+                    .where('userId', '==', uid)
+                    .where('status', '==', 'active')
+                    .get();
+
+                const enrollments = [];
+                snapshot.forEach((doc) => {
+                    enrollments.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                return enrollments;
+            } catch (error) {
+                console.error('Error getting user enrollments:', error);
+                return [];
+            }
+        }
+
+        // =============================================================
+        // 6. ANIMATE COUNTER
+        // =============================================================
+        function animateCounter(element, target) {
+            if (!element) return;
+
+            let current = 0;
+            const speed = Math.max(1, target / 30);
+
+            function update() {
+                current += speed;
+                if (current < target) {
+                    element.textContent = Math.floor(current);
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = target;
+                }
+            }
+            update();
+        }
+
+        // =============================================================
+        // 7. UPDATE ACTIVITY LIST
+        // =============================================================
+        function updateActivityList(courses) {
+            if (!courses || courses.length === 0) {
+                activityList.innerHTML = `
+                        <li class="activity-item">
+                            <div class="icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="content">
+                                <h4>No activity yet</h4>
+                                <p>Enroll in a course to get started</p>
+                            </div>
+                            <span class="time"><a href="courses.html" style="color:var(--violet-deep);font-weight:600;text-decoration:none;">Browse →</a></span>
+                        </li>
+                    `;
+                return;
+            }
+
+            let html = '';
+            courses.forEach((item, index) => {
+                const courseName = item.course?.title || 'Untitled Course';
+                const progress = item.progress || 0;
+                const isCompleted = item.completed || false;
+                const status = isCompleted ? '✅ Completed' : `${progress}% Complete`;
+                const icon = isCompleted ? 'fa-check-circle' : 'fa-play';
+                const timeLabel = index === 0 ? 'Just now' : index === 1 ? 'Yesterday' :
+                    `${index + 1} days ago`;
+
+                html += `
+                        <li class="activity-item">
+                            <div class="icon"><i class="fas ${icon}"></i></div>
+                            <div class="content">
+                                <a href="course-view.html?id=${item.courseId}">
+                                    <h4>${isCompleted ? 'Completed:' : 'Learning:'} ${courseName}</h4>
+                                    <p>${status}</p>
+                                </a>
+                                ${!isCompleted && progress > 0 ? `
+                                        <div class="progress-bar">
+                                            <div class="fill" style="width:${progress}%;"></div>
+                                        </div>
+                                    ` : ''}
+                            </div>
+                            <span class="time"><a href="course-view.html?id=${item.courseId}" style="color:var(--text-muted);text-decoration:none;">${timeLabel}</a></span>
+                        </li>
+                    `;
+            });
+
+            html += `
+                    <li class="activity-item" style="justify-content:center;border-bottom:none;padding-top:8px;">
+                        <a href="courses.html" style="color:var(--violet-deep);font-weight:600;text-decoration:none;">
+                            <i class="fas fa-compass"></i> Discover More Courses
+                        </a>
+                    </li>
+                `;
+
+            activityList.innerHTML = html;
+        }
+
+        // =============================================================
+        // 8. AI MENTOR FUNCTIONS
+        // =============================================================
+        function openAIChat() {
+            window.open('ai-message.html', 'AIChat', 'width=500,height=700,scrollbars=yes,resizable=yes');
+        }
+
+        async function loadAIRecommendations(uid) {
+            try {
+                const coursesSnapshot = await db.collection('courses').get();
+                const availableCourses = [];
+                coursesSnapshot.forEach((doc) => {
+                    availableCourses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                if (studentData) {
+                    studentData.availableCourses = availableCourses;
+                }
+
+                const result = await getSmartRecommendations(studentData);
+
+                if (result.success) {
+                    updateAIMessage(result.recommendations);
+                }
+
+            } catch (error) {
+                console.error('Error loading AI recommendations:', error);
+            }
+        }
+
+        async function getSmartRecommendations(studentData) {
+            if (!studentData) {
+                return {
+                    success: true,
+                    recommendations: {
+                        greeting: 'Hello, Warrior! 🌟',
+                        message: 'Welcome to Sword Institute! Your learning journey awaits.',
+                        recommendation: 'Start with "Communication Skills" or "Introduction to Community Health".',
+                        tip: 'Set aside 15-20 minutes each day for learning.',
+                        motivation: 'The first step is the hardest - but you\'ve already taken it!'
+                    }
+                };
+            }
+
+            const enrolledCount = studentData.enrolledCourses?.length || 0;
+            const completedCount = studentData.completedCourses?.length || 0;
+            const name = studentData.userName || 'Warrior';
+
+            const enrolledIds = studentData.enrolledCourses?.map(c => c.courseId) || [];
+            const availableCourses = studentData.availableCourses || [];
+            const available = availableCourses.filter(c => !enrolledIds.includes(c.id));
+
+            let greeting = `Hello, ${name}! 🌟`;
+            let message = '';
+            let recommendation = '';
+            let tip = '';
+            let motivation = '';
+
+            if (enrolledCount === 0) {
+                message = 'Welcome to Sword Institute! Your learning journey awaits. Start with a beginner course to build your foundation.';
+                if (available.length > 0) {
+                    const firstAvailable = available[0];
+                    recommendation = `I recommend starting with "${firstAvailable.title}" - it's perfect for beginners! 📚`;
+                } else {
+                    recommendation = 'Check out our course catalogue to find your perfect starting point! 🌟';
+                }
+                tip = 'Start with "Communication Skills" or "Introduction to Community Health" - they\'re great for beginners!';
+                motivation = 'The first step is the hardest - but you\'ve already taken it! 🌟';
+            } else if (completedCount === 0 && enrolledCount > 0) {
+                message = `You're enrolled in ${enrolledCount} course${enrolledCount > 1 ? 's' : ''}! Complete your first lesson to start earning XP.`;
+                recommendation = `Focus on completing your current course${enrolledCount > 1 ? 's' : ''} before starting new ones. You're doing great! 💪`;
+                tip = 'Set aside 15-20 minutes each day for learning - consistency is key! 🗓️';
+                motivation = 'Small steps lead to big changes. Keep going! 🚀';
+            } else if (completedCount < enrolledCount) {
+                message = `You've completed ${completedCount} course${completedCount > 1 ? 's' : ''}! Keep up the momentum.`;
+                if (available.length > 0) {
+                    const priorityCategories = ['Community Development', 'Communication', 'Social Work'];
+                    let recommended = null;
+                    for (const cat of priorityCategories) {
+                        const found = available.find(c => c.category === cat);
+                        if (found) {
+                            recommended = found;
+                            break;
+                        }
+                    }
+                    if (!recommended && available.length > 0) {
+                        recommended = available[0];
+                    }
+                    if (recommended) {
+                        recommendation = `I recommend "${recommended.title}" as your next course! 📚`;
+                    } else {
+                        recommendation = 'Explore our course catalogue to find your next learning path! 🌟';
+                    }
+                } else {
+                    recommendation = 'You\'ve explored all our courses! Check back soon for new content. 🌟';
+                }
+                tip = 'Review your completed lessons to reinforce your learning. 🔄';
+                motivation = 'You\'re on a roll! Don\'t stop now! 💪';
+            } else if (completedCount > 0 && completedCount === enrolledCount && enrolledCount > 0) {
+                message = `You've completed all ${enrolledCount} enrolled course${enrolledCount > 1 ? 's' : ''}! Time to explore new paths. 🎉`;
+                if (available.length > 0) {
+                    const firstAvailable = available[0];
+                    recommendation = `I recommend "${firstAvailable.title}" - it's a great next step! 📚`;
+                } else {
+                    recommendation = 'You\'ve completed all available courses! Check back soon for new content. 🌟';
+                }
+                tip = 'Try applying what you\'ve learned to a real community project. 🌍';
+                motivation = 'You\'re a learning machine! Keep expanding your horizons. ✨';
+            } else {
+                message = 'Welcome back to Sword Institute! Explore our courses to continue your journey.';
+                recommendation = 'Check out our course catalogue to find your next learning path! 📚';
+                tip = 'Check your dashboard to track your progress. 📊';
+                motivation = 'Every moment is an opportunity to learn something new. 🌟';
+            }
+
+            return {
+                success: true,
+                recommendations: {
+                    greeting: greeting,
+                    message: message,
+                    recommendation: recommendation,
+                    tip: tip,
+                    motivation: motivation
+                }
+            };
+        }
+
+        function updateAIMessage(data) {
+            if (data) {
+                aiAdvice.innerHTML = `
+                        <div class="greeting">${data.greeting || 'Hello, Warrior! 🌟'}</div>
+                        <div class="message">${data.message || 'Welcome to your AI Mentor!'}</div>
+                        ${data.recommendation ? `<div class="recommendation">🎯 ${data.recommendation}</div>` : ''}
+                        ${data.tip ? `<div class="tip">💡 ${data.tip}</div>` : ''}
+                        ${data.motivation ? `<div class="motivation">✨ ${data.motivation}</div>` : ''}
+                    `;
+            } else {
+                aiAdvice.innerHTML = `
+                        <div class="greeting">Hello, Warrior! 🌟</div>
+                        <div class="message">Welcome to your AI Mentor! I'm here to help you on your learning journey.</div>
+                        <div class="tip">💡 Start by exploring our courses and finding your path.</div>
+                    `;
+            }
+        }
+
+        async function getAIRecommendation() {
+            const btn = event?.target?.closest('.btn') || document.querySelector('.btn-gold');
+            if (!btn) return;
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+            btn.disabled = true;
+
+            try {
+                if (currentUserData) {
+                    await loadUserDashboard(currentUserData.uid);
+                }
+
+                const coursesSnapshot = await db.collection('courses').get();
+                const availableCourses = [];
+                coursesSnapshot.forEach((doc) => {
+                    availableCourses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                if (studentData) {
+                    studentData.availableCourses = availableCourses;
+                }
+
+                const result = await getSmartRecommendations(studentData);
+
+                if (result.success && result.recommendations.recommendation) {
+                    const recommendation = result.recommendations.recommendation;
+                    showToast('🎯 ' + recommendation);
+                } else {
+                    showToast('💡 Check out our course catalogue for great options!');
+                }
+
+            } catch (error) {
+                console.error('Error getting recommendation:', error);
+                showToast('❌ Could not get recommendation. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function getStudyTip() {
+            const tips = [
+                "🍅 Try the Pomodoro Technique: 25 minutes study, 5 minutes break!",
+                "📝 Take notes while learning - writing helps memory retention.",
+                "👥 Find a study buddy - learning with others boosts motivation.",
+                "🌍 Apply what you learn to real-life situations.",
+                "🔄 Review notes before starting a new lesson.",
+                "🎯 Set small daily goals - they're easier to achieve!",
+                "📅 Create a study schedule and stick to it!",
+                "🧘 Take breaks to clear your mind and refocus.",
+                "📖 Teach what you learn to someone else - it reinforces your understanding.",
+                "🎧 Try studying with background music or ambient sounds."
+            ];
+            const tip = tips[Math.floor(Math.random() * tips.length)];
+            showToast('💡 ' + tip);
+        }
+
+        // =============================================================
+        // 9. MAKE FUNCTIONS GLOBALLY ACCESSIBLE
+        // =============================================================
+        window.openAIChat = openAIChat;
+        window.getAIRecommendation = getAIRecommendation;
+        window.getStudyTip = getStudyTip;
+
+        console.log('🔮 Dashboard initialized successfully');
+    </script>
 </body>
 </html>
-

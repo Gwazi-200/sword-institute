@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Mentor Chat</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    
+    <style>
+        :root {
+            --pearl-light: #FCFAF5;
+            --pearl-mid: #F5F2EB;
+            --pearl-shadow: #E8E2D8;
+            --violet-deep: #8B00FF;
+            --violet-glow: rgba(139, 0, 255, 0.12);
+            --violet-soft: #A855F7;
+            --gold-radiant: #FFD700;
+            --gold-glow: rgba(255, 215, 0, 0.2);
+            --text-primary: #1E1029;
+            --text-secondary: #4B3A5C;
+            --text-muted: #7A6A8A;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .chat-wrapper {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+        }
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--violet-deep);
+            top: -120px;
+            right: -80px;
+        }
+        .orb-2 {
+            width: 250px;
+            height: 250px;
+            background: var(--gold-radiant);
+            bottom: -80px;
+            left: -60px;
+            opacity: 0.1;
+        }
+        
+        .chat-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(139, 0, 255, 0.08);
+        }
+        
+        .chat-header .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .chat-header .info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .chat-header .info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .chat-header .close-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-header .close-btn:hover {
+            background: rgba(139, 0, 255, 0.05);
+            color: var(--violet-deep);
+        }
+        
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(139, 0, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--violet-deep);
+            border-radius: 10px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .message .msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .message .msg-avatar.ai {
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            color: #fff;
+        }
+        
+        .message .msg-avatar.user {
+            background: rgba(139, 0, 255, 0.08);
+            color: var(--violet-deep);
+        }
+        
+        .message .bubble {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            max-width: 85%;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .message.ai .bubble {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+        }
+        
+        .message.user .bubble {
+            background: var(--violet-deep);
+            color: #fff;
+            margin-left: auto;
+        }
+        
+        .message .bubble .typing {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .message .bubble .typing:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .message .bubble .typing:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(139, 0, 255, 0.08);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 4px rgba(139, 0, 255, 0.08);
+        }
+        
+        .chat-input input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .chat-input button {
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--violet-deep);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .chat-input button:hover {
+            background: #9B1DFF;
+            transform: scale(1.02);
+        }
+        
+        .chat-input button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .chat-input button i {
+            margin-right: 6px;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .quick-actions button {
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(4px);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .quick-actions button:hover {
+            border-color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.05);
+            color: var(--violet-deep);
+        }
+        
+        @media (max-width: 480px) {
+            .chat-wrapper {
+                padding: 20px 16px;
+                border-radius: var(--radius-lg);
+            }
+            .message .bubble {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-wrapper">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        
+        <div class="chat-content">
+            <!-- Header -->
+            <div class="chat-header">
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="info">
+                    <h3>AI Mentor</h3>
+                    <p>Your 24/7 Learning Companion</p>
+                </div>
+                <button class="close-btn" onclick="closeChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here -->
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button onclick="sendQuickMessage('What should I learn next?')">
+                    <i class="fas fa-compass"></i> What to learn next?
+                </button>
+                <button onclick="sendQuickMessage('Give me a study tip')">
+                    <i class="fas fa-lightbulb"></i> Study tip
+                </button>
+                <button onclick="sendQuickMessage('Motivate me')">
+                    <i class="fas fa-star"></i> Motivate me
+                </button>
+                <button onclick="sendQuickMessage('Recommend a course')">
+                    <i class="fas fa-graduation-cap"></i> Recommend course
+                </button>
+            </div>
+            
+            <!-- Input -->
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Ask your AI Mentor anything..." onkeypress="if(event.key==='Enter') sendMessage()" />
+                <button onclick="sendMessage()" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- FIREBASE CDN                                              -->
+    <!-- ========================================================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script type="module">
+        // =============================================================
+        // IMPORTS
+        // =============================================================
+        import { getAIRecommendations } from './aiService.js';
+        
+        // =============================================================
+        // DOM References
+        // =============================================================
+        const messagesContainer = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        // =============================================================
+        // Firebase Setup
+        // =============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
+            authDomain: "sword-institute-lms.firebaseapp.com",
+            projectId: "sword-institute-lms",
+            storageBucket: "sword-institute-lms.firebasestorage.app",
+            messagingSenderId: "478896038426",
+            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // =============================================================
+        // State
+        // =============================================================
+        let currentUser = null;
+        let studentData = null;
+        let isProcessing = false;
+        
+        // =============================================================
+        // Initialize Chat
+        // =============================================================
+        async function initChat() {
+            // Check if user is logged in
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadStudentData(user.uid);
+                    await addWelcomeMessage();
+                } else {
+                    // Show login prompt
+                    addMessage('ai', 'Hello! 👋 Please log in to chat with your AI Mentor.');
+                }
+            });
+        }
+        
+        // =============================================================
+        // Load Student Data
+        // =============================================================
+        async function loadStudentData(uid) {
+            try {
+                // Get enrollments
+                const enrollmentSnapshot = await db.collection('enrollments')
+                    .where('userId', '==', uid)
+                    .where('status', '==', 'active')
+                    .get();
+                
+                const enrolledCourses = [];
+                const completedCourses = [];
+                let totalXp = 0;
+                
+                for (const doc of enrollmentSnapshot.docs) {
+                    const data = doc.data();
+                    if (data.completed) {
+                        completedCourses.push(data);
+                    }
+                    enrolledCourses.push(data);
+                    totalXp += data.xpEarned || 0;
+                }
+                
+                // Get all available courses
+                const coursesSnapshot = await db.collection('courses').get();
+                const availableCourses = [];
+                coursesSnapshot.forEach((doc) => {
+                    availableCourses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                studentData = {
+                    enrolledCourses: enrolledCourses,
+                    completedCourses: completedCourses,
+                    totalXp: totalXp,
+                    availableCourses: availableCourses,
+                    userName: currentUser.displayName || currentUser.email || 'Warrior'
+                };
+                
+            } catch (error) {
+                console.error('Error loading student data:', error);
+                studentData = {
+                    enrolledCourses: [],
+                    completedCourses: [],
+                    totalXp: 0,
+                    availableCourses: [],
+                    userName: 'Warrior'
+                };
+            }
+        }
+        
+        // =============================================================
+        // Add Welcome Message
+        // =============================================================
+        async function addWelcomeMessage() {
+            // Get AI recommendations
+            const result = await getAIRecommendations(studentData);
+            
+            if (result.success) {
+                const data = result.recommendations;
+                const greeting = data.greeting || `Hello, ${studentData.userName}! 🌟`;
+                const message = data.message || 'Welcome to your AI Mentor! How can I help you today?';
+                const recommendation = data.recommendation || '';
+                const tip = data.tip || '';
+                const motivation = data.motivation || '';
+                
+                let fullMessage = `${greeting}\n\n${message}`;
+                if (recommendation) fullMessage += `\n\n🎯 **Recommendation:** ${recommendation}`;
+                if (tip) fullMessage += `\n\n💡 **Tip:** ${tip}`;
+                if (motivation) fullMessage += `\n\n✨ ${motivation}`;
+                
+                addMessage('ai', fullMessage);
+            } else {
+                addMessage('ai', `Hello ${studentData.userName}! 🌟\n\nWelcome to your AI Mentor! I'm here to help you with your learning journey. How can I assist you today?`);
+            }
+        }
+        
+        // =============================================================
+        // Add Message to Chat
+        // =============================================================
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `msg-avatar ${sender}`;
+            avatar.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = text;
+            bubble.style.whiteSpace = 'pre-line';
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubble);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // =============================================================
+        // Send Message
+        // =============================================================
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || isProcessing) return;
+            
+            // Add user message
+            addMessage('user', text);
+            chatInput.value = '';
+            
+            // Show typing indicator
+            isProcessing = true;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+            
+            // Process the message
+            await processUserMessage(text);
+            
+            isProcessing = false;
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+        }
+        
+        // =============================================================
+        // Process User Message
+        // =============================================================
+        async function processUserMessage(text) {
+            const lowerText = text.toLowerCase();
+            let response = '';
+            
+            // Check for specific keywords
+            if (lowerText.includes('recommend') || lowerText.includes('next') || lowerText.includes('what should')) {
+                response = await getCourseRecommendation();
+            } else if (lowerText.includes('tip') || lowerText.includes('study') || lowerText.includes('how to')) {
+                response = getStudyTip();
+            } else if (lowerText.includes('motivat') || lowerText.includes('encourage') || lowerText.includes('keep going')) {
+                response = getMotivation();
+            } else if (lowerText.includes('hello') || lowerText.includes('hi') || lowerText.includes('hey')) {
+                response = `Hello ${studentData?.userName || 'Warrior'}! 👋 How can I help you with your learning today?`;
+            } else if (lowerText.includes('course') || lowerText.includes('learn')) {
+                response = await getCourseRecommendation();
+            } else if (lowerText.includes('progress') || lowerText.includes('how am i')) {
+                response = getProgressUpdate();
+            } else if (lowerText.includes('thanks') || lowerText.includes('thank you')) {
+                response = "You're welcome! 🌟 I'm here to help you succeed. Is there anything else I can assist you with?";
+            } else {
+                // Default response
+                response = `That's a great question! Let me think about that... 🤔\n\nI'd recommend exploring our courses on community development and social work. You might find "Communication Skills" or "Introduction to Community Health" particularly helpful.\n\nWould you like a specific course recommendation?`;
+            }
+            
+            // Add AI response with typing delay
+            await typeResponse(response);
+        }
+        
+        // =============================================================
+        // Type Response with Delay
+        // =============================================================
+        async function typeResponse(text) {
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.innerHTML = `
+                <div class="msg-avatar ai"><i class="fas fa-robot"></i></div>
+                <div class="bubble">
+                    <span class="typing"></span>
+                    <span class="typing"></span>
+                    <span class="typing"></span>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Simulate typing delay
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 600));
+            
+            // Remove typing indicator
+            typingDiv.remove();
+            
+            // Add actual response
+            addMessage('ai', text);
+        }
+        
+        // =============================================================
+        // Quick Message
+        // =============================================================
+        function sendQuickMessage(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+        
+        // =============================================================
+        // Get Course Recommendation
+        // =============================================================
+        async function getCourseRecommendation() {
+            if (!studentData) {
+                return "I'd recommend starting with 'Communication Skills' - it's a great foundation for all our other courses! 🎓";
+            }
+            
+            const result = await getAIRecommendations(studentData);
+            if (result.success) {
+                return result.recommendations.recommendation || "I recommend exploring 'Community Development Methodologies' next! 📚";
+            }
+            
+            return "Based on your progress, I recommend 'Community Development Methodologies' or 'Social Work Theory and Practice' as your next courses. 📚";
+        }
+        
+        // =============================================================
+        // Get Study Tip
+        // =============================================================
+        function getStudyTip() {
+            const tips = [
+                "Try the Pomodoro Technique: study for 25 minutes, then take a 5-minute break! 🍅",
+                "Take notes while you learn - writing things down helps with memory retention. 📝",
+                "Find a study buddy - learning with others can boost your motivation. 👥",
+                "Apply what you learn to real-life situations - it makes the knowledge stick. 🌍",
+                "Review your notes before starting a new lesson - it strengthens the connection. 🔄",
+                "Set small daily goals - they're easier to achieve and keep you motivated. 🎯",
+                "Create a study schedule and stick to it - consistency is key! 📅"
+            ];
+            return tips[Math.floor(Math.random() * tips.length)];
+        }
+        
+        // =============================================================
+        // Get Motivation
+        // =============================================================
+        function getMotivation() {
+            const messages = [
+                "You're doing amazing! 🌟 Every lesson you complete brings you closer to your goals.",
+                "Remember: Every master was once a beginner. Keep going! 💪",
+                "Your dedication to learning is inspiring. The world needs more people like you! 🌍",
+                "Small steps lead to big changes. You're on the right path! 🚀",
+                "The journey of a thousand miles begins with a single step. You've already taken it! ✨",
+                "You have the power to create real change in your community. Keep learning! 🏛️"
+            ];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+        
+        // =============================================================
+        // Get Progress Update
+        // =============================================================
+        function getProgressUpdate() {
+            if (!studentData) {
+                return "You haven't started any courses yet! Check out our catalogue and enroll in your first course. 🎯";
+            }
+            
+            const enrolled = studentData.enrolledCourses.length || 0;
+            const completed = studentData.completedCourses.length || 0;
+            const xp = studentData.totalXp || 0;
+            
+            if (enrolled === 0) {
+                return "You haven't started any courses yet! Check out our catalogue and enroll in your first course. 🎯";
+            }
+            
+            return `You've enrolled in ${enrolled} course${enrolled > 1 ? 's' : ''} and completed ${completed} of them! You've earned ${xp} XP so far. Keep up the great work! 🎉`;
+        }
+        
+        // =============================================================
+        // Close Chat
+        // =============================================================
+        function closeChat() {
+            window.close();
+        }
+        
+        // =============================================================
+        // Make functions globally accessible
+        // =============================================================
+        window.sendMessage = sendMessage;
+        window.sendQuickMessage = sendQuickMessage;
+        window.closeChat = closeChat;
+        
+        // =============================================================
+        // Initialize
+        // =============================================================
+        initChat();
+        console.log('🤖 AI Mentor chat initialized successfully');
+    </script>
+</body>
+</html>

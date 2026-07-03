@@ -1,9 +1,16 @@
-// course-catalog.js – Sword Institute Course Catalogue (Module 2.1)
-// ES Module – imports from firebase.js
+// course-catalog.js – Sword Institute Course Catalogue
+// Module: uses the project’s canonical firebase exports (js/firebase.js)
 
-import { auth, db } from './firebase-config.js';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import {
+    auth,
+    db,
+    onAuthStateChanged,
+    signOut,
+    collection,
+    getDocs,
+    query,
+    where
+} from './firebase.js';
 
 // ============================================================
 // STATE
@@ -35,11 +42,12 @@ const modalClose = document.getElementById('modalClose');
 // UTILITY: show/hide loading, error, empty
 // ============================================================
 function showLoading() {
+    if (!courseGrid || !courseGrid.parentNode) return;
     const loader = document.createElement('div');
     loader.id = 'loadingSpinner';
     loader.className = 'loading-spinner';
     loader.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading courses...';
-    // Insert before course grid
+
     courseGrid.parentNode.insertBefore(loader, courseGrid);
     courseGrid.style.display = 'none';
 }
@@ -47,10 +55,11 @@ function showLoading() {
 function hideLoading() {
     const loader = document.getElementById('loadingSpinner');
     if (loader) loader.remove();
-    courseGrid.style.display = 'grid';
+    if (courseGrid) courseGrid.style.display = 'grid';
 }
 
 function showError(message) {
+    if (!courseGrid || !courseGrid.parentNode) return;
     const errorDiv = document.createElement('div');
     errorDiv.id = 'errorMessage';
     errorDiv.className = 'error-message glass';
@@ -62,10 +71,11 @@ function showError(message) {
 function clearError() {
     const err = document.getElementById('errorMessage');
     if (err) err.remove();
-    courseGrid.style.display = 'grid';
+    if (courseGrid) courseGrid.style.display = 'grid';
 }
 
 function showEmptyState() {
+    if (!courseGrid) return;
     courseGrid.innerHTML = `
         <div class="empty-state">
             <i class="fas fa-search"></i>
@@ -438,6 +448,8 @@ function injectSortDropdown() {
 // EVENT LISTENERS
 // ============================================================
 function setupEventListeners() {
+    if (!searchInput || !searchBtn) return;
+
     // Search
     searchInput.addEventListener('input', (e) => {
         searchTerm = e.target.value.trim();

@@ -3,275 +3,506 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- ===== SEO ===== -->
-    <title>Sword Institute — Create Your Account</title>
-    <meta name="description" content="Join Sword Institute, a premium AI-powered learning ecosystem. Register now to begin your journey as a Digital Warrior." />
-    <meta name="keywords" content="Sword Institute, LMS, online learning, AI education, student registration, digital warrior" />
-    <meta property="og:title" content="Sword Institute — Create Your Account" />
-    <meta property="og:description" content="Join Sword Institute and transform your future with AI-powered education." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Sword Institute — Create Your Account" />
-    <link rel="canonical" href="https://swordinstitute.netlify.app/register.html" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚔%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚔%3C/text%3E%3C/svg%3E" />
-    
-    <!-- ===== PWA ===== -->
-    <link rel="manifest" href="./manifest.json" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    
-    <!-- ===== Styles ===== -->
-    <link rel="stylesheet" href="./css/auth.css" />
-    
-    <!-- ===== Firebase SDK (ES Modules) ===== -->
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+    <title>Sword Institute | Register</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* Same styles as login.html */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pearl-light: #FCFAF5;
+            --pearl-mid: #F5F2EB;
+            --pearl-shadow: #E8E2D8;
+            --violet-deep: #8B00FF;
+            --violet-glow: rgba(139, 0, 255, 0.12);
+            --violet-soft: #A855F7;
+            --violet-dark: #3B0764;
+            --gold-radiant: #FFD700;
+            --gold-soft: #FDE68A;
+            --text-primary: #1E1029;
+            --text-secondary: #4B3A5C;
+            --text-muted: #7A6A8A;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow));
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            padding: 40px 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+        }
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--violet-deep);
+            top: -120px;
+            right: -80px;
+        }
+        .orb-2 {
+            width: 250px;
+            height: 250px;
+            background: var(--gold-radiant);
+            bottom: -80px;
+            left: -60px;
+            opacity: 0.1;
+        }
+
+        .auth-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .auth-header .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .auth-header .logo i {
+            background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.4rem;
+        }
+        .auth-header .logo span {
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .auth-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .form-group .input-wrapper {
+            position: relative;
+        }
+        .form-group .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 4px rgba(139, 0, 255, 0.08);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .form-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .form-options label input[type="checkbox"] {
+            accent-color: var(--violet-deep);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .form-options a {
+            color: var(--violet-deep);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: var(--violet-deep);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(139, 0, 255, 0.25);
+        }
+        .btn-primary:hover {
+            background: #9B1DFF;
+            box-shadow: 0 8px 30px rgba(139, 0, 255, 0.35);
+            transform: scale(1.02);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .auth-footer a {
+            color: var(--violet-deep);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .error-message i {
+            margin-right: 8px;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            color: #16a34a;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .success-message.show {
+            display: block;
+        }
+        .success-message i {
+            margin-right: 8px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
-    </script>
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        @media (max-width: 480px) {
+            .auth-wrapper {
+                padding: 28px 20px;
+                border-radius: var(--radius-lg);
+            }
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- ===== SKIP LINK ===== -->
-    <a href="#register-form" class="skip-link">Skip to registration form</a>
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <a href="./index.html" class="logo" aria-label="Sword Institute Home">
-            <span class="sword-icon">⚔</span>
-            <span class="sword-text">Sword</span>
-            <span class="institute">Institute</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="./index.html">Home</a></li>
-            <li><a href="./courses.html">Courses</a></li>
-            <li><a href="./login.html">Log In</a></li>
-        </ul>
-    </nav>
+    <div class="auth-wrapper">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
 
-    <!-- ===== HERO SECTION ===== -->
-    <section class="hero" role="banner">
-        <div class="hero-content">
-            <span class="hero-badge">⚔ Forging Digital Warriors</span>
-            <h1>Start Your<span class="highlight"> Transformation</span></h1>
-            <blockquote class="hero-quote">
-                "The journey of a thousand miles begins with a single step."
-                <cite>— Lao Tzu</cite>
-            </blockquote>
-        </div>
-    </section>
-
-    <!-- ===== REGISTRATION CARD ===== -->
-    <main class="auth-container" id="register-form">
-        <div class="glass-card auth-card">
+        <div class="auth-content">
             <div class="auth-header">
-                <div class="auth-icon" aria-hidden="true">⚔</div>
-                <h2>Create Your Account</h2>
-                <p class="auth-subtitle">Join the community of Digital Warriors</p>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-shield-halved"></i>
+                    Sword<span>Institute</span>
+                </a>
+                <h1>Begin Your Journey</h1>
+                <p>Create your account and awaken your potential</p>
             </div>
 
-            <!-- ===== TOAST CONTAINER ===== -->
-            <div id="toast-container" role="alert" aria-live="polite"></div>
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Error creating account</span>
+            </div>
 
-            <form id="registration-form" novalidate autocomplete="off">
-                <!-- ===== FULL NAME ===== -->
+            <div id="successMessage" class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span id="successText">Account created! Redirecting...</span>
+            </div>
+
+            <form id="registerForm">
                 <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input
-                        type="text"
-                        id="fullName"
-                        class="input-glass"
-                        placeholder="e.g., Michael Owuor Gwara"
-                        required
-                        aria-required="true"
-                        autocomplete="name"
-                    />
-                    <span class="form-error" id="fullName-error" role="alert"></span>
+                    <label for="displayName">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="displayName" placeholder="Your full name" required autocomplete="name" />
+                    </div>
                 </div>
 
-                <!-- ===== EMAIL ===== -->
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input
-                        type="email"
-                        id="email"
-                        class="input-glass"
-                        placeholder="you@example.com"
-                        required
-                        aria-required="true"
-                        autocomplete="email"
-                    />
-                    <span class="form-error" id="email-error" role="alert"></span>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="you@example.com" required autocomplete="email" />
+                    </div>
                 </div>
 
-                <!-- ===== PHONE ===== -->
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input
-                        type="tel"
-                        id="phone"
-                        class="input-glass"
-                        placeholder="e.g., +254 712 345 678"
-                        required
-                        aria-required="true"
-                        autocomplete="tel"
-                    />
-                    <span class="form-error" id="phone-error" role="alert"></span>
-                </div>
-
-                <!-- ===== COUNTRY ===== -->
-                <div class="form-group">
-                    <label for="country">Country</label>
-                    <select id="country" class="input-glass" required aria-required="true">
-                        <option value="">Select your country</option>
-                        <option value="Kenya">Kenya</option>
-                        <option value="United States">United States</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Nigeria">Nigeria</option>
-                        <option value="South Africa">South Africa</option>
-                        <option value="India">India</option>
-                        <option value="Germany">Germany</option>
-                        <option value="France">France</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <span class="form-error" id="country-error" role="alert"></span>
-                </div>
-
-                <!-- ===== PASSWORD ===== -->
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <div class="password-wrapper">
-                        <input
-                            type="password"
-                            id="password"
-                            class="input-glass"
-                            placeholder="Create a strong password"
-                            required
-                            aria-required="true"
-                            autocomplete="new-password"
-                            minlength="8"
-                        />
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            id="password-toggle"
-                            aria-label="Show password"
-                            tabindex="0"
-                        >
-                            <span class="eye-icon" aria-hidden="true">👁️</span>
-                        </button>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6" />
                     </div>
-                    <span class="form-error" id="password-error" role="alert"></span>
-                    
-                    <!-- Password Strength Meter -->
-                    <div class="password-strength">
-                        <div class="strength-bar" id="strength-bar">
-                            <div class="strength-fill" id="strength-fill"></div>
-                        </div>
-                        <span class="strength-text" id="strength-text">Enter a password</span>
-                    </div>
-
-                    <!-- Password Requirements -->
-                    <ul class="password-requirements" id="password-requirements" role="list">
-                        <li class="req-item" data-rule="length">✗ Minimum 8 characters</li>
-                        <li class="req-item" data-rule="uppercase">✗ At least one uppercase letter</li>
-                        <li class="req-item" data-rule="lowercase">✗ At least one lowercase letter</li>
-                        <li class="req-item" data-rule="number">✗ At least one number</li>
-                        <li class="req-item" data-rule="special">✗ At least one special character</li>
-                    </ul>
+                    <div class="password-hint">Must be at least 6 characters long</div>
                 </div>
 
-                <!-- ===== CONFIRM PASSWORD ===== -->
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password</label>
-                    <div class="password-wrapper">
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            class="input-glass"
-                            placeholder="Re-enter your password"
-                            required
-                            aria-required="true"
-                            autocomplete="new-password"
-                        />
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            id="confirm-password-toggle"
-                            aria-label="Show password"
-                            tabindex="0"
-                        >
-                            <span class="eye-icon" aria-hidden="true">👁️</span>
-                        </button>
+                    <div class="input-wrapper">
+                        <i class="fas fa-check-circle"></i>
+                        <input type="password" id="confirmPassword" placeholder="Re-enter your password" required autocomplete="new-password" />
                     </div>
-                    <span class="form-error" id="confirmPassword-error" role="alert"></span>
                 </div>
 
-                <!-- ===== TERMS ===== -->
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
-                        <input
-                            type="checkbox"
-                            id="terms"
-                            required
-                            aria-required="true"
-                        />
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">
-                            I agree to the
-                            <a href="#" aria-label="Terms of Service">Terms of Service</a>
-                            and
-                            <a href="#" aria-label="Privacy Policy">Privacy Policy</a>
-                        </span>
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox" id="termsCheck" required />
+                        I agree to the <a href="#">Terms of Service</a>
                     </label>
-                    <span class="form-error" id="terms-error" role="alert"></span>
                 </div>
 
-                <!-- ===== SUBMIT ===== -->
-                <button
-                    type="submit"
-                    class="btn-primary btn-submit"
-                    id="register-submit"
-                    disabled
-                >
-                    <span class="btn-spinner"></span>
-                    <span class="btn-text">Create Account</span>
+                <button type="submit" class="btn btn-primary" id="registerBtn">
+                    <span id="registerText">Create Account</span>
+                    <span id="registerSpinner" style="display:none;"><span class="spinner"></span></span>
                 </button>
             </form>
 
-            <!-- ===== FOOTER LINK ===== -->
             <div class="auth-footer">
-                <p>
-                    Already have an account?
-                    <a href="./login.html">Log In</a>
-                </p>
+                Already have an account? <a href="login.html">Sign in</a>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- ===== FOOTER ===== -->
-    <footer role="contentinfo">
-        <div class="footer-content">
-            <p>© 2026 Sword Institute — Forging Digital Warriors for Social Good</p>
-            <div class="footer-links">
-                <a href="./index.html">Home</a>
-                <a href="./courses.html">Courses</a>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-            </div>
-        </div>
-    </footer>
+    <script type="module">
+        import {
+            auth,
+            createUserWithEmailAndPassword,
+            updateProfile,
+            onAuthStateChanged
+        } from './firebase.js';
 
-    <!-- ============================================================
-         JAVASCRIPT — Register Module (ES Module)
-         ============================================================ -->
-    <script type="module" src="./js/register.js"></script>
+        const form = document.getElementById('registerForm');
+        const nameInput = document.getElementById('displayName');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirmPassword');
+        const termsCheck = document.getElementById('termsCheck');
+        const registerBtn = document.getElementById('registerBtn');
+        const registerText = document.getElementById('registerText');
+        const registerSpinner = document.getElementById('registerSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const successMessage = document.getElementById('successMessage');
+        const successText = document.getElementById('successText');
+
+        // Check if user is already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Reset messages
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+
+            // Validate
+            if (!name || !email || !password || !confirm) {
+                showError('Please fill in all fields.');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long.');
+                return;
+            }
+
+            if (password !== confirm) {
+                showError('Passwords do not match.');
+                return;
+            }
+
+            if (!termsCheck.checked) {
+                showError('Please agree to the Terms of Service.');
+                return;
+            }
+
+            // Show loading state
+            registerBtn.disabled = true;
+            registerText.textContent = 'Creating account...';
+            registerSpinner.style.display = 'inline-block';
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+                // Update profile with display name
+                await updateProfile(userCredential.user, {
+                    displayName: name
+                });
+
+                // Show success
+                successText.textContent = 'Account created successfully! Redirecting...';
+                successMessage.classList.add('show');
+
+                // Redirect after a moment
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                let message = 'Unable to create account. Please try again.';
+                if (error.code === 'auth/email-already-in-use') {
+                    message = 'This email is already registered. Please sign in.';
+                } else if (error.code === 'auth/invalid-email') {
+                    message = 'Please enter a valid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    message = 'Password is too weak. Please use at least 6 characters.';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    message = 'Email/password accounts are not enabled.';
+                }
+                showError(message);
+            } finally {
+                registerBtn.disabled = false;
+                registerText.textContent = 'Create Account';
+                registerSpinner.style.display = 'none';
+            }
+        });
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+        }
+    </script>
 </body>
 </html>
