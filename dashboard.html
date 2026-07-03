@@ -886,6 +886,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
 
+    <!-- ========================================================== -->
+    <!-- AI SERVICE                                                -->
+    <!-- ========================================================== -->
+    <script src="ai-service.js"></script>
+
     <script>
         // =============================================================
         // FIREBASE CONFIG
@@ -1141,36 +1146,135 @@
         // =============================================================
         // 8. AI MENTOR FUNCTIONS
         // =============================================================
+
+        // Initialize AI Service
+        function initAI() {
+            if (typeof AIService !== 'undefined') {
+                AIService.initAIService(window.SWORD_AI_CONFIG || {});
+                console.log('🤖 AI Service initialized');
+                return true;
+            } else {
+                console.warn('⚠️ AI Service not loaded. Using fallback responses.');
+                return false;
+            }
+        }
+
+        // Open AI Chat (popup)
         function openAIChat() {
             window.open('ai-message.html', 'AIChat', 'width=500,height=700,scrollbars=yes,resizable=yes');
         }
 
-        async function loadAIRecommendations(uid) {
+        // Send AI Question (Dashboard)
+        async function sendAIQuestion() {
+            const input = document.getElementById('aiInput');
+            if (!input) return;
+            const message = input.value.trim();
+            if (!message) return;
+
+            const aiAdvice = document.getElementById('aiAdvice');
+            if (!aiAdvice) return;
+
+            // Show loading
+            aiAdvice.innerHTML = '<div class="greeting">🤔 Thinking...</div><div class="message"></div>';
+            input.disabled = true;
+
             try {
-                const coursesSnapshot = await db.collection('courses').get();
-                const availableCourses = [];
-                coursesSnapshot.forEach((doc) => {
-                    availableCourses.push({
-                        id: doc.id,
-                        ...doc.data()
+                let reply = getLocalResponse(message);
+                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    reply = await AIService.sendAIMessage(message, 'dashboard', {
+                        studentData
                     });
-                });
-
-                if (studentData) {
-                    studentData.availableCourses = availableCourses;
                 }
-
-                const result = await getSmartRecommendations(studentData);
-
-                if (result.success) {
-                    updateAIMessage(result.recommendations);
-                }
-
+                // Update the AI message panel
+                aiAdvice.innerHTML = `<div class="greeting">🤖 AI Mentor</div><div class="message">${reply}</div>`;
             } catch (error) {
-                console.error('Error loading AI recommendations:', error);
+                console.error('AI Error:', error);
+                aiAdvice.innerHTML = `<div class="greeting">❌ Error</div><div class="message">Sorry, I had trouble processing your question. Please try again.</div>`;
+            } finally {
+                input.disabled = false;
+                input.value = '';
+                input.focus();
             }
         }
 
+        function getLocalResponse(message) {
+            const lower = message.toLowerCase();
+            if (lower.includes('recommend') || lower.includes('next')) {
+                return "🎯 I recommend exploring courses in Community Development or Communication Skills. Check out 'Community Development Methodologies' or 'Communication Skills' as great next steps!";
+            }
+            if (lower.includes('tip') || lower.includes('study')) {
+                const tips = [
+                    "🍅 Try the Pomodoro Technique: 25 minutes study, 5 minutes break!",
+                    "📝 Take notes while learning - writing helps memory retention.",
+                    "👥 Find a study buddy - learning with others boosts motivation.",
+                    "🌍 Apply what you learn to real-life situations.",
+                    "🔄 Review your notes before starting a new lesson."
+                ];
+                return tips[Math.floor(Math.random() * tips.length)];
+            }
+            if (lower.includes('motivat') || lower.includes('encourage')) {
+                return "🌟 You're doing amazing! Every lesson you complete brings you closer to becoming a Digital Warrior for Social Good. Keep going! 💪";
+            }
+            if (lower.includes('hello') || lower.includes('hi')) {
+                return "👋 Hello! I'm your AI Mentor. How can I help you with your learning today?";
+            }
+            if (lower.includes('progress')) {
+                return "📊 Check your dashboard to see your progress! You can view your enrolled courses, completed lessons, and XP there.";
+            }
+            if (lower.includes('thanks') || lower.includes('thank')) {
+                return "You're welcome! 🌟 I'm here to help you succeed. Is there anything else you'd like to know?";
+            }
+            return "🌟 That's a great question! I'd recommend checking the lesson content for more details, or exploring our course catalogue to find courses that interest you.";
+        }
+
+        // =============================================================
+        // AI RECOMMENDATION
+        // =============================================================
+        async function getAIRecommendation() {
+            const btn = event?.target?.closest('.btn') || document.querySelector('.btn-gold');
+            if (!btn) return;
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+            btn.disabled = true;
+
+            try {
+                if (currentUserData) {
+                    await loadUserDashboard(currentUserData.uid);
+                }
+
+                let result;
+                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    result = await AIService.getLearningRecommendations(studentData || {});
+                } else {
+                    result = await getSmartRecommendations(studentData);
+                }
+
+                if (result.success && result.recommendations.recommendation) {
+                    const recommendation = result.recommendations.recommendation;
+                    // Update AI message
+                    const aiAdvice = document.getElementById('aiAdvice');
+                    if (aiAdvice) {
+                        const existing = aiAdvice.innerHTML;
+                        aiAdvice.innerHTML = existing + `<div class="recommendation">🎯 ${recommendation}</div>`;
+                    }
+                    showToast('🎯 ' + recommendation);
+                } else {
+                    showToast('💡 Check out our course catalogue for great options!');
+                }
+
+            } catch (error) {
+                console.error('Error getting recommendation:', error);
+                showToast('❌ Could not get recommendation. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // =============================================================
+        // SMART RECOMMENDATIONS (Fallback)
+        // =============================================================
         async function getSmartRecommendations(studentData) {
             if (!studentData) {
                 return {
@@ -1189,21 +1293,24 @@
             const completedCount = studentData.completedCourses?.length || 0;
             const name = studentData.userName || 'Warrior';
 
+            // Get available courses
+            const coursesSnapshot = await db.collection('courses').orderBy('order', 'asc').get();
+            const allCourses = [];
+            coursesSnapshot.forEach((doc) => {
+                allCourses.push({ id: doc.id, ...doc.data() });
+            });
             const enrolledIds = studentData.enrolledCourses?.map(c => c.courseId) || [];
-            const availableCourses = studentData.availableCourses || [];
-            const available = availableCourses.filter(c => !enrolledIds.includes(c.id));
+            const available = allCourses.filter(c => !enrolledIds.includes(c.id));
 
-            let greeting = `Hello, ${name}! 🌟`;
-            let message = '';
             let recommendation = '';
+            let message = '';
             let tip = '';
             let motivation = '';
 
             if (enrolledCount === 0) {
                 message = 'Welcome to Sword Institute! Your learning journey awaits. Start with a beginner course to build your foundation.';
                 if (available.length > 0) {
-                    const firstAvailable = available[0];
-                    recommendation = `I recommend starting with "${firstAvailable.title}" - it's perfect for beginners! 📚`;
+                    recommendation = `I recommend starting with "${available[0].title}" - it's perfect for beginners! 📚`;
                 } else {
                     recommendation = 'Check out our course catalogue to find your perfect starting point! 🌟';
                 }
@@ -1259,7 +1366,7 @@
             return {
                 success: true,
                 recommendations: {
-                    greeting: greeting,
+                    greeting: `Hello, ${name}! 🌟`,
                     message: message,
                     recommendation: recommendation,
                     tip: tip,
@@ -1268,91 +1375,95 @@
             };
         }
 
-        function updateAIMessage(data) {
-            if (data) {
-                aiAdvice.innerHTML = `
-                        <div class="greeting">${data.greeting || 'Hello, Warrior! 🌟'}</div>
-                        <div class="message">${data.message || 'Welcome to your AI Mentor!'}</div>
-                        ${data.recommendation ? `<div class="recommendation">🎯 ${data.recommendation}</div>` : ''}
-                        ${data.tip ? `<div class="tip">💡 ${data.tip}</div>` : ''}
-                        ${data.motivation ? `<div class="motivation">✨ ${data.motivation}</div>` : ''}
-                    `;
-            } else {
-                aiAdvice.innerHTML = `
-                        <div class="greeting">Hello, Warrior! 🌟</div>
-                        <div class="message">Welcome to your AI Mentor! I'm here to help you on your learning journey.</div>
-                        <div class="tip">💡 Start by exploring our courses and finding your path.</div>
-                    `;
-            }
-        }
-
-        async function getAIRecommendation() {
-            const btn = event?.target?.closest('.btn') || document.querySelector('.btn-gold');
-            if (!btn) return;
-
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
-            btn.disabled = true;
-
-            try {
-                if (currentUserData) {
-                    await loadUserDashboard(currentUserData.uid);
-                }
-
-                const coursesSnapshot = await db.collection('courses').get();
-                const availableCourses = [];
-                coursesSnapshot.forEach((doc) => {
-                    availableCourses.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-
-                if (studentData) {
-                    studentData.availableCourses = availableCourses;
-                }
-
-                const result = await getSmartRecommendations(studentData);
-
-                if (result.success && result.recommendations.recommendation) {
-                    const recommendation = result.recommendations.recommendation;
-                    showToast('🎯 ' + recommendation);
-                } else {
-                    showToast('💡 Check out our course catalogue for great options!');
-                }
-
-            } catch (error) {
-                console.error('Error getting recommendation:', error);
-                showToast('❌ Could not get recommendation. Please try again.', 'error');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
+        // =============================================================
+        // STUDY TIP
+        // =============================================================
         function getStudyTip() {
-            const tips = [
-                "🍅 Try the Pomodoro Technique: 25 minutes study, 5 minutes break!",
-                "📝 Take notes while learning - writing helps memory retention.",
-                "👥 Find a study buddy - learning with others boosts motivation.",
-                "🌍 Apply what you learn to real-life situations.",
-                "🔄 Review notes before starting a new lesson.",
-                "🎯 Set small daily goals - they're easier to achieve!",
-                "📅 Create a study schedule and stick to it!",
-                "🧘 Take breaks to clear your mind and refocus.",
-                "📖 Teach what you learn to someone else - it reinforces your understanding.",
-                "🎧 Try studying with background music or ambient sounds."
+            const aiAdvice = document.getElementById('aiAdvice');
+
+            const appendTip = (tipText) => {
+                if (aiAdvice) {
+                    const existing = aiAdvice.innerHTML;
+                    aiAdvice.innerHTML = existing + `<div class="tip">💡 ${tipText}</div>`;
+                }
+                showToast('💡 ' + tipText);
+            };
+
+            const fallbackTips = [
+                'Try the Pomodoro Technique: 25 minutes study, 5 minutes break.',
+                'Take notes while learning; writing improves memory retention.',
+                'Set one small, realistic learning goal each day.',
+                'Review your notes before starting a new lesson.',
+                'Teach one concept to someone else to reinforce understanding.'
             ];
-            const tip = tips[Math.floor(Math.random() * tips.length)];
-            showToast('💡 ' + tip);
+
+            if (typeof AIService === 'undefined' || !AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                appendTip(fallbackTips[Math.floor(Math.random() * fallbackTips.length)]);
+                return;
+            }
+
+            AIService.sendAIMessage('Give me one practical study tip for today.', 'dashboard', {
+                studentData,
+                intent: 'study_tip'
+            }).then((tip) => {
+                appendTip(tip);
+            }).catch((error) => {
+                console.error('Error loading study tip:', error);
+                appendTip(fallbackTips[Math.floor(Math.random() * fallbackTips.length)]);
+            });
+        }
+
+        // =============================================================
+        // LOAD AI RECOMMENDATIONS
+        // =============================================================
+        async function loadAIRecommendations(uid) {
+            try {
+                let result;
+                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    result = await AIService.getLearningRecommendations(studentData || {});
+                } else {
+                    result = await getSmartRecommendations(studentData);
+                }
+                if (result.success) {
+                    const data = result.recommendations;
+                    const aiAdvice = document.getElementById('aiAdvice');
+                    if (aiAdvice) {
+                        aiAdvice.innerHTML = `
+                                <div class="greeting">${data.greeting || 'Hello, Warrior! 🌟'}</div>
+                                <div class="message">${data.message || 'Welcome to your AI Mentor!'}</div>
+                                ${data.recommendation ? `<div class="recommendation">🎯 ${data.recommendation}</div>` : ''}
+                                ${data.tip ? `<div class="tip">💡 ${data.tip}</div>` : ''}
+                                ${data.motivation ? `<div class="motivation">✨ ${data.motivation}</div>` : ''}
+                            `;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading AI recommendations:', error);
+            }
         }
 
         // =============================================================
         // 9. MAKE FUNCTIONS GLOBALLY ACCESSIBLE
         // =============================================================
         window.openAIChat = openAIChat;
+        window.sendAIQuestion = sendAIQuestion;
         window.getAIRecommendation = getAIRecommendation;
         window.getStudyTip = getStudyTip;
+
+        // Initialize AI service
+        document.addEventListener('DOMContentLoaded', function() {
+            initAI();
+
+            // Attach event listener for AI input
+            const aiInput = document.getElementById('aiInput');
+            if (aiInput) {
+                aiInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendAIQuestion();
+                    }
+                });
+            }
+        });
 
         console.log('🔮 Dashboard initialized successfully');
     </script>
