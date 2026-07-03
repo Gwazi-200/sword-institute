@@ -68,7 +68,12 @@ async function getUserToken(forceRefresh = false) {
     }
 
     if (!currentUser) {
-        currentUser = firebase.auth().currentUser || null;
+        try {
+            currentUser = firebase.auth().currentUser || null;
+        } catch (error) {
+            console.warn('Firebase auth is not ready yet. Falling back to guest AI mode.');
+            return null;
+        }
     }
 
     if (!currentUser || !currentUser.getIdToken) {
@@ -87,7 +92,7 @@ async function getUserToken(forceRefresh = false) {
 // SEND AI MESSAGE
 // =============================================================
 
-async function sendAIMessage(message, context = 'General', lessonContent = '') {
+async function sendAIMessageCore(message, context = 'General', lessonContent = '') {
     if (!message) return 'Please ask a question.';
 
     if (!isInitialized) {
@@ -140,7 +145,7 @@ async function sendAIMessage(message, context = 'General', lessonContent = '') {
 }
 
 async function sendAIMessageLive(message, context = 'General', lessonContent = '') {
-    const reply = await sendAIMessage(message, context, lessonContent);
+    const reply = await sendAIMessageCore(message, context, lessonContent);
     return {
         reply,
         live: isLastResponseLive(),
@@ -328,7 +333,7 @@ if (typeof window !== 'undefined') {
         getLastResponseSource,
         isLastResponseLive,
         sendAIMessageLive,
-        sendAIMessage,
+        sendAIMessage: sendAIMessageCore,
         getRecommendation,
         getLearningRecommendations,
         getUserToken

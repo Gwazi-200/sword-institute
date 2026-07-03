@@ -1,4 +1,4 @@
-/* Professor SWORD header + teaching modes toolbar */
+/* Professor SWORD learning workspace */
 .ai-header {
     display: flex;
     align-items: center;
@@ -12,16 +12,13 @@
 }
 
 .ai-header h3 {
-    flex: 1;
-    min-width: 0;
-}
-
-.ai-header h3 {
     margin: 0;
     display: flex;
     align-items: center;
     gap: 10px;
     color: var(--text-primary);
+    flex: 1;
+    min-width: 0;
 }
 
 .professor-emoji {
@@ -96,13 +93,6 @@
     margin: 2px 0;
 }
 
-.assistant-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 2px 2px 0;
-}
-
 .assistant-panel-main {
     display: flex;
     flex-direction: column;
@@ -110,6 +100,7 @@
     padding: 2px 0;
 }
 
+.assistant-section,
 .assistant-conversation-section {
     display: flex;
     flex-direction: column;
@@ -146,38 +137,21 @@
     margin-top: 6px;
 }
 
-.teaching-modes-toolbar {
+.teaching-modes-toolbar,
+.quick-actions-toolbar {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(139, 0, 255, 0.1);
+}
+
+.teaching-modes-toolbar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .quick-actions-toolbar {
-    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
 }
 
-.quick-action-btn {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.quick-action-btn.is-active,
-.quick-action-btn[aria-pressed='true'] {
-    border-color: rgba(255, 184, 0, 0.42);
-    background: rgba(255, 215, 0, 0.14);
-    color: #7a4d00;
-    box-shadow: 0 12px 22px rgba(255, 184, 0, 0.14);
-}
-
-.quick-action-btn.is-active:hover,
-.quick-action-btn[aria-pressed='true']:hover {
-    box-shadow: 0 14px 24px rgba(255, 184, 0, 0.18);
-}
-
-.teaching-mode-btn {
+.ps-toolbar-btn {
     appearance: none;
     border: 1px solid rgba(139, 0, 255, 0.14);
     background: rgba(255, 255, 255, 0.45);
@@ -191,10 +165,19 @@
     cursor: pointer;
     transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
     text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     will-change: transform;
 }
 
-.teaching-mode-btn:hover {
+.ps-toolbar-btn .icon {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.ps-toolbar-btn:hover {
     transform: translateY(-1px);
     border-color: rgba(139, 0, 255, 0.35);
     background: rgba(139, 0, 255, 0.06);
@@ -202,22 +185,21 @@
     box-shadow: 0 8px 16px rgba(139, 0, 255, 0.1);
 }
 
-.teaching-mode-btn:active {
+.ps-toolbar-btn:active {
     transform: translateY(-1px) scale(0.988);
-    box-shadow: 0 4px 10px rgba(139, 0, 255, 0.1);
     filter: brightness(0.98);
     border-color: rgba(139, 0, 255, 0.42);
     background: rgba(139, 0, 255, 0.11);
     box-shadow: inset 0 1px 2px rgba(30, 16, 41, 0.14), 0 4px 10px rgba(139, 0, 255, 0.1);
 }
 
-.teaching-mode-btn:focus-visible {
+.ps-toolbar-btn:focus-visible {
     outline: 2px solid rgba(139, 0, 255, 0.4);
     outline-offset: 2px;
 }
 
-.teaching-mode-btn.is-active,
-.teaching-mode-btn[aria-pressed='true'] {
+.ps-toolbar-btn.is-active,
+.ps-toolbar-btn[aria-pressed='true'] {
     border-color: rgba(139, 0, 255, 0.45);
     background: rgba(139, 0, 255, 0.12);
     color: var(--violet-deep);
@@ -226,10 +208,12 @@
     animation: mode-activate 190ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.teaching-mode-btn.is-active:hover,
-.teaching-mode-btn[aria-pressed='true']:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 26px rgba(139, 0, 255, 0.18);
+.ps-toolbar-btn.secondary.is-active,
+.ps-toolbar-btn.secondary[aria-pressed='true'] {
+    border-color: rgba(255, 184, 0, 0.42);
+    background: rgba(255, 215, 0, 0.14);
+    color: #7a4d00;
+    box-shadow: 0 12px 22px rgba(255, 184, 0, 0.14);
 }
 
 @keyframes mode-activate {
@@ -298,15 +282,12 @@
         margin-left: 0;
     }
 
-    .teaching-modes-toolbar {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
+    .teaching-modes-toolbar,
     .quick-actions-toolbar {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .teaching-mode-btn {
+    .ps-toolbar-btn {
         font-size: 0.74rem;
         padding: 8px;
     }
@@ -321,10 +302,7 @@
         font-size: 1rem;
     }
 
-    .teaching-modes-toolbar {
-        grid-template-columns: 1fr;
-    }
-
+    .teaching-modes-toolbar,
     .quick-actions-toolbar {
         grid-template-columns: 1fr;
     }
@@ -333,14 +311,14 @@
 @media (prefers-reduced-motion: reduce) {
     .professor-emoji,
     .ai-header .ai-status .dot,
-    .teaching-mode-btn {
+    .ps-toolbar-btn {
         animation: none;
         transition: none;
         transform: none;
     }
 
-    .teaching-mode-btn.is-active,
-    .teaching-mode-btn[aria-pressed='true'] {
+    .ps-toolbar-btn.is-active,
+    .ps-toolbar-btn[aria-pressed='true'] {
         animation: none;
     }
 }

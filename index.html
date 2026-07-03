@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
-    <link rel="stylesheet" href="css/teacherHeader.css" />
+    <link rel="stylesheet" href="css/professorSword.css" />
 
     <style>
         /* ==========================================================
@@ -812,7 +812,7 @@
                 PROFESSOR SWORD CARD - Interactive
                 ========================================================== -->
                 <div class="ai-mentor-card" id="aiMentorCard">
-                    <div class="ai-header">
+                    <header class="ai-header" aria-label="Professor SWORD header">
                         <h3>
                             <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
                             <span class="mentor-title-block">
@@ -824,30 +824,44 @@
                             <span class="dot"></span>
                             <span id="aiStatusText">Online</span>
                         </div>
-                    </div>
+                    </header>
 
-                    <div class="teaching-modes-toolbar" id="teachingModesToolbar" data-teaching-toolbar aria-label="Teaching modes toolbar">
-                        <button type="button" class="teaching-mode-btn" data-mode="explain" aria-pressed="false">📖 Explain</button>
-                        <button type="button" class="teaching-mode-btn" data-mode="quiz" aria-pressed="false">📝 Quiz Me</button>
-                        <button type="button" class="teaching-mode-btn" data-mode="practice" aria-pressed="false">🎯 Practice</button>
-                        <button type="button" class="teaching-mode-btn" data-mode="example" aria-pressed="false">💡 Give Example</button>
-                        <button type="button" class="teaching-mode-btn" data-mode="summarize" aria-pressed="false">📚 Summarize</button>
-                        <button type="button" class="teaching-mode-btn" data-mode="teach" aria-pressed="false">🎤 Teach Me</button>
-                        <button type="button" class="teaching-mode-btn" data-mode="exam" aria-pressed="false">🎓 Prepare for Exam</button>
-                    </div>
+                    <main class="assistant-panel-main" aria-label="Professor SWORD interaction panel">
+                        <div class="assistant-divider" aria-hidden="true"></div>
 
-                    <!-- Chat Messages -->
-                    <div class="ai-messages" id="aiMessages">
-                        <!-- Welcome message will be added by JavaScript -->
-                    </div>
+                        <section class="assistant-section" aria-label="Teaching modes">
+                            <h4 class="assistant-section-title">Teaching Modes</h4>
+                            <div class="teaching-modes-toolbar" id="teachingModesToolbar" data-toolbar-container="teaching" aria-label="Teaching modes toolbar"></div>
+                        </section>
 
-                    <!-- Input -->
-                    <div class="ai-input-row">
-                        <input type="text" id="aiInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
-                        <button onclick="sendAIMessage()" id="aiSendBtn">
+                        <div class="assistant-divider" aria-hidden="true"></div>
+
+                        <section class="assistant-section" aria-label="Quick actions">
+                            <h4 class="assistant-section-title">Quick Actions</h4>
+                            <div class="quick-actions-toolbar" id="quickActionsToolbar" data-toolbar-container="quick" aria-label="Quick actions toolbar"></div>
+                        </section>
+
+                        <div class="assistant-divider" aria-hidden="true"></div>
+
+                        <section class="assistant-conversation-section" aria-label="Conversation">
+                            <h4 class="assistant-section-title conversation-title">Conversation</h4>
+
+                            <!-- Chat Messages -->
+                            <div class="ai-messages" id="aiMessages">
+                                <!-- Welcome message will be added by JavaScript -->
+                            </div>
+                        </section>
+                    </main>
+
+                    <footer class="assistant-composer" aria-label="Conversation composer">
+                        <!-- Input -->
+                        <div class="ai-input-row">
+                        <input type="text" id="aiInput" placeholder="Ask me anything..." />
+                        <button id="aiSendBtn" type="button">
                             <i class="fas fa-paper-plane"></i> Ask
                         </button>
-                    </div>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </section>
@@ -1087,7 +1101,7 @@
     </script>
 
     <script src="ai-service.js"></script>
-    <script src="js/components/teacherHeader.js"></script>
+    <script type="module" src="js/ai/professorSword.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -1259,11 +1273,19 @@
         window.sendAIMessage = sendAIMessage;
 
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof window.TeacherHeader !== 'undefined' && window.TeacherHeader.initTeacherHeader) {
-                window.TeacherHeader.initTeacherHeader({
-                    toolbarSelector: '#teachingModesToolbar',
-                    inputSelector: '#aiInput'
+            if (aiSendBtn && aiSendBtn.dataset.bound !== 'true') {
+                aiSendBtn.addEventListener('click', () => sendAIMessage());
+                aiSendBtn.dataset.bound = 'true';
+            }
+
+            if (aiInput && aiInput.dataset.bound !== 'true') {
+                aiInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        sendAIMessage();
+                    }
                 });
+                aiInput.dataset.bound = 'true';
             }
 
             if (window.twemoji) {
@@ -1282,7 +1304,9 @@
                 setMentorOnline(false);
             }
 
-            addAIMessage('ai', 'Welcome to Sword Institute. I can help you choose courses, understand learning paths, and plan your next steps.');
+            if (aiMessages && aiMessages.children.length === 0) {
+                addAIMessage('ai', 'Welcome to Sword Institute. I can help you choose courses, understand learning paths, and plan your next steps.');
+            }
         });
     </script>
 
