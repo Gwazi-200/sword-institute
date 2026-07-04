@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professor SWORD ⚔️ · Management Mastery Academy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --success: #16a34a;
+      --success-light: #f0fdf4;
+      --danger: #dc2626;
+      --dark-text: #334155;
+      --light-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --sword-glow: rgba(37, 99, 235, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--dark-text);
+      padding: 2rem 1rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Animated Professor SWORD Title Header Component */
+    .dashboard-header {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .sword-avatar {
+      font-size: 2.5rem;
+      display: inline-block;
+      animation: swordFloat 3s ease-in-out infinite alternate, swordGlow 2s ease-in-out infinite alternate;
+      padding: 0.5rem;
+      border-radius: 50%;
+      background: var(--accent-light);
+    }
+
+    @keyframes swordFloat {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    @keyframes swordGlow {
+      0% { box-shadow: 0 0 5px var(--sword-glow); }
+      100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .panels-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-panel, .score-panel {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--accent-light);
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      border: 1px solid #bfdbfe;
+      font-size: 0.85rem;
+    }
+
+    .score-panel {
+      background: #fef3c7;
+      border-color: #fde68a;
+      color: #92400e;
+      font-weight: 700;
+    }
+
+    .bar-outer {
+      width: 120px;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-inner {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    .btn-download-pdf {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-download-pdf:hover:not(:disabled) {
+      background: #15803d;
+      transform: translateY(-1px);
+    }
+
+    .btn-download-pdf:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Course Architecture Grid Layout */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+      gap: 2rem;
+    }
+
+    .lesson-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .lesson-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    .lesson-card.completed {
+      border-top: 5px solid var(--success);
+    }
+
+    .card-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: #fafbfc;
+    }
+
+    .module-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-header h3 {
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    /* Structural Tab Navigation Controls */
+    .tab-nav {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      gap: 0.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .tab-btn.active {
+      background: var(--card-bg);
+      color: var(--accent);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* Core Content Windows */
+    .card-body {
+      padding: 1.2rem;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 440px;
+      min-height: 440px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .literature-view p {
+      font-size: 0.88rem;
+      color: #334155;
+      margin-bottom: 0.6rem;
+      text-align: justify;
+    }
+
+    /* Accessible Text-To-Speech Interface Deck */
+    .tts-deck {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .tts-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .tts-btn.playing {
+      background: #dc2626;
+    }
+
+    .references {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      border-top: 1px dashed var(--border);
+      padding-top: 0.5rem;
+      margin-top: 0.6rem;
+    }
+
+    /* Graded Interactive Sub-systems */
+    .graded-section {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .section-lbl {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .points-badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    /* Inline SVG Visual Infographic Canvas Wrapper */
+    .visual-container {
+      width: 100%;
+      height: 150px;
+      background: #ffffff;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      padding: 0.5rem;
+    }
+
+    .visual-container svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .options-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .opt-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    .opt-btn.correct-choice {
+      background: var(--success-light) !important;
+      border-color: var(--success) !important;
+      color: var(--success) !important;
+      font-weight: 600;
+    }
+
+    .opt-btn.wrong-choice {
+      background: #fde8e8 !important;
+      border-color: var(--danger) !important;
+      color: var(--danger) !important;
+    }
+
+    .feedback-msg {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    /* Extensible Multi-AI Interoperability Matrix Studio */
+    .coach-panel {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 0.85rem;
+      color: #e2e8f0;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-routing-mesh {
+      display: flex;
+      gap: 0.25rem;
+      background: #1e293b;
+      padding: 0.2rem;
+      border-radius: 8px;
+      margin-bottom: 0.6rem;
+    }
+
+    .ai-node-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 0.3rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ai-node-btn.active-node {
+      background: var(--accent);
+      color: white;
+    }
+
+    .chat-window {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 0.6rem;
+      min-height: 220px;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .chip-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .chip-action {
+      background: #334155;
+      color: #f1f5f9;
+      border: 1px solid #475569;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.72rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .chip-action:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Footer Controllers */
+    .card-footer {
+      padding: 0.85rem 1.2rem;
+      border-top: 1px solid var(--border);
+      background: #fafbfc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-capsule {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .course-grid { grid-template-columns: 1fr; }
+      .dashboard-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="dashboard-header">
+    <div class="brand-group">
+      <div class="sword-avatar">⚔️</div>
+      <div>
+        <h1>Professor SWORD Academy</h1>
+        <p style="color: #64748b; font-size: 0.85rem;">Continuous Multi-AI Interoperability Loop • Mathematical 100-Mark Scale</p>
+      </div>
+    </div>
+    <div class="panels-group">
+      <div class="progress-panel">
+        <strong>Progress:</strong>
+        <div class="bar-outer"><div class="bar-inner" id="progressFill"></div></div>
+        <span id="progressTxt">0 / 8 Modules</span>
+      </div>
+      <div class="score-panel">
+        <i class="fa-solid fa-trophy"></i> Cumulative Score: <span id="totalScoreTxt">0.00</span> / 100 Marks
+      </div>
+      <button class="btn-download-pdf" id="pdfBtn" onclick="generateAcademicPDF()" disabled>
+        <i class="fa-solid fa-file-pdf"></i> Export Official Transcript
+      </button>
+    </div>
+  </div>
+
+  <div class="course-grid" id="masteryGrid"></div>
+</div>
+
+<script>
+  /**
+   * Application State Ledger
+   * Pure decoupled structural tracking modeling individual question configurations.
+   * Airtight grading allocation: 3 items per module equal exactly 12.5 marks. (12.5 * 8 = 100)
+   */
+  const userProgressState = {
+    studentName: "Michael",
+    scores: {}, // Format: { "moduleId_component": value }
+    completedModules: new Set(),
+    activeTTSUtterance: null
+  };
+
+  const coreDataset = [
+    {
+      id: 1,
+      title: "Introduction to Management",
+      subtitle: "Evolution of Management Thought & Foundations",
+      paragraphs: [
+        "Management acts as both an art and an exact science, dedicated to structuring human, financial, physical, and informational assets to achieve targets. It is classically defined by four continuous workflows: planning strategic directions, organizing functional groups, leading teams toward execution, and controlling metrics to track quality updates.",
+        "The historical roadmap transitions from early Classical schools to later Behavioral paradigms. Frederick Taylor's Scientific Management targeted production line optimization, while Henri Fayol designed high-level corporate frameworks like unity of organizational command. This machine-centric perspective changed during Elton Mayo's Hawthorne Studies, showing that workplace attention and community interaction drive labor optimization much more than functional metrics.",
+        "Modern systems view organizations as complex, open environments interacting directly with fluid economic frameworks. Contingency models state that standardized absolute solutions are non-existent; executive operations must match the real-world operational context, technological ecosystem, and industry conditions."
+      ],
+      references: "Drucker, P. F. (1954). The Practice of Management; Taylor, F. W. (1911). Principles of Scientific Management.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <line x1="40" y1="60" x2="360" y2="60" stroke="#cbd5e1" stroke-width="4" />
+          <circle cx="60" cy="60" r="18" fill="#2563eb" />
+          <text x="60" y="65" font-family="sans-serif" font-size="10" fill="white" font-weight="bold" text-anchor="middle">CLASSIC</text>
+          <circle cx="200" cy="60" r="18" fill="#16a34a" />
+          <text x="200" y="65" font-family="sans-serif" font-size="10" fill="white" font-weight="bold" text-anchor="middle">BEHAVIOR</text>
+          <circle cx="340" cy="60" r="18" fill="#7c3aed" />
+          <text x="340" y="65" font-family="sans-serif" font-size="10" fill="white" font-weight="bold" text-anchor="middle">SYSTEMS</text>
+          <text x="200" y="110" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle" font-weight="600">Evolution Vector of Corporate Management Models</text>
+        </svg>
+      `,
+      visualQuestion: "Which era focuses on corporate process mapping to optimize physical throughput parameters?",
+      visualChoices: ["Classical System Engineering Metrics", "Behavioral Human-Centric Systems", "Modern Open Ecosystem Paradigms"],
+      visualCorrect: 0,
+      simulator: {
+        scenario: "Your manufacturing line throughput drops 15% due to workplace labor friction and aggressive scheduling metrics. What step do you execute?",
+        choices: ["Enforce strict machine speed metrics and issue mandatory output quotas.", "Initiate psychological feedback loops and structural breaks."],
+        correctIdx: 1,
+        feedback: ["❌ Fail. Pure performance metrics without human parameters compound workforce exhaustion.", "✨ Success (+5.0 Marks)! Activating behavioral feedback systems channels Hawthorne efficiencies."]
+      },
+      quiz: {
+        q: "Which management theorist introduced corporate functional principles across corporate operations?",
+        choices: ["Frederick Taylor", "Henri Fayol", "Elton Mayo"],
+        correctIdx: 1,
+        feedback: ["❌ Incorrect. Taylor handled micro-level industrial manufacturing metrics.", "✨ Correct (+4.5 Marks)! Fayol constructed high-level enterprise administrative frameworks.", "❌ Incorrect. Mayo spearheaded the behavioral human relations studies."]
+      },
+      aiCoach: {
+        "SWORD": "Greetings. I am Professor SWORD ⚔️. Systems theory mandates that organizations do not run in a vacuum. Everything maps back to environmental inputs.",
+        "FinanceBot": "Analyzing financial allocations: Classical systems maximized output parameters but incurred massive indirect human resource attrition overhead costs.",
+        "OpsBot": "Operational Analysis: Optimizing line layout throughput means shifting from rigid isolation to high-agility production frameworks.",
+        "HRBuddy": "People Metrics: Mayo verified that when staff understand that management values their insight, retention parameters spike."
+      }
+    },
+    {
+      id: 2,
+      title: "Management Functions",
+      subtitle: "Deep Dive into the POLC Framework Cycle",
+      paragraphs: [
+        "The practical deployment of managerial strategic intent runs through the interconnected POLC framework. Planning establishes an organization's path by setting goals and creating steps to achieve them. This requires ongoing environmental scanning and predictive risk mitigation to shield long-range workflows from market volatility.",
+        "Organizing structures resource allocation, defining communication pathways, lines of accountability, and task distributions. Leading focuses on motivation, using clear organizational vision and emotional intelligence to direct individuals and groups toward targets.",
+        "Controlling completes the operational loop. It requires managers to establish performance benchmarks, evaluate current productivity against planning data, and implement swift corrective changes when tracking systems show variance from standard metrics."
+      ],
+      references: "Fayol, H. (1916). Administration Industrielle et Générale; Robbins, S. P. (2024). Management.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <g transform="translate(10,10)" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">
+            <rect x="20" y="30" width="70" height="30" fill="#2563eb" rx="4"/>
+            <text x="55" y="48" fill="white">Planning</text>
+            <rect x="110" y="30" width="70" height="30" fill="#16a34a" rx="4"/>
+            <text x="145" y="48" fill="white">Organizing</text>
+            <rect x="200" y="30" width="70" height="30" fill="#eab308" rx="4"/>
+            <text x="235" y="48" fill="white">Leading</text>
+            <rect x="290" y="30" width="70" height="30" fill="#dc2626" rx="4"/>
+            <text x="325" y="48" fill="white">Controlling</text>
+            <path d="M 90 45 L 110 45 M 180 45 L 200 45 M 270 45 L 290 45 M 325 30 C 325 5, 55 5, 55 30" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+          </g>
+          <text x="200" y="100" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle" font-weight="600">The Continuous POLC Control System Loop</text>
+        </svg>
+      `,
+      visualQuestion: "Identify the critical phase that completes the loop by evaluating variance parameters against base data:",
+      visualChoices: ["Strategic Formulation Matrix", "Operational Controlling System", "Organizational Asset Layer"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "Mid-quarter parameters indicate a core asset pipeline will miss its gross delivery forecast targets by 12%. What is your strategic move?",
+        choices: ["Deploy real-time feedback control, process internal variance metrics, and re-allocate assets.", "Re-organize structural reporting hierarchies across the firm immediately."],
+        correctIdx: 0,
+        feedback: ["✨ Success (+5.0 Marks)! Standard feedback loop architecture corrects variance metrics in real time.", "❌ Fail. Altering team frameworks without structural diagnostic performance metrics triggers panic parameters."]
+      },
+      quiz: {
+        q: "What control mechanism manages system assets and material feeds before a workflow sequence executes?",
+        choices: ["Feedback Control", "Feedforward Control", "Concurrent Control"],
+        correctIdx: 1,
+        feedback: ["❌ Incorrect. Feedback models process post-execution data.", "✨ Correct (+4.5 Marks)! Feedforward operations filter incoming operational risks before production phases.", "❌ Incorrect. Concurrent controllers evaluate execution systems in real time."]
+      },
+      aiCoach: {
+        "SWORD": "Control cycles ensure organizational reality matches your blueprints. Missing milestones requires real-time calibration.",
+        "FinanceBot": "Operational controlling matrices require a clear data baseline to shield bottom-line margins from expanding variance costs.",
+        "OpsBot": "Feedforward validation rules check supplier specifications before items enter production inventory slots.",
+        "HRBuddy": "Leading within the POLC framework demands high emotional intelligence parameters to transform stress indicators into structural focus."
+      }
+    },
+    {
+      id: 3,
+      title: "Personnel Management",
+      subtitle: "Strategic HRM & Human Capital Architecture",
+      paragraphs: [
+        "Personnel management has grown from basic administrative record-keeping into Strategic Human Resource Management (SHRM). Modern SHRM treats workers as important business assets that must align with the organization's macro goals. This system guides talent matching from initial onboarding to retirement.",
+        "Core workflows cover talent sourcing, competency-based recruitment, onboarding, continuous learning tracks, and structured performance metrics. Effective review cycles avoid generic report cards, focusing instead on 360-degree feedback loops and performance management systems linked to business objectives.",
+        "Modern human capital management also prioritizes workplace diversity, employee experience metrics, and data-driven workforce planning. Using HR analytics helps teams spot turnover risks early, optimize benefits packages, and build inclusive workplace cultures that retain top talent."
+      ],
+      references: "Ulrich, D. (1997). Human Resource Champions; Boxall, P. (2011). Strategy and HRM.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <circle cx="200" cy="50" r="22" fill="#2563eb" opacity="0.2"/>
+          <circle cx="200" cy="50" r="12" fill="#2563eb"/>
+          <circle cx="200" cy="15" r="8" fill="#16a34a"/>
+          <circle cx="200" cy="85" r="8" fill="#16a34a"/>
+          <circle cx="140" cy="50" r="8" fill="#16a34a"/>
+          <circle cx="260" cy="50" r="8" fill="#16a34a"/>
+          <line x1="200" y1="23" x2="200" y2="38" stroke="#475569" stroke-width="1.5"/>
+          <line x1="200" y1="62" x2="200" y2="77" stroke="#475569" stroke-width="1.5"/>
+          <line x1="148" y1="50" x2="188" y2="50" stroke="#475569" stroke-width="1.5"/>
+          <line x1="212" y1="50" x2="252" y2="50" stroke="#475569" stroke-width="1.5"/>
+          <text x="200" y="112" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle" font-weight="600">360° Competency Evaluation Matrix</text>
+        </svg>
+      `,
+      visualQuestion: "What model structure does this centered, multi-source evaluation hub evaluate?",
+      visualChoices: ["Top-down Command Allocation", "360-Degree Feedback Appraisal Core", "Isolated Asset Sourcing Track"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "An essential specialized engineering team registers a 35% performance attrition rate over consecutive terms. Your deployment step:",
+        choices: ["Approve flat structural salary jumps across the matrix without diagnostic reviews.", "Execute diagnostic exit frameworks and target custom alignment paths."],
+        correctIdx: 1,
+        feedback: ["❌ Fail. Comp lines isolate singular variables, ignoring deeper cultural architecture breakdowns.", "✨ Success (+5.0 Marks)! Targeted metrics optimize long-term retention dynamics."]
+      },
+      quiz: {
+        q: "Which evaluation structure anchors structural behavioral descriptions directly alongside numeric scores?",
+        choices: ["Graphic Scale Indexes", "Behaviorally Anchored Rating Scales (BARS)", "MBO Target Rubrics"],
+        correctIdx: 1,
+        feedback: ["❌ Incorrect. Graphic index tools are susceptible to observer bias anomalies.", "✨ Correct (+4.5 Marks)! BARS joins quantitative grading metrics with specific behavioral metrics.", "❌ Incorrect. MBO modules target performance metrics exclusively."]
+      },
+      aiCoach: {
+        "SWORD": "Human assets are strategic advantages. Standard management methods value talent over pure mechanics.",
+        "FinanceBot": "High turnover metrics generate major hidden capital losses. Retention paths yield superior ROI profiles.",
+        "OpsBot": "HR analytics allow platforms to map skill gaps before they cause workflow disruptions.",
+        "HRBuddy": "BARS minimizes subjective evaluation bias, securing trust parameters across diverse teams."
+      }
+    },
+    {
+      id: 4,
+      title: "Financial Management",
+      subtitle: "Capital Allocation, Forecasting, and Control Systems",
+      paragraphs: [
+        "Financial management handles the strategic acquisition, allocation, and tracking of corporate funds. It ensures an organization creates sustainable value while managing fiscal risk and liquidity. Decision matrices focus on capital budgeting, asset structures, and managing day-to-day working capital.",
+        "Key tracking relies on three main corporate statements: the Balance Sheet, which shows financial health at a specific point in time; the Income Statement, tracking profitability over a given period; and the Cash Flow Statement, monitoring real-world liquidity. Managers use tools like Net Present Value (NPV) and Internal Rate of Return (IRR) to review investments.",
+        "Ongoing financial control requires regular ratio analysis, break-even calculations, and variance evaluations. Tracking profitability, liquidity (like current ratio), and efficiency indices lets corporate leaders spot operational issues early, adjust pricing models, and meet financial commitments to investors."
+      ],
+      references: "Brealey, R. (2020). Principles of Corporate Finance; Brigham, E. (2023). Financial Management.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <rect x="30" y="30" width="100" height="50" fill="#2563eb" rx="4"/>
+          <text x="80" y="60" font-family="sans-serif" font-size="12" fill="white" text-anchor="middle">Assets</text>
+          <text x="165" y="62" font-family="sans-serif" font-size="20" fill="#475569" text-anchor="middle">=</text>
+          <rect x="200" y="20" width="170" height="32" fill="#dc2626" rx="4"/>
+          <text x="285" y="40" font-family="sans-serif" font-size="11" fill="white" text-anchor="middle">Liabilities</text>
+          <rect x="200" y="58" width="170" height="32" fill="#eab308" rx="4"/>
+          <text x="285" y="78" font-family="sans-serif" font-size="11" fill="white" text-anchor="middle">Equity</text>
+          <text x="200" y="112" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle" font-weight="600">The Structural Accounting Equation System</text>
+        </svg>
+      `,
+      visualQuestion: "Which side of this core balancing equation measures the company's total capital source footprint?",
+      visualChoices: ["Isolated Revenue Channels", "The Combination of Liabilities & Owner Equity", "Current Operational Expenditure Columns"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "Your facility requires a core machine upgrade. Asset A presents a high long-term NPV but steep entry costs. Asset B features low entry costs but matching long-term margin limits. Your deployment choice:",
+        choices: ["Deploy Asset A based on positive Net Present Value calculations.", "Deploy Asset B to protect immediate short-term cash flow metrics."],
+        correctIdx: 0,
+        feedback: ["✨ Success (+5.0 Marks)! Corporate finance rules mandate maximizing positive NPV paths.", "❌ Fail. Prioritizing short-term optics over long-term value generation harms the business."]
+      },
+      quiz: {
+        q: "Which accounting artifact tracks corporate performance and operational margin yields over an extended period?",
+        choices: ["The Corporate Balance Sheet", "The Income Statement", "The Statement of Cash Flows"],
+        correctIdx: 1,
+        feedback: ["❌ Balance sheet configurations capture point-in-time snapshots.", "✨ Correct (+4.5 Marks)! Income data captures operational performance over an explicit reporting window.", "❌ Cash flow files measure immediate asset liquidity changes."]
+      },
+      aiCoach: {
+        "SWORD": "Capital allocation decisions dictate corporate lifespan parameters. NPV metrics offer concrete answers.",
+        "FinanceBot": "Always cross-reference your Current Ratio metrics to verify that working capital levels stay balanced.",
+        "OpsBot": "Production machine acquisitions must match throughput metrics with multi-year cost calculations.",
+        "HRBuddy": "Ensure technical training budgets are included in capitalization metrics to avoid production drop-offs."
+      }
+    },
+    {
+      id: 5,
+      title: "Supplies Management",
+      subtitle: "Procurement Architectures & Supply Chain Control",
+      paragraphs: [
+        "Supplies management handles procurement, inventory control, storage logistics, and supply chain distribution networks. Its main goals are balancing cost control, quality metrics, and material delivery speeds. A breakdown here can disrupt the production ecosystem.",
+        "Teams balance inventory levels using tools like Economic Order Quantity (EOQ) alongside Just-In-Time (JIT) methods. EOQ minimizes total cost by balancing ordering costs against inventory holding costs, while JIT works to reduce warehousing waste by timing deliveries to land exactly as production needs them.",
+        "Modern logistics also relies on data-driven supplier evaluations and ABC inventory classification systems. Grouping materials by value and risk helps companies spot supply vulnerabilities early, protect production schedules from disruptions, and use tech systems to track items from origin to end-consumer."
+      ],
+      references: "Chopra, S. (2016). Supply Chain Management; Christopher, M. (2016). Logistics Management.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <path d="M 30 20 L 100 90 L 105 20 L 175 90 L 180 20 L 250 90" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+          <line x1="30" y1="90" x2="350" y2="90" stroke="#475569" stroke-width="2"/>
+          <line x1="30" y1="20" x2="30" y2="90" stroke="#475569" stroke-width="2"/>
+          <line x1="30" y1="55" x2="350" y2="55" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4"/>
+          <text x="320" y="50" font-family="sans-serif" font-size="9" fill="#dc2626" font-weight="bold">Safety Stock</text>
+          <text x="200" y="112" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle" font-weight="600">Sawtooth Inventory Control Model (EOQ System)</text>
+        </svg>
+      `,
+      visualQuestion: "What operational threshold prevents material stockouts when tracking consumption trends?",
+      visualChoices: ["Maximum Vault Baseline", "Safety Stock Reorder Point", "The Bulk Sourcing Limit"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "A primary materials partner issues an emergency notice detailing a 3-week logistics delay on key components. Your inventory levels are low. Your action plan:",
+        choices: ["Pause assembly workflows and wait for the vendor's shipment.", "Activate emergency vendor networks using your ABC inventory safety stock protocols."],
+        correctIdx: 1,
+        feedback: ["❌ Fail. Halting assembly streams drops production parameters and triggers contract penalties.", "✨ Success (+5.0 Marks)! Utilizing ABC safety stocks buffers production runs against supply chain disruptions."]
+      },
+      quiz: {
+        q: "What inventory calculation balances holding friction with ordering overhead to find the best order size?",
+        choices: ["Material Requirements Framework (MRP)", "Economic Order Quantity (EOQ)", "Reorder Vector Math"],
+        correctIdx: 1,
+        feedback: ["❌ MRP modules map structural component timelines.", "✨ Correct (+4.5 Marks)! EOQ balances holding costs against ordering friction.", "❌ Reorder models track timing coordinates rather than total size metrics."]
+      },
+      aiCoach: {
+        "SWORD": "Supply chains are networks of vulnerabilities. Standard optimization models focus on risk isolation.",
+        "FinanceBot": "Excess warehousing inventory traps capital. Aim to match JIT efficiencies with reliable safety buffers.",
+        "OpsBot": "The Bullwhip Effect amplifies small changes in retail demand into major supplier overproduction errors.",
+        "HRBuddy": "Procurement integrity improves when buyers use objective, data-driven scorecard metrics."
+      }
+    },
+    {
+      id: 6,
+      title: "Office Administration",
+      subtitle: "Operational Efficiency & Workplace Architecture",
+      paragraphs: [
+        "Office administration handles workplace workflows, records management, communication frameworks, and facility safety. Modern administration goes beyond simple desk operations, acting as a workspace hub designed to boost staff productivity across different business units.",
+        "Current office planning links workspace design, ergonomic principles, and technological infrastructure. Optimizing digital workflows, using lean communication tools, and organizing file architectures helps teams remove bottlenecks, secure corporate files, and lower administrative overhead.",
+        "In addition, adapting to hybrid work environments requires cloud systems and online task managers. Administrative leaders focus on compliance protocols, data privacy guidelines, and change management strategies to keep hybrid work environments smooth, safe, and efficient."
+      ],
+      references: "Keeling, B. (2010). Administrative Office Management; Oliver, J. (2021). The Digital Workplace.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <rect x="40" y="25" width="320" height="65" fill="none" stroke="#64748b" stroke-width="1.5" rx="4"/>
+          <circle cx="80" cy="55" r="15" fill="#2563eb" opacity="0.8"/>
+          <circle cx="160" cy="55" r="15" fill="#16a34a" opacity="0.8"/>
+          <circle cx="240" cy="55" r="15" fill="#eab308" opacity="0.8"/>
+          <circle cx="320" cy="55" r="15" fill="#9333ea" opacity="0.8"/>
+          <path d="M 95 55 L 145 55 M 175 55 L 225 55 M 255 55 L 305 55" stroke="#cbd5e1" stroke-width="2"/>
+          <text x="200" y="112" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle" font-weight="600">Cross-Functional Agile Workspace Flow Architecture</text>
+        </svg>
+      `,
+      visualQuestion: "What workspace layout strategy removes functional barriers to improve communication speed?",
+      visualChoices: ["Siloed Functional Cells", "Cross-Functional Agile Workspace Flow Architecture", "Classical Bureaucratic Hierarchies"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "Your team loses critical billing files because departments use different cloud storage structures. Your deployment move:",
+        choices: ["Enforce a single file index system with strict metadata tags and access limits.", "Email a reminder asking employees to clean up their personal desktop folders."],
+        correctIdx: 0,
+        feedback: ["✨ Success (+5.0 Marks)! A standardized indexing framework establishes data security and speed.", "❌ Fail. Email reminders fail to create systemic accountability or structural order."]
+      },
+      quiz: {
+        q: "Which administration field handles data lifecycles from creation to destruction?",
+        choices: ["Ergonomic Design Systems", "Records Management Systems", "Facility Security Matrix Management"],
+        correctIdx: 1,
+        feedback: ["❌ Ergonomics focuses on human posture and physical workplace strain.", "✨ Correct (+4.5 Marks)! Records management secures corporate data lifecycles and compliance requirements.", "❌ Security matrices manage asset protection networks."]
+      },
+      aiCoach: {
+        "SWORD": "Administrative workflows are the nervous system of an enterprise. Clear documentation limits operational risk.",
+        "FinanceBot": "Standardizing digital asset storage reduces software license waste and discovery costs.",
+        "OpsBot": "Ergonomic workspace designs reduce physical strain indicators and lower medical leave rates.",
+        "HRBuddy": "Hybrid transitions require clear data policies to balance flexibility with information security."
+      }
+    },
+    {
+      id: 7,
+      title: "Strategic Management",
+      subtitle: "Competitive Advantage & Framework Execution",
+      paragraphs: [
+        "Strategic management builds and adjusts corporate plans to help an organization develop a sustainable competitive advantage. This framework requires matching internal company assets with external economic trends, regulatory updates, and competitive threats.",
+        "Analytical frameworks guide this strategy: SWOT analysis maps out internal resources and external market realities, PESTLE tracks societal shifts, and Porter's Five Forces evaluates industry profit potential. Companies use this data to choose a core business strategy, such as cost leadership, market differentiation, or a niche focus.",
+        "However, strategy formulation requires execution. True competitive advantage means cascading top-level strategy into specific departmental targets, using tools like the Balanced Scorecard, monitoring operations, and adapting plans when market conditions change."
+      ],
+      references: "Porter, M. E. (1985). Competitive Advantage; Barney, J. (1991). Firm Resources.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <rect x="150" y="45" width="100" height="30" fill="#dc2626" rx="4"/>
+          <text x="200" y="64" font-family="sans-serif" font-size="10" fill="white" font-weight="bold" text-anchor="middle">RIVALRY</text>
+          <rect x="40" y="45" width="90" height="30" fill="#2563eb" rx="4"/>
+          <text x="85" y="64" font-family="sans-serif" font-size="9" fill="white" text-anchor="middle">Suppliers</text>
+          <rect x="270" y="45" width="90" height="30" fill="#2563eb" rx="4"/>
+          <text x="315" y="64" font-family="sans-serif" font-size="9" fill="white" text-anchor="middle">Buyers</text>
+          <rect x="150" y="10" width="100" height="25" fill="#16a34a" rx="4"/>
+          <text x="200" y="26" font-family="sans-serif" font-size="9" fill="white" text-anchor="middle">New Entrants</text>
+          <rect x="150" y="85" width="100" height="25" fill="#eab308" rx="4"/>
+          <text x="200" y="101" font-family="sans-serif" font-size="9" fill="white" text-anchor="middle">Substitutes</text>
+          <path d="M 130 60 L 150 60 M 270 60 L 250 60 M 200 35 L 200 45 M 200 85 L 200 75" stroke="#475569" stroke-width="1.5"/>
+        </svg>
+      `,
+      visualQuestion: "Which force evaluates market threats from outside standard industry rivalries?",
+      visualChoices: ["Supplier Price Leverage", "Threat of Product Substitutes", "Internal Rivalry Parameters"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "A low-cost competitor enters your core market and cuts standard product prices by 20%. Your response plan:",
+        choices: ["Cut matching prices below cost to trigger a market war.", "Differentiate your brand through unique features, value, and customer care models."],
+        correctIdx: 1,
+        feedback: ["❌ Fail. Price wars erode profit margins unless you hold a structural cost advantage.", "✨ Success (+5.0 Marks)! Brand differentiation insulates your margins from low-cost pricing wars."]
+      },
+      quiz: {
+        q: "What strategic tool tracks performance across financial, customer, internal process, and learning perspectives?",
+        choices: ["PESTLE Macro Matrix", "The Balanced Scorecard Framework", "BCG Growth Portfolios"],
+        correctIdx: 1,
+        feedback: ["❌ PESTLE matrices track high-level external conditions.", "✨ Correct (+4.5 Marks)! The Balanced Scorecard connects daily operations with long-term strategy.", "❌ BCG matrices track market share portfolios."]
+      },
+      aiCoach: {
+        "SWORD": "Strategy means choosing what not to do. Sustainable competitive advantage requires unique market positioning.",
+        "FinanceBot": "Differentiating your product helps preserve operating margins when low-cost rivals destabilize prices.",
+        "OpsBot": "The Resource-Based View states that internal assets deliver value when they are Valuable, Rare, Inimitable, and Non-substitutable.",
+        "HRBuddy": "Balanced scorecards keep teams aligned by connecting strategic goals directly to daily tasks."
+      }
+    },
+    {
+      id: 8,
+      title: "Operations & Quality",
+      subtitle: "Continuous Improvement Systems & Six Sigma Optimization",
+      paragraphs: [
+        "Operations management designs and refines manufacturing workflows, improving productivity and minimizing product variance. Quality management moves beyond post-production inspections to build continuous improvement frameworks directly into the workflow ecosystem.",
+        "This relies on Total Quality Management (TQM) principles alongside Lean architectures and Six Sigma systems. Lean focuses on removing waste and unnecessary steps from production pipelines, while Six Sigma uses statistics and data metrics to eliminate product defects, aiming for fewer than 3.4 defects per million opportunities.",
+        "Key tools drive this work: Deming's Plan-Do-Check-Act (PDCA) wheel supports ongoing updates, while DMAIC frameworks guide Six Sigma implementations to ensure zero-defect target criteria are met."
+      ],
+      references: "Heizer, J. (2020). Operations Management; Deming, W. E. (1986). Out of the Crisis.",
+      infographicSvg: `
+        <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#f8fafc" rx="6"/>
+          <circle cx="200" cy="60" r="40" fill="none" stroke="#2563eb" stroke-width="3"/>
+          <text x="200" y="35" font-family="sans-serif" font-size="12" fill="#dc2626" font-weight="bold" text-anchor="middle">P</text>
+          <text x="235" y="65" font-family="sans-serif" font-size="12" fill="#16a34a" font-weight="bold" text-anchor="middle">D</text>
+          <text x="200" y="95" font-family="sans-serif" font-size="12" fill="#eab308" font-weight="bold" text-anchor="middle">C</text>
+          <text x="165" y="65" font-family="sans-serif" font-size="12" fill="#9333ea" font-weight="bold" text-anchor="middle">A</text>
+          <text x="200" y="64" font-family="sans-serif" font-size="9" fill="#334155" text-anchor="middle">PDCA</text>
+        </svg>
+      `,
+      visualQuestion: "What step in Deming's continuous optimization cycle tests corrective actions against control data?",
+      visualChoices: ["The Planning Phase", "The Check/Verify Phase", "The Action Phase"],
+      visualCorrect: 1,
+      simulator: {
+        scenario: "Defect metrics on your final assembly run jump to 4,500 parts per million opportunities. Your operational correction:",
+        choices: ["Increase post-production inspection sorting checks.", "Deploy root-cause DMAIC teams to fix process variances."],
+        correctIdx: 1,
+        feedback: ["❌ Fail. Inspection catches failures late; it does not stop variances from occurring.", "✨ Success (+5.0 Marks)! DMAIC systems target process variations to establish Six Sigma quality levels."]
+      },
+      quiz: {
+        q: "What maximum defect limit per million opportunities defines Six Sigma performance?",
+        choices: ["3.4 Defect Points", "66.8 Defect Points", "300 Defect Points"],
+        correctIdx: 0,
+        feedback: ["✨ Correct (+4.5 Marks)! Six Sigma targets near-perfection with a limit of 3.4 defects per million opportunities.", "❌ Incorrect. Higher defect frequencies indicate lower sigma process control values.", "❌ Incorrect. This level of variation indicates a failure in quality control systems."]
+      },
+      aiCoach: {
+        "SWORD": "Quality is defined by the customer. Eliminating variance minimizes waste and builds long-term value.",
+        "FinanceBot": "Reducing defects lowers scrap expenses and protects profit margins from warranty claims.",
+        "OpsBot": "Lean workflows eliminate activities that do not add value, freeing up resource capacity.",
+        "HRBuddy": "Total Quality Management works best when front-line staff have the authority to halt production to address quality issues."
+      }
+    }
+  ];
+
+  /**
+   * Component Generation Layer
+   * Renders modular HTML structures with built-in event routing.
+   */
+  function initializeAcademyPlatform() {
+    const gridContainer = document.getElementById("masteryGrid");
+    if (!gridContainer) return;
+
+    gridContainer.innerHTML = coreDataset.map(module => `
+      <div class="lesson-card" id="card-mod-${module.id}">
+        <div class="card-header">
+          <span class="module-tag">Module 0${module.id} • Max 12.5 Pts</span>
+          <h3>${module.title}</h3>
+          <p style="color: #64748b; font-size: 0.78rem; font-weight: 500;">${module.subtitle}</p>
+        </div>
+        
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="switchCardTab(${module.id}, 'literature', event)"><i class="fa-solid fa-book-open"></i> Theory</button>
+          <button class="tab-btn" onclick="switchCardTab(${module.id}, 'visual', event)"><i class="fa-solid fa-chart-pie"></i> Visual Validation (3pt)</button>
+          <button class="tab-btn" onclick="switchCardTab(${module.id}, 'simulator', event)"><i class="fa-solid fa-gamepad"></i> Simulator (5pt)</button>
+          <button class="tab-btn" onclick="switchCardTab(${module.id}, 'quiz', event)"><i class="fa-solid fa-vial"></i> Quiz (4.5pt)</button>
+          <button class="tab-btn" onclick="switchCardTab(${module.id}, 'coach', event)"><i class="fa-solid fa-robot"></i> SWORD Multi-AI</button>
+        </div>
+
+        <div class="card-body">
+          <div class="tab-content active" id="tab-lit-${module.id}">
+            <div class="tts-deck">
+              <button class="tts-btn" id="tts-btn-${module.id}" onclick="executeTextToSpeech(${module.id})">
+                <i class="fa-solid fa-volume-high"></i> Audio Lecture
+              </button>
+              <span style="font-size: 0.7rem; color: #64748b;">Web Speech Translation System</span>
+            </div>
+            <div class="literature-view" id="lit-text-${module.id}">
+              ${module.paragraphs.map(p => `<p>${p}</p>`).join('')}
+            </div>
+            <div class="references"><strong>Foundational Sources:</strong> ${module.references}</div>
+          </div>
+
+          <div class="tab-content" id="tab-vis-${module.id}">
+            <div class="graded-section">
+              <div class="section-lbl">Interactive Infographic Vector <span class="points-badge">Value: 3 Marks</span></div>
+              <div class="visual-container">${module.infographicSvg}</div>
+              <p style="font-size:0.82rem; margin-bottom:0.6rem; font-weight:600; color:var(--primary);">${module.visualQuestion}</p>
+              <div class="options-stack">
+                ${module.visualChoices.map((choice, index) => `
+                  <button class="opt-btn class-vis-btn-${module.id}" onclick="verifyVisualAnswer(${module.id}, ${index}, ${module.visualCorrect}, this)">
+                    ${choice}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="feedback-msg" id="vis-fb-${module.id}"></div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-sim-${module.id}">
+            <div class="graded-section">
+              <div class="section-lbl">Strategic Case Simulation <span class="points-badge">Value: 5 Marks</span></div>
+              <p style="font-size:0.84rem; margin-bottom:0.75rem; color:#1e293b; text-align:justify; background:#fff; padding:0.5rem; border-radius:6px; border:1px solid var(--border);">${module.simulator.scenario}</p>
+              <div class="options-stack">
+                ${module.simulator.choices.map((choice, index) => `
+                  <button class="opt-btn class-sim-btn-${module.id}" onclick="verifySimulatorAnswer(${module.id}, ${index}, ${module.simulator.correctIdx}, this)">
+                    ${choice}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="feedback-msg" id="sim-fb-${module.id}"></div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-qz-${module.id}">
+            <div class="graded-section">
+              <div class="section-lbl">Final Academic Quiz Validation <span class="points-badge">Value: 4.5 Marks</span></div>
+              <p style="font-size:0.84rem; margin-bottom:0.75rem; font-weight:600; color:var(--primary);">${module.quiz.q}</p>
+              <div class="options-stack">
+                ${module.quiz.choices.map((choice, index) => `
+                  <button class="opt-btn class-qz-btn-${module.id}" onclick="verifyQuizAnswer(${module.id}, ${index}, ${module.quiz.correctIdx}, this)">
+                    ${choice}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="feedback-msg" id="qz-fb-${module.id}"></div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-co-${module.id}">
+            <div class="coach-panel">
+              <div class="ai-routing-mesh">
+                <button class="ai-node-btn active-node" id="node-btn-${module.id}-SWORD" onclick="routeAiContext(${module.id}, 'SWORD')">Prof SWORD ⚔️</button>
+                <button class="ai-node-btn" id="node-btn-${module.id}-FinanceBot" onclick="routeAiContext(${module.id}, 'FinanceBot')">FinanceBot 📊</button>
+                <button class="ai-node-btn" id="node-btn-${module.id}-OpsBot" onclick="routeAiContext(${module.id}, 'OpsBot')">OpsBot ⚙️</button>
+                <button class="ai-node-btn" id="node-btn-${module.id}-HRBuddy" onclick="routeAiContext(${module.id}, 'HRBuddy')">HRBuddy 👥</button>
+              </div>
+              <div class="chat-window" id="ai-chat-window-${module.id}">
+                <strong>[Professor SWORD ⚔️]:</strong> ${module.aiCoach.SWORD}
+              </div>
+              <div class="chip-flex">
+                <button class="chip-action" onclick="injectPromptPreset(${module.id}, 'Synthesize core methodology constraints')">Synthesize Core Framework</button>
+                <button class="chip-action" onclick="injectPromptPreset(${module.id}, 'Map systemic operational risks')">Map Operational Risks</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="status-capsule" id="status-cap-${module.id}">Status: Incomplete</span>
+          <div style="font-size: 0.75rem; font-weight: bold; color: var(--accent);" id="score-cap-${module.id}">Module Score: 0 / 12.5</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /**
+   * Tab Navigation Routing Engine
+   */
+  function switchCardTab(moduleId, tabKey, event) {
+    if (!event || !event.currentTarget) return;
+    
+    const card = document.getElementById(`card-mod-${moduleId}`);
+    if (!card) return;
+
+    // Reset current active classes
+    const buttons = card.querySelectorAll(".tab-btn");
+    buttons.forEach(btn => btn.classList.remove("active"));
+    
+    const contents = card.querySelectorAll(".tab-content");
+    contents.forEach(content => content.classList.remove("active"));
+
+    // Activate selected target components
+    event.currentTarget.classList.add("active");
+    
+    const targetMap = {
+      'literature': `tab-lit-${moduleId}`,
+      'visual': `tab-vis-${moduleId}`,
+      'simulator': `tab-sim-${moduleId}`,
+      'quiz': `tab-qz-${moduleId}`,
+      'coach': `tab-co-${moduleId}`
+    };
+
+    const targetId = targetMap[tabKey];
+    if (targetId) {
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.classList.add("active");
+      }
+    }
+  }
+
+  /**
+   * Accessible Web Speech Synthesis Engine
+   */
+  function executeTextToSpeech(moduleId) {
+    const activeBtn = document.getElementById(`tts-btn-${moduleId}`);
+    
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      if (userProgressState.activeTTSUtterance === moduleId) {
+        setTtsButtonState(moduleId, false);
+        userProgressState.activeTTSUtterance = null;
+        return;
+      }
+    }
+
+    // Reset previous buttons
+    if (userProgressState.activeTTSUtterance !== null) {
+      setTtsButtonState(userProgressState.activeTTSUtterance, false);
+    }
+
+    const textPayloadElement = document.getElementById(`lit-text-${moduleId}`);
+    if (!textPayloadElement) return;
+    
+    const textPayload = textPayloadElement.innerText;
+    if (!window.speechSynthesis) return;
+    
+    const utterance = new SpeechSynthesisUtterance(textPayload);
+    
+    utterance.onend = () => {
+      setTtsButtonState(moduleId, false);
+      userProgressState.activeTTSUtterance = null;
+    };
+    
+    utterance.onerror = () => {
+      setTtsButtonState(moduleId, false);
+      userProgressState.activeTTSUtterance = null;
+    };
+
+    setTtsButtonState(moduleId, true);
+    userProgressState.activeTTSUtterance = moduleId;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function setTtsButtonState(moduleId, isPlaying) {
+    const btn = document.getElementById(`tts-btn-${moduleId}`);
+    if (!btn) return;
+    if (isPlaying) {
+      btn.classList.add("playing");
+      btn.innerHTML = `<i class="fa-solid fa-square"></i> Stop Lecture`;
+    } else {
+      btn.classList.remove("playing");
+      btn.innerHTML = `<i class="fa-solid fa-volume-high"></i> Audio Lecture`;
+    }
+  }
+
+  /**
+   * Multi-AI Orchestrator Interoperability Routing Matrix
+   */
+  function routeAiContext(moduleId, targetAiNode) {
+    const moduleData = coreDataset.find(m => m.id === moduleId);
+    if (!moduleData) return;
+
+    const panel = document.getElementById(`tab-co-${moduleId}`);
+    if (!panel) return;
+    
+    const buttons = panel.querySelectorAll(".ai-node-btn");
+    buttons.forEach(btn => btn.classList.remove("active-node"));
+
+    const activeButton = document.getElementById(`node-btn-${moduleId}-${targetAiNode}`);
+    if (activeButton) {
+      activeButton.classList.add("active-node");
+    }
+
+    const chatWindow = document.getElementById(`ai-chat-window-${moduleId}`);
+    if (!chatWindow) return;
+    
+    const emojiMap = { 'SWORD': '⚔️', 'FinanceBot': '📊', 'OpsBot': '⚙️', 'HRBuddy': '👥' };
+    
+    chatWindow.innerHTML = `<strong>[${targetAiNode} ${emojiMap[targetAiNode]}]:</strong> ${moduleData.aiCoach[targetAiNode]}`;
+  }
+
+  function injectPromptPreset(moduleId, presetAction) {
+    const chatWindow = document.getElementById(`ai-chat-window-${moduleId}`);
+    if (!chatWindow) return;
+    
+    const tabContent = document.getElementById(`tab-co-${moduleId}`);
+    if (!tabContent) return;
+    
+    const activeNodeBtn = tabContent.querySelector(".ai-node-btn.active-node");
+    if (!activeNodeBtn) return;
+    
+    const nodeName = activeNodeBtn.id.split('-').pop();
+    
+    chatWindow.innerHTML += `
+      <div style="margin-top:0.5rem; padding-top:0.5rem; border-top:1px dashed rgba(255,255,255,0.1); color:#38bdf8;">
+        <em>Query executed: "${presetAction}"...</em>
+      </div>
+      <div style="margin-top:0.3rem; color:#a7f3d0;">
+        <strong>[${nodeName} System Response]:</strong> Contextual parameters analyzed for "${presetAction}". Process variables verified against standard management frameworks.
+      </div>
+    `;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  /**
+   * Academic Grading Engine
+   * Validates selections and calculates scores against the mathematical 100-mark system.
+   */
+  function verifyVisualAnswer(moduleId, pickedIdx, correctIdx, element) {
+    const targetGroup = document.querySelectorAll(`.class-vis-btn-${moduleId}`);
+    if (!targetGroup.length) return;
+    
+    targetGroup.forEach(btn => btn.disabled = true);
+
+    const feedbackField = document.getElementById(`vis-fb-${moduleId}`);
+    if (!feedbackField) return;
+    
+    const scoreKey = `${moduleId}_vis`;
+
+    if (pickedIdx === correctIdx) {
+      element.classList.add("correct-choice");
+      feedbackField.innerHTML = `<span style="color:var(--success);">✨ Correct (+3.0 Marks)! Visual concept mapping parameters validated.</span>`;
+      userProgressState.scores[scoreKey] = 3.0;
+    } else {
+      element.classList.add("wrong-choice");
+      if (targetGroup[correctIdx]) {
+        targetGroup[correctIdx].classList.add("correct-choice");
+      }
+      feedbackField.innerHTML = `<span style="color:var(--danger);">❌ Incorrect (0.0 Marks). Review the vector illustration models.</span>`;
+      userProgressState.scores[scoreKey] = 0.0;
+    }
+    evaluateModuleStatus(moduleId);
+  }
+
+  function verifySimulatorAnswer(moduleId, pickedIdx, correctIdx, element) {
+    const targetGroup = document.querySelectorAll(`.class-sim-btn-${moduleId}`);
+    if (!targetGroup.length) return;
+    
+    targetGroup.forEach(btn => btn.disabled = true);
+
+    const feedbackField = document.getElementById(`sim-fb-${moduleId}`);
+    if (!feedbackField) return;
+    
+    const targetModule = coreDataset.find(m => m.id === moduleId);
+    if (!targetModule) return;
+    
+    const scoreKey = `${moduleId}_sim`;
+
+    if (pickedIdx === correctIdx) {
+      element.classList.add("correct-choice");
+      userProgressState.scores[scoreKey] = 5.0;
+    } else {
+      element.classList.add("wrong-choice");
+      if (targetGroup[correctIdx]) {
+        targetGroup[correctIdx].classList.add("correct-choice");
+      }
+      userProgressState.scores[scoreKey] = 0.0;
+    }
+    
+    if (targetModule.simulator && targetModule.simulator.feedback && targetModule.simulator.feedback[pickedIdx]) {
+      feedbackField.innerHTML = `<span>${targetModule.simulator.feedback[pickedIdx]}</span>`;
+    }
+    evaluateModuleStatus(moduleId);
+  }
+
+  function verifyQuizAnswer(moduleId, pickedIdx, correctIdx, element) {
+    const targetGroup = document.querySelectorAll(`.class-qz-btn-${moduleId}`);
+    if (!targetGroup.length) return;
+    
+    targetGroup.forEach(btn => btn.disabled = true);
+
+    const feedbackField = document.getElementById(`qz-fb-${moduleId}`);
+    if (!feedbackField) return;
+    
+    const targetModule = coreDataset.find(m => m.id === moduleId);
+    if (!targetModule) return;
+    
+    const scoreKey = `${moduleId}_qz`;
+
+    if (pickedIdx === correctIdx) {
+      element.classList.add("correct-choice");
+      userProgressState.scores[scoreKey] = 4.5;
+    } else {
+      element.classList.add("wrong-choice");
+      if (targetGroup[correctIdx]) {
+        targetGroup[correctIdx].classList.add("correct-choice");
+      }
+      userProgressState.scores[scoreKey] = 0.0;
+    }
+    
+    if (targetModule.quiz && targetModule.quiz.feedback && targetModule.quiz.feedback[pickedIdx]) {
+      feedbackField.innerHTML = `<span>${targetModule.quiz.feedback[pickedIdx]}</span>`;
+    }
+    evaluateModuleStatus(moduleId);
+  }
+
+  function evaluateModuleStatus(moduleId) {
+    const scoreKeyVis = `${moduleId}_vis`;
+    const scoreKeySim = `${moduleId}_sim`;
+    const scoreKeyQz  = `${moduleId}_qz`;
+
+    // A module is complete if all three components are graded
+    if (userProgressState.scores.hasOwnProperty(scoreKeyVis) && 
+        userProgressState.scores.hasOwnProperty(scoreKeySim) && 
+        userProgressState.scores.hasOwnProperty(scoreKeyQz)) {
+      
+      userProgressState.completedModules.add(moduleId);
+      const cardElement = document.getElementById(`card-mod-${moduleId}`);
+      if (cardElement) {
+        cardElement.classList.add("completed");
+      }
+      const statusElement = document.getElementById(`status-cap-${moduleId}`);
+      if (statusElement) {
+        statusElement.innerHTML = `Status: <span style="color:var(--success); font-weight:bold;">Passed</span>`;
+      }
+    }
+
+    // Sum individual components for this specific module
+    const mVis = userProgressState.scores[scoreKeyVis] || 0.0;
+    const mSim = userProgressState.scores[scoreKeySim] || 0.0;
+    const mQz  = userProgressState.scores[scoreKeyQz]  || 0.0;
+    const moduleTotal = mVis + mSim + mQz;
+
+    const scoreElement = document.getElementById(`score-cap-${moduleId}`);
+    if (scoreElement) {
+      scoreElement.innerText = `Module Score: ${moduleTotal.toFixed(2)} / 12.5`;
+    }
+    
+    calculateGlobalMetrics();
+  }
+
+  function calculateGlobalMetrics() {
+    let globalCumulativeScore = 0.0;
+    for (const scoreKey in userProgressState.scores) {
+      if (userProgressState.scores.hasOwnProperty(scoreKey)) {
+        globalCumulativeScore += userProgressState.scores[scoreKey];
+      }
+    }
+
+    const completedCount = userProgressState.completedModules.size;
+    
+    // Update metric components in UI
+    const totalScoreElement = document.getElementById("totalScoreTxt");
+    if (totalScoreElement) {
+      totalScoreElement.innerText = globalCumulativeScore.toFixed(2);
+    }
+    
+    const progressTextElement = document.getElementById("progressTxt");
+    if (progressTextElement) {
+      progressTextElement.innerText = `${completedCount} / 8 Modules`;
+    }
+    
+    const percentageFill = (completedCount / 8) * 100;
+    const progressFillElement = document.getElementById("progressFill");
+    if (progressFillElement) {
+      progressFillElement.style.width = `${percentageFill}%`;
+    }
+
+    // Enable transcript download once all modules are completed
+    const pdfBtn = document.getElementById("pdfBtn");
+    if (pdfBtn) {
+      if (completedCount === 8) {
+        pdfBtn.removeAttribute("disabled");
+      }
+    }
+  }
+
+  /**
+   * Professional Academic PDF Transcript Exporter
+   * Generates formatted verified summaries via window.jspdf
+   */
+  function generateAcademicPDF() {
+    if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+      console.error('PDF generation library not loaded');
+      return;
+    }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Structural Geometry Parameters
+    const marginX = 20;
+    let cursorY = 25;
+
+    // Header Title Elements
+    doc.setFillColor(15, 23, 42); // Primary Dark #0f172a
+    doc.rect(0, 0, 210, 40, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(22);
+    doc.text("PROFESSOR SWORD ACADEMY", marginX, 26);
+
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text("Official Management Mastery Academy Transcript Verification Document", marginX, 33);
+
+    // Profile Meta Details Block
+    cursorY = 55;
+    doc.setTextColor(51, 65, 85);
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("STUDENT PROFILE REPORT", marginX, cursorY);
+    
+    cursorY += 8;
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.5);
+    doc.line(marginX, cursorY, 190, cursorY);
+
+    cursorY += 10;
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(11);
+    doc.text(`Student Name:  ${userProgressState.studentName}`, marginX, cursorY);
+    
+    let cumulativeFinalScore = 0.0;
+    for (const key in userProgressState.scores) {
+      if (userProgressState.scores.hasOwnProperty(key)) {
+        cumulativeFinalScore += userProgressState.scores[key];
+      }
+    }
+    
+    doc.text(`Final Score:       ${cumulativeFinalScore.toFixed(2)} / 100.00 Marks`, marginX + 80, cursorY);
+
+    cursorY += 6;
+    const dateStamp = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    doc.text(`Issue Date:        ${dateStamp}`, marginX, cursorY);
+    
+    let academicGrade = "F";
+    if (cumulativeFinalScore >= 90) academicGrade = "A (Excellent Performance)";
+    else if (cumulativeFinalScore >= 80) academicGrade = "B (Very Good)";
+    else if (cumulativeFinalScore >= 70) academicGrade = "C (Competent)";
+    else if (cumulativeFinalScore >= 50) academicGrade = "D (Passing)";
+    
+    doc.setFont("Helvetica", "bold");
+    doc.text(`Academic Rank: ${academicGrade}`, marginX + 80, cursorY);
+
+    // Module Breakdown List Table
+    cursorY += 18;
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("ACADEMIC PERFORMANCE TRACK BREAKDOWN", marginX, cursorY);
+
+    cursorY += 6;
+    doc.setFillColor(241, 245, 249);
+    doc.rect(marginX, cursorY, 170, 8, "F");
+    doc.setFontSize(9);
+    doc.setTextColor(71, 85, 105);
+    doc.text("MODULE TITLE", marginX + 4, cursorY + 5.5);
+    doc.text("EARNED SCORE", marginX + 135, cursorY + 5.5);
+
+    cursorY += 8;
+    doc.setFont("Helvetica", "normal");
+    doc.setTextColor(51, 65, 85);
+
+    coreDataset.forEach(m => {
+      const v = userProgressState.scores[`${m.id}_vis`] || 0;
+      const s = userProgressState.scores[`${m.id}_sim`] || 0;
+      const q = userProgressState.scores[`${m.id}_qz`] || 0;
+      const totalSum = v + s + q;
+
+      // Draw light horizontal separator rule
+      doc.setDrawColor(241, 245, 249);
+      doc.line(marginX, cursorY, 190, cursorY);
+
+      doc.text(`Module ${m.id}: ${m.title}`, marginX + 4, cursorY + 6);
+      doc.text(`${totalSum.toFixed(2)} / 12.50`, marginX + 138, cursorY + 6);
+      cursorY += 9;
+    });
+
+    // Verification Seal Footer Element
+    cursorY += 10;
+    doc.setDrawColor(15, 23, 42);
+    doc.line(marginX, cursorY, 190, cursorY);
+
+    cursorY += 12;
+    doc.setFont("Helvetica", "italic");
+    doc.setFontSize(9);
+    doc.text("This documentation file is securely finalized and certified under evaluation code [SWORD-AI-100].", marginX, cursorY);
+    
+    cursorY += 5;
+    doc.setFont("Helvetica", "bold");
+    doc.text("Verified Official Transcript - Professor SWORD ⚔️", marginX, cursorY);
+
+    // Save PDF Stream to Client Browser
+    doc.save(`Transcript_Management_Mastery_Michael.pdf`);
+  }
+
+  // Self-Starting Deployment Lifecycle Action Loop
+  window.addEventListener("DOMContentLoaded", initializeAcademyPlatform);
+</script>
+
+</body>
+</html>
