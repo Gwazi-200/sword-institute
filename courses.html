@@ -763,6 +763,11 @@
     </div>
 
     <!-- ========================================================== -->
+    <!-- COURSE CATALOGUE HELPERS                                  -->
+    <!-- ========================================================== -->
+    <script src="js/catalog-helpers.js"></script>
+
+    <!-- ========================================================== -->
     <!-- FIREBASE CDN                                              -->
     <!-- ========================================================== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
@@ -804,6 +809,23 @@
         let currentUser = null;
         let enrollmentCache = {};
 
+        const curatedCourses = [{
+            id: 'PSWORD-MGMT-001',
+            title: 'Professor SWORD Academy',
+            description: 'Management Mastery Academy with 8 interactive modules, quizzes, simulations, and transcript export.',
+            category: 'Management & Administration',
+            duration: '8 Modules',
+            icon: 'fa-sword',
+            level: 'Advanced',
+            totalLessons: 8,
+            externalUrl: 'management-mastery-academy.html'
+        }];
+
+        const catalogHelpers = window.catalogHelpers || {};
+        const getEnrollmentEligibleCourseIds = catalogHelpers.getEnrollmentEligibleCourseIds || ((courses = []) => courses.filter(c => !c.externalUrl).map(c => c.id));
+        const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
+        const getCourseHref = catalogHelpers.getCourseHref || (course => `course-view.html?id=${course.id}`);
+
         // =============================================================
         // AUTH STATE
         // =============================================================
@@ -835,7 +857,7 @@
             if (!currentUser || allCourses.length === 0) return;
 
             try {
-                const courseIds = allCourses.map(c => c.id);
+                const courseIds = getEnrollmentEligibleCourseIds(allCourses);
                 if (courseIds.length === 0) return;
 
                 const snapshot = await db.collection('enrollments')
@@ -870,14 +892,9 @@
                     .get();
 
                 if (snapshot.empty) {
-                    coursesContainer.innerHTML = `
-                            <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
-                                <i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:var(--violet-deep);margin-bottom:16px;display:block;"></i>
-                                <h3 style="color:var(--text-primary);margin-bottom:8px;">Awaiting Sacred Scrolls</h3>
-                                <p>Add your first course in Firebase Firestore under the "courses" collection.</p>
-                            </div>
-                        `;
-                    courseCount.textContent = '0 courses';
+                    allCourses = [...curatedCourses];
+                    courseCount.textContent = `${allCourses.length} courses`;
+                    renderCourses(allCourses);
                     return;
                 }
 
@@ -888,6 +905,9 @@
                         ...doc.data()
                     });
                 });
+
+                // Keep curated local courses visible even when Firestore is available.
+                allCourses = mergeCuratedCourses(allCourses, curatedCourses);
 
                 courseCount.textContent = `${allCourses.length} courses`;
 
@@ -934,6 +954,7 @@
                 const icon = course.icon || 'fa-book';
                 const level = course.level || 'Beginner';
                 const totalLessons = course.totalLessons || 0;
+                const courseHref = getCourseHref(course);
 
                 const isEnrolled = enrollmentCache[course.id]?.enrolled || false;
                 const progress = enrollmentCache[course.id]?.progress || 0;
@@ -943,7 +964,7 @@
                 const progressText = isEnrolled ? (isCompleted ? '✅ Completed' : `${progress}% Complete`) : '';
 
                 html += `
-                        <a href="course-view.html?id=${course.id}" class="course-card">
+                        <a href="${courseHref}" class="course-card">
                             <div class="course-thumb">
                                 <i class="fas ${icon}"></i>
                                 <span class="badge">${level}</span>
