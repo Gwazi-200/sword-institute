@@ -705,6 +705,19 @@
             background: rgba(245, 158, 11, 0.95);
         }
 
+        .access-notice {
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px dashed rgba(139, 0, 255, 0.35);
+            background: rgba(255, 255, 255, 0.35);
+            color: var(--text-secondary);
+            display: none;
+        }
+        .access-notice.show {
+            display: block;
+        }
+
         @keyframes slideIn {
             from {
                 transform: translateX(100px);
@@ -932,6 +945,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js">
     </script>
+    <script src="js/localAuthGuard.js"></script>
 
     <script>
         // =============================================================
@@ -981,6 +995,29 @@
         let allLessons = [];
         let selectedPaymentMethod = null;
         let userCoins = 0;
+
+        let accessState = { isAuthenticated: false, isGuest: false, user: null };
+
+        accessState = window.SwordLocalAuth
+            ? window.SwordLocalAuth.enforce({
+                allowGuest: true,
+                redirectTo: 'courses.html',
+                onBlocked: () => {
+                    window.location.href = 'courses.html';
+                }
+            })
+            : accessState;
+
+        if (accessState.isGuest && !document.getElementById('guestNotice')) {
+            const notice = document.createElement('div');
+            notice.id = 'guestNotice';
+            notice.className = 'access-notice show';
+            notice.innerHTML = '<strong>Guest Preview Active</strong><br/>You can view course details, but lesson content and enrollment actions are locked until login.';
+            const content = document.getElementById('courseContent');
+            if (content && content.parentNode) {
+                content.parentNode.insertBefore(notice, content);
+            }
+        }
 
         // =============================================================
         // AUTH STATE
@@ -1126,14 +1163,17 @@
                     return;
                 }
 
-                // Show course outline (first lesson only if not enrolled)
+                // Show course outline with local auth guard and enrollment lock.
                 let html = '';
-                const canView = isEnrolled || currentUser === null;
+                const canViewAny = accessState.isAuthenticated;
 
                 allLessons.forEach((lesson, index) => {
-                    const isLocked = !canView && index > 0;
+                    const isLocked = !canViewAny || (!isEnrolled && index > 0);
                     const statusClass = isLocked ? 'locked' : 'unlocked';
-                    const statusIcon = isLocked ? '🔒 Locked' : (index === 0 ? '📖 Preview' : '📖 Start');
+                    const statusIcon = isLocked ? 'Locked' : (index === 0 && !isEnrolled ? 'Preview' : 'Start');
+                    const lessonDescription = isLocked
+                        ? (accessState.isGuest ? (lesson.description || 'Guest preview available after login.') : 'Enroll to unlock')
+                        : (lesson.description || '');
 
                     html += `
                             <a href="${isLocked ? '#' : `lesson.html?courseId=${courseId}&lessonId=${lesson.id}`}" 
@@ -1143,7 +1183,7 @@
                                         <span class="num">${index + 1}</span>
                                         <div>
                                             <div class="title">${lesson.title || 'Lesson'}</div>
-                                            <div class="desc">${isLocked ? '🔒 Enroll to unlock' : (lesson.description || '')}</div>
+                                            <div class="desc">${lessonDescription}</div>
                                         </div>
                                     </div>
                                     <span class="lesson-status ${statusClass}">${statusIcon}</span>
@@ -1163,6 +1203,17 @@
         // CHECK ENROLLMENT
         // =============================================================
         async function checkEnrollment() {
+            if (!accessState.isAuthenticated) {
+                isEnrolled = false;
+                updateEnrollButton('Login to Enroll', false);
+                enrollStatus.textContent = accessState.isGuest
+                    ? 'Guest mode cannot enroll. Login to continue.'
+                    : 'Login required to enroll in this course.';
+                enrollStatus.style.color = '#f59e0b';
+                await loadLessons();
+                return;
+            }
+
             if (!currentUser) {
                 updateEnrollButton('Login to Enroll', false);
                 return;
@@ -1253,6 +1304,12 @@
         // ENROLL BUTTON CLICK
         // =============================================================
         enrollBtn.addEventListener('click', async () => {
+            if (!accessState.isAuthenticated) {
+                showToast('Please login to enroll in this course.', 'error');
+                window.location.href = 'courses.html';
+                return;
+            }
+
             if (!currentUser) {
                 window.location.href = `register.html?redirect=course-view.html?id=${courseId}`;
                 return;

@@ -1373,6 +1373,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/localAuthGuard.js"></script>
 
     <script>
         const STORAGE_KEYS = {
@@ -1825,6 +1826,11 @@
         }
 
         function touchActivity() {
+            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.getState === 'function') {
+                const state = window.SwordLocalAuth.getState();
+                if (!state.isAuthenticated) return;
+            }
+
             const session = getSession();
             if (!session || !currentUser) return;
             session.lastActivityAt = Date.now();
@@ -1832,6 +1838,14 @@
         }
 
         function checkInactivity() {
+            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.getState === 'function') {
+                const state = window.SwordLocalAuth.getState();
+                if (!state.isAuthenticated && (state.reason === 'inactive' || state.reason === 'expired')) {
+                    logout('Auto-logout after 30 minutes of inactivity.');
+                }
+                return;
+            }
+
             const session = getSession();
             if (!session) return;
             if (Date.now() > session.expiresAt) {
@@ -1844,6 +1858,11 @@
         }
 
         function initInactivityWatch() {
+            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.watchActivity === 'function') {
+                window.SwordLocalAuth.watchActivity();
+                return;
+            }
+
             ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach((eventName) => {
                 document.addEventListener(eventName, touchActivity, { passive: true });
             });
@@ -1861,6 +1880,12 @@
         }
 
         function restoreSession() {
+            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.getState === 'function') {
+                const state = window.SwordLocalAuth.getState();
+                currentUser = state.isAuthenticated ? state.user : null;
+                return;
+            }
+
             const session = getSession();
             if (!session) {
                 currentUser = null;
