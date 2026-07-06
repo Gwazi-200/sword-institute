@@ -63,8 +63,8 @@
             max-width: 1280px;
             margin: 0 auto;
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(180%);
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
@@ -120,8 +120,8 @@
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             color: var(--text-primary);
             border-color: rgba(255, 255, 255, 0.5);
         }
@@ -213,12 +213,14 @@
         .logo i {
             background: linear-gradient(135deg, var(--violet-deep), var(--gold-radiant));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 2.2rem;
         }
         .logo span {
             background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -301,8 +303,8 @@
             margin-bottom: 32px;
             padding: 16px 20px;
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--radius-md);
         }
@@ -350,8 +352,8 @@
 
         .course-card {
             background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: var(--radius-lg);
             overflow: hidden;
@@ -434,6 +436,7 @@
             color: var(--text-secondary);
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-bottom: 12px;
@@ -516,6 +519,7 @@
             background: rgba(34, 197, 94, 0.95);
             color: #fff;
             font-weight: 600;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.2);
@@ -526,6 +530,460 @@
         }
         .toast-notification.error {
             background: rgba(220, 38, 38, 0.95);
+        }
+
+        .is-hidden {
+            display: none !important;
+        }
+
+        .course-icon-violet {
+            color: var(--violet-deep);
+        }
+
+        .course-count {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .skeleton-text-narrow {
+            width: 70%;
+        }
+
+        .skeleton-meta-row {
+            border: none;
+            padding-top: 8px;
+        }
+
+        .skeleton-meta-short {
+            width: 40%;
+        }
+
+        .footer-note {
+            margin-bottom: 6px;
+        }
+
+        .footer-heart {
+            color: var(--violet-deep);
+        }
+
+        .state-panel {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .state-panel.error {
+            color: #8B00FF;
+            background: rgba(139, 0, 255, 0.02);
+            border-color: rgba(139, 0, 255, 0.08);
+        }
+
+        .state-panel.empty {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.25);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+        }
+
+        .state-panel-icon {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .state-panel-icon.error {
+            font-size: 2rem;
+            color: var(--gold-radiant);
+        }
+
+        .state-panel-icon.empty {
+            font-size: 2.5rem;
+            color: var(--violet-deep);
+        }
+
+        .state-panel-title {
+            color: var(--text-primary);
+        }
+
+        .state-panel-message {
+            font-size: 0.9rem;
+        }
+
+        .state-panel-message.small {
+            font-size: 0.8rem;
+            margin-top: 8px;
+            color: var(--text-muted);
+        }
+
+        .enrollment-check {
+            color: #16a34a;
+        }
+
+        /* ============================================================
+           AUTH + ACCESS CONTROL
+           ============================================================ */
+        body[data-theme='dark'] {
+            --pearl-light: #140c1f;
+            --pearl-mid: #1b1228;
+            --pearl-shadow: #261739;
+            --text-primary: #f4ecff;
+            --text-secondary: #c8b8db;
+            --text-muted: #a592bd;
+            --glass-bg: rgba(39, 23, 58, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .nav-utility {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 0, 255, 0.16);
+            background: rgba(255, 255, 255, 0.35);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .nav-utility:hover {
+            transform: translateY(-2px);
+            border-color: var(--violet-deep);
+        }
+
+        .badge-dot {
+            position: absolute;
+            top: -4px;
+            right: -2px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 18px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-menu-wrap {
+            position: relative;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 220px;
+            background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.25);
+            padding: 8px;
+            display: none;
+            z-index: 70;
+        }
+        .profile-dropdown.show {
+            display: block;
+        }
+        .profile-dropdown a,
+        .profile-dropdown button {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-dropdown a:hover,
+        .profile-dropdown button:hover {
+            background: rgba(139, 0, 255, 0.08);
+        }
+
+        .catalogue-hero {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.5), rgba(255, 215, 0, 0.08));
+        }
+        .catalogue-hero h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .catalogue-hero p {
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .access-wall {
+            margin-bottom: 20px;
+            padding: 18px 20px;
+            border-radius: var(--radius-md);
+            border: 1px dashed rgba(139, 0, 255, 0.35);
+            background: rgba(255, 255, 255, 0.26);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .continue-section {
+            margin-bottom: 22px;
+        }
+        .continue-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .continue-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+
+        .continue-card {
+            border: 1px solid rgba(139, 0, 255, 0.16);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        .progress-bar {
+            height: 8px;
+            border-radius: 20px;
+            background: rgba(139, 0, 255, 0.12);
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar > span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--violet-deep), var(--gold-radiant));
+        }
+
+        .course-card.locked {
+            cursor: not-allowed;
+        }
+        .course-card.locked .course-thumb,
+        .course-card.locked .course-body {
+            filter: blur(1.5px) saturate(0.85);
+        }
+
+        .lock-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(30, 16, 41, 0.8);
+            color: #fff;
+            font-size: 0.72rem;
+            border-radius: 20px;
+            padding: 4px 10px;
+        }
+
+        .unlock-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(22, 163, 74, 0.9);
+            color: #fff;
+            font-size: 0.72rem;
+            border-radius: 20px;
+            padding: 4px 10px;
+        }
+
+        .instructor-edit {
+            margin-top: 12px;
+            border: 1px solid rgba(139, 0, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            color: var(--violet-dark);
+            background: rgba(139, 0, 255, 0.08);
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .complete-btn {
+            margin-top: 12px;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(22, 163, 74, 0.25);
+            padding: 8px;
+            background: rgba(22, 163, 74, 0.12);
+            color: #166534;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .auth-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(16, 9, 26, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 120;
+        }
+        .auth-modal.show {
+            display: flex;
+        }
+
+        .auth-dialog {
+            width: 100%;
+            max-width: 480px;
+            border-radius: var(--radius-lg);
+            background: rgba(255, 255, 255, 0.94);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 22px;
+            box-shadow: 0 30px 60px -18px rgba(0, 0, 0, 0.25);
+        }
+
+        .auth-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .auth-close {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            cursor: pointer;
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 10px;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+        }
+
+        .field input,
+        .field select {
+            border: 1px solid rgba(139, 0, 255, 0.2);
+            background: rgba(255, 255, 255, 0.86);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.93rem;
+            color: var(--text-primary);
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 3px rgba(139, 0, 255, 0.1);
+        }
+
+        .field .hint,
+        .field .error {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .field .error {
+            color: #dc2626;
+            display: none;
+        }
+
+        .field.invalid .error {
+            display: block;
+        }
+
+        .strength {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .strength span {
+            display: block;
+            height: 6px;
+            flex: 1;
+            border-radius: 8px;
+            background: rgba(139, 0, 255, 0.12);
+        }
+
+        .strength-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .admin-panel {
+            margin-top: 18px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: var(--radius-md);
+            background: rgba(255, 215, 0, 0.12);
+            padding: 16px;
+            display: none;
+        }
+
+        .admin-panel.show {
+            display: block;
+        }
+
+        .admin-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 10px;
+        }
+
+        .admin-users {
+            margin-top: 12px;
+            max-height: 220px;
+            overflow: auto;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            padding: 8px;
+        }
+
+        .admin-users li {
+            list-style: none;
+            font-size: 0.85rem;
+            padding: 8px;
+            border-bottom: 1px solid rgba(139, 0, 255, 0.08);
         }
 
         @keyframes slideIn {
@@ -579,6 +1037,13 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            .access-wall {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .auth-dialog {
+                padding: 16px;
+            }
             .filter-bar .filter-group {
                 justify-content: center;
             }
@@ -626,11 +1091,32 @@
                     <li><a href="#ai-section">AI Mentor</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
-                    <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
-                    <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold" id="dashboardBtn" style="display:none;">
+                    <button class="nav-utility" id="themeToggle" type="button" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="nav-utility" id="notificationBell" type="button" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-dot" id="notificationCount">3</span>
+                    </button>
+                    <button class="nav-utility is-hidden" id="adminGear" type="button" title="Admin Panel">
+                        <i class="fas fa-gear"></i>
+                    </button>
+                    <button class="btn btn-outline-violet" id="loginBtn" type="button">Login</button>
+                    <button class="btn btn-primary" id="registerBtn" type="button">Register</button>
+                    <a href="dashboard.html" class="btn btn-gold is-hidden" id="dashboardBtn">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
+                    <div class="profile-menu-wrap is-hidden" id="profileWrap">
+                        <button class="nav-utility" id="profileButton" type="button" title="Profile Menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href="#" id="profileNameItem"><i class="fas fa-user"></i> My Profile</a>
+                            <a href="#" id="myCoursesItem"><i class="fas fa-layer-group"></i> My Courses</a>
+                            <a href="#" id="settingsItem"><i class="fas fa-sliders"></i> Settings</a>
+                            <button type="button" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -642,7 +1128,7 @@
             <div class="catalogue-header">
                 <div>
                     <h1>
-                        <i class="fas fa-graduation-cap" style="color:var(--violet-deep);"></i>
+                        <i class="fas fa-graduation-cap course-icon-violet"></i>
                         <span class="violet">Sacred</span> Course Catalogue
                     </h1>
                     <div class="sub">
@@ -650,12 +1136,41 @@
                     </div>
                 </div>
                 <div>
-                    <span style="color:var(--text-muted);font-size:0.9rem;" id="courseCount">Loading courses...</span>
+                    <span class="course-count" id="courseCount">Loading courses...</span>
                 </div>
             </div>
 
+            <div class="catalogue-hero" id="catalogueHero">
+                <h2><i class="fas fa-lock"></i> Member Learning Vault</h2>
+                <p id="heroText">Login or register to unlock all course modules, progress tracking, and assignment completion tools.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" type="button" id="heroLoginBtn"><i class="fas fa-right-to-bracket"></i> Login</button>
+                    <button class="btn btn-outline-violet" type="button" id="heroRegisterBtn"><i class="fas fa-user-plus"></i> Register</button>
+                    <button class="btn" type="button" id="guestModeBtn"><i class="fas fa-eye"></i> Continue as Guest</button>
+                </div>
+            </div>
+
+            <div class="access-wall" id="accessWall">
+                <div>
+                    <strong><i class="fas fa-shield"></i> Please login or register to access courses</strong>
+                    <p>Guests can browse descriptions, but lessons and exports remain locked.</p>
+                </div>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" type="button" id="wallLoginBtn">Open Login</button>
+                    <button class="btn btn-outline-violet" type="button" id="wallRegisterBtn">Create Account</button>
+                </div>
+            </div>
+
+            <section class="continue-section is-hidden" id="continueSection">
+                <div class="continue-header">
+                    <h3><i class="fas fa-forward"></i> Continue Learning</h3>
+                    <small id="continueCount"></small>
+                </div>
+                <div class="continue-grid" id="continueGrid"></div>
+            </section>
+
             <!-- Filter Bar -->
-            <div class="filter-bar">
+            <div class="filter-bar" id="filterBar">
                 <div class="filter-label">
                     <i class="fas fa-sliders-h"></i> Filter:
                 </div>
@@ -673,6 +1188,13 @@
                 </div>
             </div>
 
+            <section class="admin-panel" id="adminPanel">
+                <h3><i class="fas fa-user-shield"></i> Hidden Admin Panel</h3>
+                <p>Live user list and course statistics.</p>
+                <div class="admin-grid" id="adminStats"></div>
+                <ul class="admin-users" id="adminUserList"></ul>
+            </section>
+
             <!-- Courses Grid -->
             <div class="courses-grid" id="coursesContainer">
                 <!-- Skeleton Loaders -->
@@ -681,10 +1203,10 @@
                     <div class="course-body">
                         <div class="skeleton skeleton-title"></div>
                         <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
+                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                        <div class="course-meta skeleton-meta-row">
                             <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                         </div>
                     </div>
                 </div>
@@ -693,10 +1215,10 @@
                     <div class="course-body">
                         <div class="skeleton skeleton-title"></div>
                         <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
+                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                        <div class="course-meta skeleton-meta-row">
                             <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                         </div>
                     </div>
                 </div>
@@ -705,10 +1227,10 @@
                     <div class="course-body">
                         <div class="skeleton skeleton-title"></div>
                         <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
+                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                        <div class="course-meta skeleton-meta-row">
                             <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                         </div>
                     </div>
                 </div>
@@ -717,10 +1239,10 @@
                     <div class="course-body">
                         <div class="skeleton skeleton-title"></div>
                         <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
+                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                        <div class="course-meta skeleton-meta-row">
                             <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                         </div>
                     </div>
                 </div>
@@ -729,10 +1251,10 @@
                     <div class="course-body">
                         <div class="skeleton skeleton-title"></div>
                         <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
+                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                        <div class="course-meta skeleton-meta-row">
                             <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                         </div>
                     </div>
                 </div>
@@ -741,10 +1263,10 @@
                     <div class="course-body">
                         <div class="skeleton skeleton-title"></div>
                         <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width:70%;"></div>
-                        <div class="course-meta" style="border:none;padding-top:8px;">
+                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                        <div class="course-meta skeleton-meta-row">
                             <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta" style="width:40%;"></span>
+                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
                         </div>
                     </div>
                 </div>
@@ -755,10 +1277,85 @@
         FOOTER
         ============================================================ -->
         <div class="footer container">
-            <p style="margin-bottom:6px;">
+            <p class="footer-note">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
+        </div>
+    </div>
+
+    <div class="auth-modal" id="loginModal" aria-hidden="true">
+        <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+            <div class="auth-header">
+                <div>
+                    <h3 id="loginTitle">Welcome Back</h3>
+                    <p>Login to continue your academy path.</p>
+                </div>
+                <button class="auth-close" type="button" data-close-modal="loginModal"><i class="fas fa-xmark"></i></button>
+            </div>
+            <form class="auth-form" id="loginForm" novalidate>
+                <div class="field" id="loginIdentifierField">
+                    <label for="loginIdentifier">Email or Username</label>
+                    <input id="loginIdentifier" type="text" autocomplete="username" required />
+                    <small class="error">Enter your email or username.</small>
+                </div>
+                <div class="field" id="loginPasswordField">
+                    <label for="loginPassword">Password</label>
+                    <input id="loginPassword" type="password" autocomplete="current-password" required />
+                    <small class="error">Password is required.</small>
+                </div>
+                <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-right-to-bracket"></i> Login</button>
+                <small id="loginError" class="error">Invalid credentials.</small>
+            </form>
+        </div>
+    </div>
+
+    <div class="auth-modal" id="registerModal" aria-hidden="true">
+        <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+            <div class="auth-header">
+                <div>
+                    <h3 id="registerTitle">Create Your Account</h3>
+                    <p>Join as a student or instructor.</p>
+                </div>
+                <button class="auth-close" type="button" data-close-modal="registerModal"><i class="fas fa-xmark"></i></button>
+            </div>
+            <form class="auth-form" id="registerForm" novalidate>
+                <div class="field" id="registerNameField">
+                    <label for="registerName">Full Name</label>
+                    <input id="registerName" type="text" autocomplete="name" required />
+                    <small class="error">Full name is required.</small>
+                </div>
+                <div class="field" id="registerEmailField">
+                    <label for="registerEmail">Email</label>
+                    <input id="registerEmail" type="email" autocomplete="email" required />
+                    <small class="error" id="registerEmailError">Enter a valid email.</small>
+                </div>
+                <div class="field" id="registerPasswordField">
+                    <label for="registerPassword">Password</label>
+                    <input id="registerPassword" type="password" autocomplete="new-password" required />
+                    <small class="hint">At least 8 chars with uppercase, lowercase, and number.</small>
+                    <small class="error">Password does not meet policy.</small>
+                    <div class="strength" id="passwordStrength">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <small class="strength-text" id="strengthText">Strength: -</small>
+                </div>
+                <div class="field" id="registerConfirmField">
+                    <label for="registerConfirm">Confirm Password</label>
+                    <input id="registerConfirm" type="password" autocomplete="new-password" required />
+                    <small class="error">Passwords do not match.</small>
+                </div>
+                <div class="field" id="registerRoleField">
+                    <label for="registerRole">Role</label>
+                    <select id="registerRole" required>
+                        <option value="student">Student</option>
+                        <option value="instructor">Instructor</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i> Register</button>
+                <small id="registerSuccess" class="hint"></small>
+            </form>
         </div>
     </div>
 
@@ -778,36 +1375,59 @@
     </script>
 
     <script>
-        // =============================================================
-        // FIREBASE CONFIG
-        // =============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
-            authDomain: "sword-institute-lms.firebaseapp.com",
-            projectId: "sword-institute-lms",
-            storageBucket: "sword-institute-lms.firebasestorage.app",
-            messagingSenderId: "478896038426",
-            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
+        const STORAGE_KEYS = {
+            users: 'sword_users',
+            session: 'sword_session',
+            theme: 'sword_theme',
+            guest: 'sword_guest_mode',
+            rememberEmail: 'sword_remember_email'
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        const INACTIVITY_LIMIT = 30 * 60 * 1000;
 
-        // =============================================================
-        // DOM References
-        // =============================================================
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
         const dashboardBtn = document.getElementById('dashboardBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
         const coursesContainer = document.getElementById('coursesContainer');
         const courseCount = document.getElementById('courseCount');
+        const filterBar = document.getElementById('filterBar');
         const filterButtons = document.querySelectorAll('.filter-btn');
+        const accessWall = document.getElementById('accessWall');
+        const heroText = document.getElementById('heroText');
+        const profileWrap = document.getElementById('profileWrap');
+        const profileButton = document.getElementById('profileButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const profileNameItem = document.getElementById('profileNameItem');
+        const adminGear = document.getElementById('adminGear');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminStats = document.getElementById('adminStats');
+        const adminUserList = document.getElementById('adminUserList');
+        const continueSection = document.getElementById('continueSection');
+        const continueGrid = document.getElementById('continueGrid');
+        const continueCount = document.getElementById('continueCount');
+        const notificationCount = document.getElementById('notificationCount');
 
-        let allCourses = [];
-        let currentFilter = 'all';
-        let currentUser = null;
-        let enrollmentCache = {};
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginIdentifier = document.getElementById('loginIdentifier');
+        const loginPassword = document.getElementById('loginPassword');
+        const rememberMe = document.getElementById('rememberMe');
+        const loginError = document.getElementById('loginError');
+        const registerName = document.getElementById('registerName');
+        const registerEmail = document.getElementById('registerEmail');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerConfirm = document.getElementById('registerConfirm');
+        const registerRole = document.getElementById('registerRole');
+        const registerSuccess = document.getElementById('registerSuccess');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthText = document.getElementById('strengthText');
+
+        const catalogHelpers = window.catalogHelpers || {};
+        const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
+        const getCourseHref = catalogHelpers.getCourseHref || (course => `course-view.html?id=${course.id}`);
 
         const curatedCourses = [{
             id: 'PSWORD-MGMT-001',
@@ -821,132 +1441,295 @@
             externalUrl: 'management-mastery-academy.html'
         }];
 
-        const catalogHelpers = window.catalogHelpers || {};
-        const getEnrollmentEligibleCourseIds = catalogHelpers.getEnrollmentEligibleCourseIds || ((courses = []) => courses.filter(c => !c.externalUrl).map(c => c.id));
-        const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
-        const getCourseHref = catalogHelpers.getCourseHref || (course => `course-view.html?id=${course.id}`);
+        const mockNotifications = [
+            'A new AI mentorship challenge is available.',
+            'Your module progress was synced successfully.',
+            'Weekly live session starts tomorrow at 18:00.'
+        ];
 
-        // =============================================================
-        // AUTH STATE
-        // =============================================================
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                loginBtn.style.display = 'none';
-                registerBtn.style.display = 'none';
-                dashboardBtn.style.display = 'inline-flex';
+        let allCourses = [];
+        let currentFilter = 'all';
+        let currentUser = null;
+        let db = null;
+        let inactivityTimer = null;
 
-                // Load enrollment statuses
-                if (allCourses.length > 0) {
-                    await loadEnrollmentStatuses();
-                }
-            } else {
-                currentUser = null;
-                enrollmentCache = {};
-                loginBtn.style.display = 'inline-flex';
-                registerBtn.style.display = 'inline-flex';
-                dashboardBtn.style.display = 'none';
-                renderCourses(allCourses);
-            }
-        });
-
-        // =============================================================
-        // LOAD ENROLLMENT STATUSES
-        // =============================================================
-        async function loadEnrollmentStatuses() {
-            if (!currentUser || allCourses.length === 0) return;
-
+        function safeParse(json, fallback) {
             try {
-                const courseIds = getEnrollmentEligibleCourseIds(allCourses);
-                if (courseIds.length === 0) return;
-
-                const snapshot = await db.collection('enrollments')
-                    .where('userId', '==', currentUser.uid)
-                    .where('courseId', 'in', courseIds)
-                    .get();
-
-                enrollmentCache = {};
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    enrollmentCache[data.courseId] = {
-                        enrolled: true,
-                        enrollmentId: doc.id,
-                        progress: data.progress || 0,
-                        completed: data.completed || false
-                    };
-                });
-
-                renderCourses(allCourses);
-            } catch (error) {
-                console.warn('Could not load enrollment statuses:', error);
+                return JSON.parse(json);
+            } catch (_error) {
+                return fallback;
             }
         }
 
-        // =============================================================
-        // LOAD COURSES
-        // =============================================================
-        async function loadCourses() {
-            try {
-                const snapshot = await db.collection('courses')
-                    .orderBy('order', 'asc')
-                    .get();
+        function hashPassword(value) {
+            const encoded = btoa(unescape(encodeURIComponent(value)));
+            return encoded.split('').reverse().join('');
+        }
 
-                if (snapshot.empty) {
-                    allCourses = [...curatedCourses];
-                    courseCount.textContent = `${allCourses.length} courses`;
-                    renderCourses(allCourses);
-                    return;
-                }
+        function generateToken() {
+            return `tok_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+        }
 
-                allCourses = [];
-                snapshot.forEach((doc) => {
-                    allCourses.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification${type === 'error' ? ' error' : ''}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
 
-                // Keep curated local courses visible even when Firestore is available.
-                allCourses = mergeCuratedCourses(allCourses, curatedCourses);
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.35s ease forwards';
+                setTimeout(() => toast.remove(), 320);
+            }, 3000);
+        }
 
-                courseCount.textContent = `${allCourses.length} courses`;
+        function getUsers() {
+            return safeParse(localStorage.getItem(STORAGE_KEYS.users), []);
+        }
 
-                if (currentUser) {
-                    await loadEnrollmentStatuses();
-                } else {
-                    renderCourses(allCourses);
-                }
+        function saveUsers(users) {
+            localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+        }
 
-            } catch (error) {
-                console.error('Error loading courses:', error);
-                coursesContainer.innerHTML = `
-                        <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#8B00FF;background:rgba(139,0,255,0.02);border-radius:var(--radius-lg);border:1px solid rgba(139,0,255,0.08);">
-                            <i class="fas fa-triangle-exclamation" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--gold-radiant);"></i>
-                            <h4 style="color:var(--text-primary);">Connection to the Divine Network failed</h4>
-                            <p style="font-size:0.9rem;color:var(--text-secondary);">Check your Firebase config and ensure the "courses" collection exists.</p>
-                            <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">${error.message}</p>
-                        </div>
-                    `;
+        function updateUser(updater) {
+            const users = getUsers();
+            const next = updater(users) || users;
+            saveUsers(next);
+            return next;
+        }
+
+        function getSession() {
+            return safeParse(localStorage.getItem(STORAGE_KEYS.session), null);
+        }
+
+        function saveSession(session) {
+            localStorage.setItem(STORAGE_KEYS.session, JSON.stringify(session));
+        }
+
+        function clearSession() {
+            localStorage.removeItem(STORAGE_KEYS.session);
+            localStorage.removeItem(STORAGE_KEYS.guest);
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function isStrongPassword(password) {
+            return /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && password.length >= 8;
+        }
+
+        function getStrength(password) {
+            let score = 0;
+            if (password.length >= 8) score += 1;
+            if (/[a-z]/.test(password)) score += 1;
+            if (/[A-Z]/.test(password)) score += 1;
+            if (/\d/.test(password)) score += 1;
+            return score;
+        }
+
+        function strengthLabel(score) {
+            if (score <= 1) return 'Weak';
+            if (score === 2) return 'Fair';
+            if (score === 3) return 'Good';
+            return 'Strong';
+        }
+
+        function ensureDemoAdmin() {
+            const users = getUsers();
+            const exists = users.some(user => user.email === 'admin@swordacademy.com');
+            if (exists) return;
+
+            users.push({
+                id: `usr_${Date.now()}`,
+                fullName: 'Academy Admin',
+                email: 'admin@swordacademy.com',
+                passwordHash: hashPassword('Admin1234'),
+                role: 'admin',
+                createdAt: new Date().toISOString(),
+                progress: {}
+            });
+
+            saveUsers(users);
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        function applyTheme() {
+            const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            const icon = document.querySelector('#themeToggle i');
+            if (icon) {
+                icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             }
         }
 
-        // =============================================================
-        // RENDER COURSES
-        // =============================================================
-        function renderCourses(courses) {
-            if (!courses || courses.length === 0) {
-                coursesContainer.innerHTML = `
-                        <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-secondary);background:rgba(255,255,255,0.25);border-radius:var(--radius-lg);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.5);">
-                            <i class="fas fa-filter" style="font-size:2.5rem;color:var(--violet-deep);margin-bottom:12px;display:block;"></i>
-                            <h4 style="color:var(--text-primary);">No courses match this filter</h4>
-                            <p>Try selecting a different category.</p>
-                        </div>
-                    `;
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme') || 'light';
+            const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem(STORAGE_KEYS.theme, nextTheme);
+            applyTheme();
+        }
+
+        function setFieldInvalid(fieldId, invalid, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            field.classList.toggle('invalid', invalid);
+            const errorEl = field.querySelector('.error');
+            if (errorEl && message) {
+                errorEl.textContent = message;
+            }
+        }
+
+        function getProgressMap(user) {
+            return user?.progress || {};
+        }
+
+        function refreshCurrentUser() {
+            const users = getUsers();
+            currentUser = users.find(u => u.id === currentUser?.id) || currentUser;
+            return currentUser;
+        }
+
+        function updateCourseProgress(courseId, payload = {}) {
+            if (!currentUser) return;
+
+            const now = new Date().toISOString();
+            updateUser((users) => users.map((user) => {
+                if (user.id !== currentUser.id) return user;
+
+                const progress = user.progress || {};
+                const previous = progress[courseId] || { percent: 0, completed: false, startedAt: now };
+                const nextPercent = Math.max(previous.percent || 0, payload.percent || 0);
+
+                return {
+                    ...user,
+                    progress: {
+                        ...progress,
+                        [courseId]: {
+                            ...previous,
+                            percent: nextPercent,
+                            completed: Boolean(payload.completed) || previous.completed,
+                            lastAccessedAt: now,
+                            startedAt: previous.startedAt || now
+                        }
+                    }
+                };
+            }));
+
+            refreshCurrentUser();
+        }
+
+        function getVisibleCourses() {
+            if (currentFilter === 'all') return allCourses;
+            return allCourses.filter(course => course.category && course.category === currentFilter);
+        }
+
+        function updateContinueLearning() {
+            if (!currentUser || currentUser.role === 'admin') {
+                continueSection.classList.add('is-hidden');
+                continueGrid.innerHTML = '';
+                continueCount.textContent = '';
                 return;
             }
 
-            let html = '';
-            courses.forEach((course) => {
+            const progress = getProgressMap(currentUser);
+            const inProgress = allCourses.filter(course => {
+                const item = progress[course.id];
+                return item && item.percent > 0 && item.percent < 100;
+            });
+
+            if (!inProgress.length) {
+                continueSection.classList.add('is-hidden');
+                continueGrid.innerHTML = '';
+                continueCount.textContent = '';
+                return;
+            }
+
+            continueSection.classList.remove('is-hidden');
+            continueCount.textContent = `${inProgress.length} in progress`;
+            continueGrid.innerHTML = inProgress.map((course) => {
+                const percent = progress[course.id]?.percent || 0;
+                const href = getCourseHref(course);
+                return `
+                    <a class="continue-card" href="${href}" data-course-id="${course.id}" data-course-link="true">
+                        <strong>${course.title || 'Untitled'}</strong>
+                        <p>${percent}% complete</p>
+                        <div class="progress-bar"><span style="width:${percent}%"></span></div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        function renderAdminPanel() {
+            if (!currentUser || currentUser.role !== 'admin') {
+                adminPanel.classList.remove('show');
+                adminGear.classList.add('is-hidden');
+                return;
+            }
+
+            adminGear.classList.remove('is-hidden');
+            const users = getUsers();
+            const students = users.filter(u => u.role === 'student').length;
+            const instructors = users.filter(u => u.role === 'instructor').length;
+            const admins = users.filter(u => u.role === 'admin').length;
+            const courses = allCourses.length;
+
+            adminStats.innerHTML = `
+                <div class="admin-card"><strong>${users.length}</strong><br/>Registered Users</div>
+                <div class="admin-card"><strong>${students}</strong><br/>Students</div>
+                <div class="admin-card"><strong>${instructors}</strong><br/>Instructors</div>
+                <div class="admin-card"><strong>${admins}</strong><br/>Admins</div>
+                <div class="admin-card"><strong>${courses}</strong><br/>Total Courses</div>
+            `;
+
+            adminUserList.innerHTML = users.map(user => {
+                const completed = Object.values(user.progress || {}).filter(item => item.completed).length;
+                return `<li><strong>${user.fullName}</strong> (${user.role}) - ${user.email} - Completed: ${completed}</li>`;
+            }).join('');
+        }
+
+        function renderCourses(courses) {
+            const isAuthenticated = Boolean(currentUser);
+            const isGuest = localStorage.getItem(STORAGE_KEYS.guest) === 'true';
+
+            if (!courses || courses.length === 0) {
+                coursesContainer.innerHTML = `
+                    <div class="state-panel empty">
+                        <i class="fas fa-filter state-panel-icon empty"></i>
+                        <h4 class="state-panel-title">No courses match this filter</h4>
+                        <p>Try selecting a different category.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (!isAuthenticated) {
+                accessWall.classList.remove('is-hidden');
+                filterBar.classList.add('is-hidden');
+                heroText.textContent = isGuest
+                    ? 'Guest mode active: descriptions are visible, but course content stays locked.'
+                    : 'Login or register to unlock all course modules, progress tracking, and assignment completion tools.';
+            } else {
+                accessWall.classList.add('is-hidden');
+                filterBar.classList.remove('is-hidden');
+                heroText.textContent = `Welcome ${currentUser.fullName}. Your learning vault is unlocked.`;
+            }
+
+            const progressMap = getProgressMap(currentUser);
+
+            coursesContainer.innerHTML = courses.map((course) => {
                 const title = course.title || 'Untitled Scroll';
                 const description = course.description || 'No wisdom shared yet.';
                 const category = course.category || 'General';
@@ -956,64 +1739,461 @@
                 const totalLessons = course.totalLessons || 0;
                 const courseHref = getCourseHref(course);
 
-                const isEnrolled = enrollmentCache[course.id]?.enrolled || false;
-                const progress = enrollmentCache[course.id]?.progress || 0;
-                const isCompleted = enrollmentCache[course.id]?.completed || false;
+                const itemProgress = progressMap[course.id] || { percent: 0, completed: false };
+                const locked = !isAuthenticated;
+                const statusBadge = locked ? '<span class="lock-badge">🔒 Locked</span>' : '<span class="unlock-badge">✅ Unlocked</span>';
+                const cardClass = locked ? 'course-card locked' : 'course-card';
 
-                const enrolledBadgeClass = isEnrolled ? 'show' : '';
-                const progressText = isEnrolled ? (isCompleted ? '✅ Completed' : `${progress}% Complete`) : '';
+                const editUI = currentUser?.role === 'instructor'
+                    ? '<div class="instructor-edit"><i class="fas fa-pen"></i> Edit Course</div>'
+                    : '';
 
-                html += `
-                        <a href="${courseHref}" class="course-card">
-                            <div class="course-thumb">
-                                <i class="fas ${icon}"></i>
-                                <span class="badge">${level}</span>
-                                <span class="lesson-badge">${totalLessons} Lessons</span>
-                                <span class="enrolled-badge ${enrolledBadgeClass}">✓ Enrolled</span>
+                const completeUI = currentUser?.role === 'student'
+                    ? `<button class="complete-btn" type="button" data-complete-course="${course.id}">${itemProgress.completed ? 'Completed' : 'Mark Assignment Complete'}</button>`
+                    : '';
+
+                return `
+                    <a href="${courseHref}" class="${cardClass}" data-course-id="${course.id}" data-course-link="true">
+                        <div class="course-thumb">
+                            <i class="fas ${icon}"></i>
+                            <span class="badge">${level}</span>
+                            <span class="lesson-badge">${totalLessons} Lessons</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="course-body">
+                            <h4>${title}</h4>
+                            <p>${description}</p>
+                            <div class="course-meta">
+                                <span><i class="fas fa-tag"></i> ${category}</span>
+                                <span><i class="fas fa-clock"></i> ${duration}</span>
+                                ${isAuthenticated ? `<span><i class="fas fa-check-circle enrollment-check"></i> ${itemProgress.completed ? 'Completed' : `${itemProgress.percent || 0}%`}</span>` : ''}
                             </div>
-                            <div class="course-body">
-                                <h4>${title}</h4>
-                                <p>${description}</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-tag"></i> ${category}</span>
-                                    <span><i class="fas fa-clock"></i> ${duration}</span>
-                                    ${isEnrolled ? `<span><i class="fas fa-check-circle" style="color:#16a34a;"></i> ${progressText}</span>` : ''}
-                                </div>
-                            </div>
-                        </a>
-                    `;
-            });
+                            ${editUI}
+                            ${completeUI}
+                        </div>
+                    </a>
+                `;
+            }).join('');
 
-            coursesContainer.innerHTML = html;
+            courseCount.textContent = `${courses.length} available courses`;
+            updateContinueLearning();
+            renderAdminPanel();
         }
 
-        // =============================================================
-        // FILTER HANDLING
-        // =============================================================
-        filterButtons.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        function updateAuthUI() {
+            const isAuthenticated = Boolean(currentUser);
 
-                const filter = btn.dataset.filter;
-                currentFilter = filter;
+            loginBtn.classList.toggle('is-hidden', isAuthenticated);
+            registerBtn.classList.toggle('is-hidden', isAuthenticated);
+            dashboardBtn.classList.toggle('is-hidden', !isAuthenticated);
+            profileWrap.classList.toggle('is-hidden', !isAuthenticated);
 
-                if (filter === 'all') {
-                    renderCourses(allCourses);
+            if (isAuthenticated) {
+                profileNameItem.innerHTML = `<i class="fas fa-user"></i> ${currentUser.fullName}`;
+            } else {
+                profileDropdown.classList.remove('show');
+                adminPanel.classList.remove('show');
+                adminGear.classList.add('is-hidden');
+            }
+        }
+
+        function activateSession(user, remember) {
+            const session = {
+                token: generateToken(),
+                userId: user.id,
+                issuedAt: Date.now(),
+                expiresAt: Date.now() + (remember ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000),
+                lastActivityAt: Date.now(),
+                remember
+            };
+
+            saveSession(session);
+            if (remember) {
+                localStorage.setItem(STORAGE_KEYS.rememberEmail, user.email);
+            } else {
+                localStorage.removeItem(STORAGE_KEYS.rememberEmail);
+            }
+        }
+
+        function logout(reason = 'You have been logged out.') {
+            currentUser = null;
+            clearSession();
+            updateAuthUI();
+            renderCourses(getVisibleCourses());
+            continueSection.classList.add('is-hidden');
+            if (reason) showToast(reason, 'error');
+        }
+
+        function touchActivity() {
+            const session = getSession();
+            if (!session || !currentUser) return;
+            session.lastActivityAt = Date.now();
+            saveSession(session);
+        }
+
+        function checkInactivity() {
+            const session = getSession();
+            if (!session) return;
+            if (Date.now() > session.expiresAt) {
+                logout('Session expired. Please login again.');
+                return;
+            }
+            if (Date.now() - session.lastActivityAt > INACTIVITY_LIMIT) {
+                logout('Auto-logout after 30 minutes of inactivity.');
+            }
+        }
+
+        function initInactivityWatch() {
+            ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach((eventName) => {
+                document.addEventListener(eventName, touchActivity, { passive: true });
+            });
+
+            if (inactivityTimer) {
+                clearInterval(inactivityTimer);
+            }
+            inactivityTimer = setInterval(checkInactivity, 60 * 1000);
+        }
+
+        function getUserByIdentifier(identifier) {
+            const users = getUsers();
+            const normalized = identifier.trim().toLowerCase();
+            return users.find(user => user.email.toLowerCase() === normalized || user.fullName.toLowerCase() === normalized);
+        }
+
+        function restoreSession() {
+            const session = getSession();
+            if (!session) {
+                currentUser = null;
+                return;
+            }
+
+            if (Date.now() > session.expiresAt || Date.now() - session.lastActivityAt > INACTIVITY_LIMIT) {
+                clearSession();
+                currentUser = null;
+                return;
+            }
+
+            const user = getUsers().find(entry => entry.id === session.userId);
+            currentUser = user || null;
+        }
+
+        async function loadCourses() {
+            const firebaseConfig = {
+                apiKey: 'AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs',
+                authDomain: 'sword-institute-lms.firebaseapp.com',
+                projectId: 'sword-institute-lms',
+                storageBucket: 'sword-institute-lms.firebasestorage.app',
+                messagingSenderId: '478896038426',
+                appId: '1:478896038426:web:c24c6373edc1cba14a67a3'
+            };
+
+            try {
+                if (window.firebase && !window.firebase.apps.length) {
+                    window.firebase.initializeApp(firebaseConfig);
+                }
+                if (window.firebase && window.firebase.firestore) {
+                    db = window.firebase.firestore();
+                }
+            } catch (_error) {
+                db = null;
+            }
+
+            if (!db) {
+                allCourses = [...curatedCourses];
+                renderCourses(getVisibleCourses());
+                return;
+            }
+
+            try {
+                const snapshot = await db.collection('courses').orderBy('order', 'asc').get();
+                if (snapshot.empty) {
+                    allCourses = [...curatedCourses];
                 } else {
-                    const filtered = allCourses.filter(course =>
-                        course.category && course.category === filter
-                    );
-                    renderCourses(filtered);
+                    allCourses = [];
+                    snapshot.forEach((doc) => {
+                        allCourses.push({ id: doc.id, ...doc.data() });
+                    });
+                    allCourses = mergeCuratedCourses(allCourses, curatedCourses);
+                }
+                renderCourses(getVisibleCourses());
+            } catch (error) {
+                allCourses = [...curatedCourses];
+                renderCourses(getVisibleCourses());
+                showToast(`Course service fallback enabled: ${error.message}`, 'error');
+            }
+        }
+
+        function validateRegistrationForm() {
+            const name = registerName.value.trim();
+            const email = registerEmail.value.trim().toLowerCase();
+            const password = registerPassword.value;
+            const confirm = registerConfirm.value;
+            const users = getUsers();
+
+            let valid = true;
+
+            const duplicate = users.some(user => user.email.toLowerCase() === email);
+            setFieldInvalid('registerNameField', !name, 'Full name is required.');
+            setFieldInvalid('registerEmailField', !isValidEmail(email) || duplicate, duplicate ? 'Email already registered.' : 'Enter a valid email.');
+            setFieldInvalid('registerPasswordField', !isStrongPassword(password), 'Password must be at least 8 chars and include upper, lower, number.');
+            setFieldInvalid('registerConfirmField', !confirm || confirm !== password, 'Passwords do not match.');
+
+            if (!name || !isValidEmail(email) || duplicate || !isStrongPassword(password) || confirm !== password) {
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        function bindRealtimeValidation() {
+            registerName.addEventListener('input', () => {
+                setFieldInvalid('registerNameField', !registerName.value.trim(), 'Full name is required.');
+            });
+
+            registerEmail.addEventListener('input', () => {
+                const email = registerEmail.value.trim().toLowerCase();
+                const duplicate = getUsers().some(user => user.email.toLowerCase() === email);
+                setFieldInvalid('registerEmailField', !isValidEmail(email) || duplicate, duplicate ? 'Email already registered.' : 'Enter a valid email.');
+            });
+
+            registerPassword.addEventListener('input', () => {
+                setFieldInvalid('registerPasswordField', !isStrongPassword(registerPassword.value), 'Password must be at least 8 chars and include upper, lower, number.');
+                if (registerConfirm.value.length > 0) {
+                    setFieldInvalid('registerConfirmField', registerConfirm.value !== registerPassword.value, 'Passwords do not match.');
                 }
             });
-        });
 
-        // =============================================================
-        // INITIALIZE
-        // =============================================================
-        document.addEventListener('DOMContentLoaded', loadCourses);
-        console.log('📚 Course catalogue initialized successfully');
+            registerConfirm.addEventListener('input', () => {
+                setFieldInvalid('registerConfirmField', registerConfirm.value !== registerPassword.value, 'Passwords do not match.');
+            });
+
+            loginIdentifier.addEventListener('input', () => {
+                setFieldInvalid('loginIdentifierField', !loginIdentifier.value.trim(), 'Enter your email or username.');
+                loginError.style.display = 'none';
+            });
+
+            loginPassword.addEventListener('input', () => {
+                setFieldInvalid('loginPasswordField', !loginPassword.value, 'Password is required.');
+                loginError.style.display = 'none';
+            });
+        }
+
+        function bindEvents() {
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            const openLogin = () => openModal('loginModal');
+            const openRegister = () => openModal('registerModal');
+
+            loginBtn.addEventListener('click', openLogin);
+            registerBtn.addEventListener('click', openRegister);
+            document.getElementById('heroLoginBtn').addEventListener('click', openLogin);
+            document.getElementById('heroRegisterBtn').addEventListener('click', openRegister);
+            document.getElementById('wallLoginBtn').addEventListener('click', openLogin);
+            document.getElementById('wallRegisterBtn').addEventListener('click', openRegister);
+
+            document.querySelectorAll('[data-close-modal]').forEach((button) => {
+                button.addEventListener('click', () => closeModal(button.getAttribute('data-close-modal')));
+            });
+
+            document.getElementById('guestModeBtn').addEventListener('click', () => {
+                localStorage.setItem(STORAGE_KEYS.guest, 'true');
+                showToast('Guest mode enabled. Course descriptions unlocked.');
+                renderCourses(getVisibleCourses());
+            });
+
+            document.getElementById('notificationBell').addEventListener('click', () => {
+                notificationCount.textContent = '0';
+                showToast(mockNotifications.join(' | '));
+            });
+
+            profileButton.addEventListener('click', () => {
+                profileDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!profileWrap.contains(event.target)) {
+                    profileDropdown.classList.remove('show');
+                }
+            });
+
+            adminGear.addEventListener('click', () => {
+                adminPanel.classList.toggle('show');
+            });
+
+            logoutBtn.addEventListener('click', () => logout('Logout successful.'));
+
+            registerPassword.addEventListener('input', () => {
+                const score = getStrength(registerPassword.value);
+                strengthText.textContent = `Strength: ${strengthLabel(score)}`;
+                const bars = passwordStrength.querySelectorAll('span');
+                bars.forEach((bar, index) => {
+                    bar.style.background = index < score ? 'linear-gradient(90deg, #8B00FF, #FFD700)' : 'rgba(139, 0, 255, 0.12)';
+                });
+            });
+
+            registerForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                registerSuccess.textContent = '';
+
+                if (!validateRegistrationForm()) return;
+
+                const users = getUsers();
+                const user = {
+                    id: `usr_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+                    fullName: registerName.value.trim(),
+                    email: registerEmail.value.trim().toLowerCase(),
+                    passwordHash: hashPassword(registerPassword.value),
+                    role: registerRole.value,
+                    createdAt: new Date().toISOString(),
+                    progress: {}
+                };
+
+                users.push(user);
+                saveUsers(users);
+
+                registerSuccess.textContent = 'Registration successful. Redirecting to login...';
+                showToast('Registration successful. Please login now.');
+                setTimeout(() => {
+                    closeModal('registerModal');
+                    openModal('loginModal');
+                    loginIdentifier.value = user.email;
+                    loginPassword.value = '';
+                }, 1200);
+            });
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const identifier = loginIdentifier.value.trim();
+                const password = loginPassword.value;
+
+                setFieldInvalid('loginIdentifierField', !identifier, 'Enter your email or username.');
+                setFieldInvalid('loginPasswordField', !password, 'Password is required.');
+
+                if (!identifier || !password) {
+                    return;
+                }
+
+                const user = getUserByIdentifier(identifier);
+                const valid = user && user.passwordHash === hashPassword(password);
+
+                if (!valid) {
+                    loginError.style.display = 'block';
+                    loginError.textContent = 'Invalid credentials. Please try again.';
+                    return;
+                }
+
+                loginError.style.display = 'none';
+                currentUser = user;
+                activateSession(user, rememberMe.checked);
+                localStorage.removeItem(STORAGE_KEYS.guest);
+
+                updateAuthUI();
+                renderCourses(getVisibleCourses());
+                closeModal('loginModal');
+                showToast(`Welcome back, ${user.fullName}!`);
+
+                if (dashboardBtn && dashboardBtn.getAttribute('href')) {
+                    setTimeout(() => {
+                        window.location.href = dashboardBtn.getAttribute('href');
+                    }, 900);
+                }
+            });
+
+            filterButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderCourses(getVisibleCourses());
+                });
+            });
+
+            coursesContainer.addEventListener('click', (event) => {
+                const completeBtn = event.target.closest('[data-complete-course]');
+                if (completeBtn && currentUser?.role === 'student') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const courseId = completeBtn.getAttribute('data-complete-course');
+                    updateCourseProgress(courseId, { percent: 100, completed: true });
+                    renderCourses(getVisibleCourses());
+                    showToast('Assignment marked complete.');
+                    return;
+                }
+
+                const courseLink = event.target.closest('[data-course-link="true"]');
+                if (!courseLink) return;
+
+                if (!currentUser) {
+                    event.preventDefault();
+                    if (localStorage.getItem(STORAGE_KEYS.guest) === 'true') {
+                        showToast('Guest mode cannot open full course content. Please login.', 'error');
+                    } else {
+                        showToast('Please login or register to access this course.', 'error');
+                    }
+                    openModal('loginModal');
+                    return;
+                }
+
+                const courseId = courseLink.getAttribute('data-course-id');
+                updateCourseProgress(courseId, { percent: 20, completed: false });
+            });
+
+            document.getElementById('myCoursesItem').addEventListener('click', (event) => {
+                event.preventDefault();
+                continueSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                profileDropdown.classList.remove('show');
+            });
+
+            document.getElementById('settingsItem').addEventListener('click', (event) => {
+                event.preventDefault();
+                toggleTheme();
+                showToast('Settings updated: theme toggled.');
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeModal('loginModal');
+                    closeModal('registerModal');
+                }
+            });
+        }
+
+        function applyRememberedIdentity() {
+            const remembered = localStorage.getItem(STORAGE_KEYS.rememberEmail);
+            if (remembered) {
+                loginIdentifier.value = remembered;
+                rememberMe.checked = true;
+            }
+        }
+
+        function enforcePdfAuth() {
+            document.querySelectorAll('[data-requires-auth="pdf"], [data-pdf-export], #exportPdfBtn').forEach((node) => {
+                node.addEventListener('click', (event) => {
+                    if (!currentUser) {
+                        event.preventDefault();
+                        showToast('Login required for PDF export.', 'error');
+                        openModal('loginModal');
+                    }
+                });
+            });
+        }
+
+        async function init() {
+            ensureDemoAdmin();
+            applyTheme();
+            restoreSession();
+            updateAuthUI();
+            bindEvents();
+            bindRealtimeValidation();
+            applyRememberedIdentity();
+            initInactivityWatch();
+            await loadCourses();
+            enforcePdfAuth();
+            renderCourses(getVisibleCourses());
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
