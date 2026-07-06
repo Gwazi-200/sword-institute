@@ -1373,6 +1373,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/sharedRoutes.js"></script>
     <script src="js/localAuthGuard.js"></script>
 
     <script>
@@ -1383,8 +1384,6 @@
             guest: 'sword_guest_mode',
             rememberEmail: 'sword_remember_email'
         };
-
-        const INACTIVITY_LIMIT = 30 * 60 * 1000;
 
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
@@ -1428,7 +1427,12 @@
 
         const catalogHelpers = window.catalogHelpers || {};
         const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
-        const getCourseHref = catalogHelpers.getCourseHref || (course => `course-view.html?id=${course.id}`);
+        const getCourseHref = catalogHelpers.getCourseHref || ((course) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path('courseView', { query: { id: course.id } });
+            }
+            return `course-view.html?id=${course.id}`;
+        });
 
         const curatedCourses = [{
             id: 'PSWORD-MGMT-001',
@@ -1452,7 +1456,6 @@
         let currentFilter = 'all';
         let currentUser = null;
         let db = null;
-        let inactivityTimer = null;
 
         function safeParse(json, fallback) {
             try {
@@ -1825,52 +1828,9 @@
             if (reason) showToast(reason, 'error');
         }
 
-        function touchActivity() {
-            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.getState === 'function') {
-                const state = window.SwordLocalAuth.getState();
-                if (!state.isAuthenticated) return;
-            }
-
-            const session = getSession();
-            if (!session || !currentUser) return;
-            session.lastActivityAt = Date.now();
-            saveSession(session);
-        }
-
-        function checkInactivity() {
-            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.getState === 'function') {
-                const state = window.SwordLocalAuth.getState();
-                if (!state.isAuthenticated && (state.reason === 'inactive' || state.reason === 'expired')) {
-                    logout('Auto-logout after 30 minutes of inactivity.');
-                }
-                return;
-            }
-
-            const session = getSession();
-            if (!session) return;
-            if (Date.now() > session.expiresAt) {
-                logout('Session expired. Please login again.');
-                return;
-            }
-            if (Date.now() - session.lastActivityAt > INACTIVITY_LIMIT) {
-                logout('Auto-logout after 30 minutes of inactivity.');
-            }
-        }
-
         function initInactivityWatch() {
-            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.watchActivity === 'function') {
-                window.SwordLocalAuth.watchActivity();
-                return;
-            }
-
-            ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach((eventName) => {
-                document.addEventListener(eventName, touchActivity, { passive: true });
-            });
-
-            if (inactivityTimer) {
-                clearInterval(inactivityTimer);
-            }
-            inactivityTimer = setInterval(checkInactivity, 60 * 1000);
+            if (!window.SwordLocalAuth || typeof window.SwordLocalAuth.watchActivity !== 'function') return;
+            window.SwordLocalAuth.watchActivity();
         }
 
         function getUserByIdentifier(identifier) {
@@ -1880,26 +1840,13 @@
         }
 
         function restoreSession() {
-            if (window.SwordLocalAuth && typeof window.SwordLocalAuth.getState === 'function') {
-                const state = window.SwordLocalAuth.getState();
-                currentUser = state.isAuthenticated ? state.user : null;
-                return;
-            }
-
-            const session = getSession();
-            if (!session) {
+            if (!window.SwordLocalAuth || typeof window.SwordLocalAuth.getState !== 'function') {
                 currentUser = null;
                 return;
             }
 
-            if (Date.now() > session.expiresAt || Date.now() - session.lastActivityAt > INACTIVITY_LIMIT) {
-                clearSession();
-                currentUser = null;
-                return;
-            }
-
-            const user = getUsers().find(entry => entry.id === session.userId);
-            currentUser = user || null;
+            const state = window.SwordLocalAuth.getState();
+            currentUser = state.isAuthenticated ? state.user : null;
         }
 
         async function loadCourses() {

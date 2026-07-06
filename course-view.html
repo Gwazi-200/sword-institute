@@ -945,6 +945,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js">
     </script>
+    <script src="js/sharedRoutes.js"></script>
     <script src="js/localAuthGuard.js"></script>
 
     <script>
@@ -988,6 +989,23 @@
         const paymentActions = document.getElementById('paymentActions');
         const paymentCourseTitle = document.getElementById('paymentCourseTitle');
 
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                courses: 'courses.html',
+                studentLesson: 'student/lesson.html'
+            };
+
+            const base = fallback[name] || 'courses.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
         let courseId = null;
         let currentUser = null;
         let isEnrolled = false;
@@ -1001,9 +1019,9 @@
         accessState = window.SwordLocalAuth
             ? window.SwordLocalAuth.enforce({
                 allowGuest: true,
-                redirectTo: 'courses.html',
+                redirectTo: routePath('courses'),
                 onBlocked: () => {
-                    window.location.href = 'courses.html';
+                    window.location.href = routePath('courses');
                 }
             })
             : accessState;
@@ -1176,7 +1194,7 @@
                         : (lesson.description || '');
 
                     html += `
-                            <a href="${isLocked ? '#' : `lesson.html?courseId=${courseId}&lessonId=${lesson.id}`}" 
+                            <a href="${isLocked ? '#' : routePath('studentLesson', { courseId: courseId, lessonId: lesson.id })}" 
                                style="text-decoration:none;color:var(--text-primary);cursor:${isLocked ? 'default' : 'pointer'};">
                                 <li style="${isLocked ? 'opacity:0.6;' : ''}">
                                     <div class="lesson-info">
@@ -1306,7 +1324,7 @@
         enrollBtn.addEventListener('click', async () => {
             if (!accessState.isAuthenticated) {
                 showToast('Please login to enroll in this course.', 'error');
-                window.location.href = 'courses.html';
+                window.location.href = routePath('courses');
                 return;
             }
 
@@ -1316,7 +1334,7 @@
             }
 
             if (isEnrolled) {
-                window.location.href = `lesson.html?courseId=${courseId}&lessonId=${allLessons[0]?.id || ''}`;
+                window.location.href = routePath('studentLesson', { courseId: courseId, lessonId: allLessons[0]?.id || '' });
                 return;
             }
 

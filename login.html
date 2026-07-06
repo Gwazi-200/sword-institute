@@ -328,7 +328,7 @@
 
         <div class="auth-content">
             <div class="auth-header">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
@@ -378,7 +378,7 @@
             </form>
 
             <div class="auth-footer">
-                Don't have an account? <a href="register.html">Create one</a>
+                Don't have an account? <a href="register.html" data-route="register">Create one</a>
             </div>
         </div>
     </div>
@@ -392,6 +392,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/sharedRoutes.js"></script>
 
     <script>
         // =============================================================
@@ -424,12 +425,38 @@
         const successMessage = document.getElementById('successMessage');
         const successText = document.getElementById('successText');
 
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                dashboard: 'dashboard.html'
+            };
+
+            const base = fallback[name] || 'dashboard.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
+
         // =============================================================
         // Check if user is already logged in (redirect to dashboard)
         // =============================================================
         auth.onAuthStateChanged((user) => {
             if (user) {
-                window.location.href = 'dashboard.html';
+                window.location.href = routePath('dashboard');
             }
         });
 
@@ -465,7 +492,7 @@
 
                 // Redirect after a moment
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = routePath('dashboard');
                 }, 1500);
 
             } catch (error) {

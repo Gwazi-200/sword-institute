@@ -512,14 +512,14 @@
         ============================================================ -->
         <nav>
             <div class="container nav-container">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html">Courses</a></li>
-                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="index.html" data-route="home">Home</a></li>
+                    <li><a href="courses.html" data-route="courses">Courses</a></li>
+                    <li><a href="dashboard.html" class="active" data-route="dashboard">Dashboard</a></li>
                     <li><a href="ai-message.html" target="_blank">AI Mentor</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
@@ -545,7 +545,7 @@
                         <i class="fas fa-sparkles"></i> Welcome back, <strong id="userName">Warrior</strong>
                     </div>
                 </div>
-                <a href="courses.html" class="btn btn-gold">
+                <a href="courses.html" class="btn btn-gold" data-route="courses">
                     <i class="fas fa-plus"></i> Continue Learning
                 </a>
             </div>
@@ -588,7 +588,7 @@
                         </li>
                     </ul>
                     <div class="center-top-12">
-                        <a href="courses.html" class="btn btn-outline-violet btn-sm">
+                        <a href="courses.html" class="btn btn-outline-violet btn-sm" data-route="courses">
                             Browse All Courses <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -651,6 +651,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/sharedRoutes.js"></script>
 
     <!-- ========================================================== -->
     <!-- AI SERVICE                                                -->
@@ -691,6 +692,33 @@
         let currentUserData = null;
         let studentData = null;
 
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                home: 'index.html',
+                login: 'login.html'
+            };
+
+            const base = fallback[name] || 'index.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
+
         // =============================================================
         // 1. AUTH STATE - With Loading Overlay
         // =============================================================
@@ -700,7 +728,7 @@
 
             if (!user) {
                 // Redirect to login
-                window.location.href = 'login.html';
+                window.location.href = routePath('login');
                 return;
             }
 
@@ -720,7 +748,7 @@
             e.preventDefault();
             try {
                 await auth.signOut();
-                window.location.href = 'index.html';
+                window.location.href = routePath('home');
             } catch (error) {
                 console.error('Logout error:', error);
                 showToast('Error logging out. Please try again.', 'error');
@@ -863,7 +891,7 @@
                                 <h4>No activity yet</h4>
                                 <p>Enroll in a course to get started</p>
                             </div>
-                            <span class="time"><a href="courses.html" class="courses-link">Browse →</a></span>
+                            <span class="time"><a href="${routePath('courses')}" class="courses-link">Browse →</a></span>
                         </li>
                     `;
                 return;
@@ -883,7 +911,7 @@
                         <li class="activity-item">
                             <div class="icon"><i class="fas ${icon}"></i></div>
                             <div class="content">
-                                <a href="course-view.html?id=${item.courseId}">
+                                <a href="${routePath('courseView', { id: item.courseId })}">
                                     <h4>${isCompleted ? 'Completed:' : 'Learning:'} ${courseName}</h4>
                                     <p>${status}</p>
                                 </a>
@@ -893,14 +921,14 @@
                                         </div>
                                     ` : ''}
                             </div>
-                            <span class="time"><a href="course-view.html?id=${item.courseId}" class="activity-time-link">${timeLabel}</a></span>
+                            <span class="time"><a href="${routePath('courseView', { id: item.courseId })}" class="activity-time-link">${timeLabel}</a></span>
                         </li>
                     `;
             });
 
             html += `
                     <li class="activity-item activity-center-item">
-                        <a href="courses.html" class="courses-link">
+                        <a href="${routePath('courses')}" class="courses-link">
                             <i class="fas fa-compass"></i> Discover More Courses
                         </a>
                     </li>
