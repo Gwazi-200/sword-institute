@@ -1080,14 +1080,14 @@
         ============================================================ -->
         <nav>
             <div class="container nav-container">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html" class="active">Courses</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="index.html" data-route="home">Home</a></li>
+                    <li><a href="courses.html" class="active" data-route="courses">Courses</a></li>
+                    <li><a href="dashboard.html" data-route="dashboard">Dashboard</a></li>
                     <li><a href="#ai-section">AI Mentor</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
@@ -1103,7 +1103,7 @@
                     </button>
                     <button class="btn btn-outline-violet" id="loginBtn" type="button">Login</button>
                     <button class="btn btn-primary" id="registerBtn" type="button">Register</button>
-                    <a href="dashboard.html" class="btn btn-gold is-hidden" id="dashboardBtn">
+                    <a href="dashboard.html" class="btn btn-gold is-hidden" id="dashboardBtn" data-route="dashboard">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                     <div class="profile-menu-wrap is-hidden" id="profileWrap">
@@ -1427,11 +1427,42 @@
 
         const catalogHelpers = window.catalogHelpers || {};
         const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                home: 'index.html',
+                courses: 'courses.html',
+                dashboard: 'dashboard.html',
+                login: 'login.html',
+                register: 'register.html',
+                courseView: 'course-view.html'
+            };
+
+            const base = fallback[name] || 'courses.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
+
         const getCourseHref = catalogHelpers.getCourseHref || ((course) => {
             if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
                 return window.SwordRoutes.path('courseView', { query: { id: course.id } });
             }
-            return `course-view.html?id=${course.id}`;
+            return routePath('courseView', { id: course.id });
         });
 
         const curatedCourses = [{
