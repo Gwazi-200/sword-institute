@@ -1,11 +1,11 @@
 /**
  * aiService.js
- * Sword Institute LMS - AI Mentor Service
+ * Sword Institute LMS - Professor SWORD Service
  * Handles AI-powered learning recommendations
  */
 
 // =============================================================
-// AI Mentor Service
+// Professor SWORD Service
 // =============================================================
 
 /**
@@ -50,7 +50,7 @@ function buildAIPrompt(studentData) {
     const completedTitles = studentData.completedCourses?.map(c => c.title).join(', ') || 'None';
     
     return `
-You are a wise and compassionate AI Mentor for Sword Institute, a community development and social work learning platform.
+You are Professor SWORD, a wise and compassionate learning companion for Sword Institute, a community development and social work learning platform.
 
 STUDENT DATA:
 - Enrolled Courses: ${enrolledTitles}

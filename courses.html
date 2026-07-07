@@ -912,11 +912,15 @@
         .field .error {
             font-size: 0.78rem;
             color: var(--text-muted);
+            display: none;
         }
 
         .field .error {
             color: #dc2626;
-            display: none;
+        }
+
+        .field:focus-within .hint {
+            display: block;
         }
 
         .field.invalid .error {
@@ -1080,15 +1084,15 @@
         ============================================================ -->
         <nav>
             <div class="container nav-container">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html" class="active">Courses</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="#ai-section">AI Mentor</a></li>
+                    <li><a href="index.html" data-route="home">Home</a></li>
+                    <li><a href="courses.html" class="active" data-route="courses">Courses</a></li>
+                    <li><a href="dashboard.html" data-route="dashboard">Dashboard</a></li>
+                    <li><a href="ai-message.html">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
                     <button class="nav-utility" id="themeToggle" type="button" title="Toggle Theme">
@@ -1103,7 +1107,7 @@
                     </button>
                     <button class="btn btn-outline-violet" id="loginBtn" type="button">Login</button>
                     <button class="btn btn-primary" id="registerBtn" type="button">Register</button>
-                    <a href="dashboard.html" class="btn btn-gold is-hidden" id="dashboardBtn">
+                    <a href="dashboard.html" class="btn btn-gold is-hidden" id="dashboardBtn" data-route="dashboard">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                     <div class="profile-menu-wrap is-hidden" id="profileWrap">
@@ -1111,9 +1115,9 @@
                             <i class="fas fa-user-circle"></i>
                         </button>
                         <div class="profile-dropdown" id="profileDropdown">
-                            <a href="#" id="profileNameItem"><i class="fas fa-user"></i> My Profile</a>
-                            <a href="#" id="myCoursesItem"><i class="fas fa-layer-group"></i> My Courses</a>
-                            <a href="#" id="settingsItem"><i class="fas fa-sliders"></i> Settings</a>
+                                <a href="profile.html" id="profileNameItem"><i class="fas fa-user"></i> My Profile</a>
+                                <a href="courses.html" id="myCoursesItem"><i class="fas fa-layer-group"></i> My Courses</a>
+                                <a href="settings.html" id="settingsItem"><i class="fas fa-sliders"></i> Settings</a>
                             <button type="button" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
                         </div>
                     </div>
@@ -1187,13 +1191,6 @@
                     <button class="filter-btn" data-filter="Language">Language</button>
                 </div>
             </div>
-
-            <section class="admin-panel" id="adminPanel">
-                <h3><i class="fas fa-user-shield"></i> Hidden Admin Panel</h3>
-                <p>Live user list and course statistics.</p>
-                <div class="admin-grid" id="adminStats"></div>
-                <ul class="admin-users" id="adminUserList"></ul>
-            </section>
 
             <!-- Courses Grid -->
             <div class="courses-grid" id="coursesContainer">
@@ -1280,7 +1277,7 @@
             <p class="footer-note">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <span class="footer-heart" aria-hidden="true">♥</span> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -1373,6 +1370,8 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/sharedRoutes.js"></script>
+    <script src="js/localAuthGuard.js"></script>
 
     <script>
         const STORAGE_KEYS = {
@@ -1382,8 +1381,6 @@
             guest: 'sword_guest_mode',
             rememberEmail: 'sword_remember_email'
         };
-
-        const INACTIVITY_LIMIT = 30 * 60 * 1000;
 
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
@@ -1399,10 +1396,6 @@
         const profileButton = document.getElementById('profileButton');
         const profileDropdown = document.getElementById('profileDropdown');
         const profileNameItem = document.getElementById('profileNameItem');
-        const adminGear = document.getElementById('adminGear');
-        const adminPanel = document.getElementById('adminPanel');
-        const adminStats = document.getElementById('adminStats');
-        const adminUserList = document.getElementById('adminUserList');
         const continueSection = document.getElementById('continueSection');
         const continueGrid = document.getElementById('continueGrid');
         const continueCount = document.getElementById('continueCount');
@@ -1427,7 +1420,43 @@
 
         const catalogHelpers = window.catalogHelpers || {};
         const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
-        const getCourseHref = catalogHelpers.getCourseHref || (course => `course-view.html?id=${course.id}`);
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                home: 'index.html',
+                courses: 'courses.html',
+                dashboard: 'dashboard.html',
+                login: 'login.html',
+                register: 'register.html',
+                courseView: 'course-view.html'
+            };
+
+            const base = fallback[name] || 'courses.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
+
+        const getCourseHref = catalogHelpers.getCourseHref || ((course) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path('courseView', { query: { id: course.id } });
+            }
+            return routePath('courseView', { id: course.id });
+        });
 
         const curatedCourses = [{
             id: 'PSWORD-MGMT-001',
@@ -1442,16 +1471,17 @@
         }];
 
         const mockNotifications = [
-            'A new AI mentorship challenge is available.',
+            'A new Professor SWORD mentorship challenge is available.',
             'Your module progress was synced successfully.',
             'Weekly live session starts tomorrow at 18:00.'
         ];
+
+        notificationCount.textContent = String(mockNotifications.length);
 
         let allCourses = [];
         let currentFilter = 'all';
         let currentUser = null;
         let db = null;
-        let inactivityTimer = null;
 
         function safeParse(json, fallback) {
             try {
@@ -1532,24 +1562,6 @@
             if (score === 2) return 'Fair';
             if (score === 3) return 'Good';
             return 'Strong';
-        }
-
-        function ensureDemoAdmin() {
-            const users = getUsers();
-            const exists = users.some(user => user.email === 'admin@swordacademy.com');
-            if (exists) return;
-
-            users.push({
-                id: `usr_${Date.now()}`,
-                fullName: 'Academy Admin',
-                email: 'admin@swordacademy.com',
-                passwordHash: hashPassword('Admin1234'),
-                role: 'admin',
-                createdAt: new Date().toISOString(),
-                progress: {}
-            });
-
-            saveUsers(users);
         }
 
         function openModal(modalId) {
@@ -1672,34 +1684,6 @@
             }).join('');
         }
 
-        function renderAdminPanel() {
-            if (!currentUser || currentUser.role !== 'admin') {
-                adminPanel.classList.remove('show');
-                adminGear.classList.add('is-hidden');
-                return;
-            }
-
-            adminGear.classList.remove('is-hidden');
-            const users = getUsers();
-            const students = users.filter(u => u.role === 'student').length;
-            const instructors = users.filter(u => u.role === 'instructor').length;
-            const admins = users.filter(u => u.role === 'admin').length;
-            const courses = allCourses.length;
-
-            adminStats.innerHTML = `
-                <div class="admin-card"><strong>${users.length}</strong><br/>Registered Users</div>
-                <div class="admin-card"><strong>${students}</strong><br/>Students</div>
-                <div class="admin-card"><strong>${instructors}</strong><br/>Instructors</div>
-                <div class="admin-card"><strong>${admins}</strong><br/>Admins</div>
-                <div class="admin-card"><strong>${courses}</strong><br/>Total Courses</div>
-            `;
-
-            adminUserList.innerHTML = users.map(user => {
-                const completed = Object.values(user.progress || {}).filter(item => item.completed).length;
-                return `<li><strong>${user.fullName}</strong> (${user.role}) - ${user.email} - Completed: ${completed}</li>`;
-            }).join('');
-        }
-
         function renderCourses(courses) {
             const isAuthenticated = Boolean(currentUser);
             const isGuest = localStorage.getItem(STORAGE_KEYS.guest) === 'true';
@@ -1777,7 +1761,6 @@
 
             courseCount.textContent = `${courses.length} available courses`;
             updateContinueLearning();
-            renderAdminPanel();
         }
 
         function updateAuthUI() {
@@ -1792,8 +1775,6 @@
                 profileNameItem.innerHTML = `<i class="fas fa-user"></i> ${currentUser.fullName}`;
             } else {
                 profileDropdown.classList.remove('show');
-                adminPanel.classList.remove('show');
-                adminGear.classList.add('is-hidden');
             }
         }
 
@@ -1824,34 +1805,9 @@
             if (reason) showToast(reason, 'error');
         }
 
-        function touchActivity() {
-            const session = getSession();
-            if (!session || !currentUser) return;
-            session.lastActivityAt = Date.now();
-            saveSession(session);
-        }
-
-        function checkInactivity() {
-            const session = getSession();
-            if (!session) return;
-            if (Date.now() > session.expiresAt) {
-                logout('Session expired. Please login again.');
-                return;
-            }
-            if (Date.now() - session.lastActivityAt > INACTIVITY_LIMIT) {
-                logout('Auto-logout after 30 minutes of inactivity.');
-            }
-        }
-
         function initInactivityWatch() {
-            ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach((eventName) => {
-                document.addEventListener(eventName, touchActivity, { passive: true });
-            });
-
-            if (inactivityTimer) {
-                clearInterval(inactivityTimer);
-            }
-            inactivityTimer = setInterval(checkInactivity, 60 * 1000);
+            if (!window.SwordLocalAuth || typeof window.SwordLocalAuth.watchActivity !== 'function') return;
+            window.SwordLocalAuth.watchActivity();
         }
 
         function getUserByIdentifier(identifier) {
@@ -1861,20 +1817,13 @@
         }
 
         function restoreSession() {
-            const session = getSession();
-            if (!session) {
+            if (!window.SwordLocalAuth || typeof window.SwordLocalAuth.getState !== 'function') {
                 currentUser = null;
                 return;
             }
 
-            if (Date.now() > session.expiresAt || Date.now() - session.lastActivityAt > INACTIVITY_LIMIT) {
-                clearSession();
-                currentUser = null;
-                return;
-            }
-
-            const user = getUsers().find(entry => entry.id === session.userId);
-            currentUser = user || null;
+            const state = window.SwordLocalAuth.getState();
+            currentUser = state.isAuthenticated ? state.user : null;
         }
 
         async function loadCourses() {
@@ -2014,10 +1963,6 @@
                 if (!profileWrap.contains(event.target)) {
                     profileDropdown.classList.remove('show');
                 }
-            });
-
-            adminGear.addEventListener('click', () => {
-                adminPanel.classList.toggle('show');
             });
 
             logoutBtn.addEventListener('click', () => logout('Logout successful.'));
@@ -2180,7 +2125,6 @@
         }
 
         async function init() {
-            ensureDemoAdmin();
             applyTheme();
             restoreSession();
             updateAuthUI();

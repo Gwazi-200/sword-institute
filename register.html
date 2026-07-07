@@ -304,6 +304,11 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 4px;
+            display: none;
+        }
+
+        .form-group:focus-within .password-hint {
+            display: block;
         }
 
         @media (max-width: 480px) {
@@ -325,7 +330,7 @@
 
         <div class="auth-content">
             <div class="auth-header">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
@@ -380,7 +385,7 @@
                 <div class="form-options">
                     <label>
                         <input type="checkbox" id="termsCheck" required />
-                        I agree to the <a href="#">Terms of Service</a>
+                        I agree to the <a href="terms.html">Terms of Service</a>
                     </label>
                 </div>
 
@@ -391,11 +396,12 @@
             </form>
 
             <div class="auth-footer">
-                Already have an account? <a href="login.html">Sign in</a>
+                Already have an account? <a href="login.html" data-route="login">Sign in</a>
             </div>
         </div>
     </div>
 
+    <script src="js/sharedRoutes.js"></script>
     <script type="module">
         import {
             auth,
@@ -403,6 +409,32 @@
             updateProfile,
             onAuthStateChanged
         } from './firebase.js';
+
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                dashboard: 'dashboard.html'
+            };
+
+            const base = fallback[name] || 'dashboard.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
 
         const form = document.getElementById('registerForm');
         const nameInput = document.getElementById('displayName');
@@ -421,7 +453,7 @@
         // Check if user is already logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                window.location.href = 'dashboard.html';
+                window.location.href = routePath('dashboard');
             }
         });
 
@@ -477,7 +509,7 @@
 
                 // Redirect after a moment
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = routePath('dashboard');
                 }, 1500);
 
             } catch (error) {

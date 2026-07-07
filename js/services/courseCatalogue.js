@@ -374,7 +374,7 @@ function hideError() {
 }
 
 // ============================================================
-// AI MENTOR MESSAGES
+// PROFESSOR SWORD MESSAGES
 // ============================================================
 const mentorMessages = [
     "Small progress every day creates remarkable results.",

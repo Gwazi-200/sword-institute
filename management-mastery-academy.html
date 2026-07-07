@@ -476,6 +476,24 @@
       color: #64748b;
     }
 
+    .access-notice {
+      margin-bottom: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px dashed #93c5fd;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .guest-locked {
+      filter: blur(3px) saturate(0.7);
+      pointer-events: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(2px); }
       to { opacity: 1; transform: translateY(0); }
@@ -490,6 +508,7 @@
 <body>
 
 <div class="container">
+  <div class="access-notice" id="accessNotice"></div>
   <div class="dashboard-header">
     <div class="brand-group">
       <div class="sword-avatar">⚔️</div>
@@ -516,6 +535,7 @@
   <div class="course-grid" id="masteryGrid"></div>
 </div>
 
+<script src="js/localAuthGuard.js"></script>
 <script>
   /**
    * Application State Ledger
@@ -528,6 +548,42 @@
     completedModules: new Set(),
     activeTTSUtterance: null
   };
+
+  let localAccessState = { isAuthenticated: false, isGuest: false, user: null };
+
+  function applyPageAccess() {
+    localAccessState = window.SwordLocalAuth
+      ? window.SwordLocalAuth.enforce({
+          allowGuest: true,
+          redirectTo: 'courses.html',
+          onBlocked: () => {
+            window.location.href = 'courses.html';
+          }
+        })
+      : localAccessState;
+
+    const notice = document.getElementById('accessNotice');
+    const grid = document.getElementById('masteryGrid');
+    const pdfBtn = document.getElementById('pdfBtn');
+
+    if (!notice || !grid || !pdfBtn) return;
+
+    if (localAccessState.isAuthenticated) {
+      notice.style.display = 'none';
+      grid.classList.remove('guest-locked');
+      return;
+    }
+
+    if (localAccessState.isGuest) {
+      notice.style.display = 'block';
+      notice.innerHTML = '<strong>Guest Preview Active.</strong> Module interaction and transcript export are disabled until login.';
+      grid.classList.add('guest-locked');
+      pdfBtn.setAttribute('disabled', 'disabled');
+      return;
+    }
+
+    window.location.href = 'courses.html';
+  }
 
   const coreDataset = [
     {
@@ -1316,6 +1372,11 @@
    * Generates formatted verified summaries via window.jspdf
    */
   function generateAcademicPDF() {
+    if (!localAccessState.isAuthenticated) {
+      window.alert('Please login to export your transcript.');
+      return;
+    }
+
     if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
       console.error('PDF generation library not loaded');
       return;
@@ -1432,7 +1493,10 @@
   }
 
   // Self-Starting Deployment Lifecycle Action Loop
-  window.addEventListener("DOMContentLoaded", initializeAcademyPlatform);
+  window.addEventListener("DOMContentLoaded", () => {
+    applyPageAccess();
+    initializeAcademyPlatform();
+  });
 </script>
 
 </body>

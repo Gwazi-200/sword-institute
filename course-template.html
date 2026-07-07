@@ -761,7 +761,7 @@
                     <li><a href="/index.html">Home</a></li>
                     <li><a href="/courses.html">Courses</a></li>
                     <li><a href="/dashboard.html">Dashboard</a></li>
-                    <li><a href="/ai-message.html" target="_blank">AI Mentor</a></li>
+                    <li><a href="/ai-message.html" target="_blank">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
                     <a href="/login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
@@ -838,10 +838,10 @@
                         </span>
                         <div style="flex:1;"></div>
                         <div class="lesson-navigation">
-                            <a href="#" class="btn btn-outline-violet" id="prevBtn" style="display:none;">
+                            <a href="/courses.html" class="btn btn-outline-violet" id="prevBtn" style="display:none;">
                                 <i class="fas fa-arrow-left"></i> Previous
                             </a>
-                            <a href="#" class="btn btn-primary" id="nextBtn" style="display:none;">
+                            <a href="/courses.html" class="btn btn-primary" id="nextBtn" style="display:none;">
                                 Next <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -858,7 +858,7 @@
                         </ul>
                     </div>
 
-                    <!-- AI Mentor -->
+                    <!-- Professor SWORD -->
                     <div class="ai-sidebar">
                         <div class="ai-header">
                             <i class="fas fa-robot"></i>
@@ -870,7 +870,7 @@
                         </div>
                         <div class="ai-input-row">
                             <input type="text" id="aiInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendAIQuestion()" />
-                            <button onclick="sendAIQuestion()"><i class="fas fa-paper-plane"></i></button>
+                            <button onclick="sendAIQuestion()" title="Send AI question" aria-label="Send AI question"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -884,7 +884,7 @@
             <p style="margin-bottom:6px;">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart" style="color:var(--violet-deep);"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <span class="footer-heart" aria-hidden="true">♥</span> &amp; Divine Light.</p>
         </div>
     </div>
 

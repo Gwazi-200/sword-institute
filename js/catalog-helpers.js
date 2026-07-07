@@ -46,6 +46,11 @@
     }
 
     var id = normalizeId(course && course.id);
+
+    if (typeof window !== 'undefined' && window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+      return window.SwordRoutes.path('courseView', { query: { id: id } });
+    }
+
     return 'course-view.html?id=' + encodeURIComponent(id);
   }
 

@@ -547,20 +547,20 @@
         ============================================================ -->
         <nav>
             <div class="container nav-container">
-                <a href="index.html" class="logo">
+                <a href="../index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html">Courses</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="#ai-section">AI Mentor</a></li>
+                    <li><a href="../index.html" data-route="home">Home</a></li>
+                    <li><a href="../courses.html" data-route="courses">Courses</a></li>
+                    <li><a href="../dashboard.html" data-route="dashboard">Dashboard</a></li>
+                    <li><a href="../ai-message.html">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
-                    <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
-                    <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardBtn">
+                    <a href="../login.html" class="btn btn-outline-violet" id="loginBtn" data-route="login">Login</a>
+                    <a href="../register.html" class="btn btn-primary" id="registerBtn" data-route="register">Register</a>
+                    <a href="../dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardBtn" data-route="dashboard">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -574,8 +574,8 @@
             <!-- Header -->
             <div class="lesson-header">
                 <div class="breadcrumb">
-                    <a href="courses.html">Courses</a> &gt;
-                    <a href="#" id="courseLink">Course</a> &gt;
+                    <a href="../courses.html" data-route="courses">Courses</a> &gt;
+                    <a href="../courses.html" id="courseLink">Course</a> &gt;
                     <span id="lessonTitle">Loading...</span>
                 </div>
                 <h1 id="lessonHeading">Loading...</h1>
@@ -635,10 +635,10 @@
                         </span>
                         <div class="lesson-actions-spacer"></div>
                         <div class="lesson-navigation">
-                            <a href="#" class="btn btn-outline-violet nav-hidden" id="prevBtn">
+                            <a href="../courses.html" class="btn btn-outline-violet nav-hidden" id="prevBtn">
                                 <i class="fas fa-arrow-left"></i> Previous
                             </a>
-                            <a href="#" class="btn btn-primary nav-hidden" id="nextBtn">
+                            <a href="../courses.html" class="btn btn-primary nav-hidden" id="nextBtn">
                                 Next <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -657,11 +657,11 @@
                         </ul>
                     </div>
 
-                    <!-- AI Mentor -->
+                    <!-- Professor SWORD -->
                     <div class="ai-sidebar" id="ai-section">
                         <div class="ai-header">
                             <i class="fas fa-robot"></i>
-                            <h4>AI Learning Assistant</h4>
+                            <h4>Professor SWORD</h4>
                         </div>
                         <div class="ai-message" id="aiMessage">
                             <i class="fas fa-sparkles sparkles-gold"></i>
@@ -683,7 +683,7 @@
             <p class="footer-top">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <span class="footer-heart" aria-hidden="true">♥</span> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -696,6 +696,8 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="../js/sharedRoutes.js"></script>
+    <script src="../js/localAuthGuard.js"></script>
 
     <script src="../ai-service.js"></script>
 
@@ -741,6 +743,37 @@
         const lessonTime = document.getElementById('lessonTime');
         const lessonXp = document.getElementById('lessonXp');
 
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { fromStudent: true, query: query || null });
+            }
+
+            const fallback = {
+                courses: '../courses.html',
+                login: '../login.html',
+                register: '../register.html',
+                dashboard: '../dashboard.html',
+                courseView: '../course-view.html',
+                studentLesson: 'lesson.html'
+            };
+
+            const base = fallback[name] || '../courses.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
+
         let currentUser = null;
         let courseId = null;
         let lessonId = null;
@@ -748,6 +781,20 @@
         let currentLessonIndex = -1;
         let isCompleted = false;
         let enrollmentId = null;
+
+        const accessState = window.SwordLocalAuth
+            ? window.SwordLocalAuth.enforce({
+                allowGuest: false,
+                redirectTo: routePath('courses'),
+                onBlocked: () => {
+                    window.location.href = routePath('courses');
+                }
+            })
+            : { isAuthenticated: false, isGuest: false, user: null };
+
+        if (!accessState.isAuthenticated) {
+            window.location.href = routePath('courses');
+        }
 
         // =============================================================
         // AUTH STATE
@@ -781,7 +828,7 @@
                             <i class="fas fa-exclamation-triangle icon-large-block icon-gold"></i>
                             <h3 class="text-primary">Missing Course or Lesson ID</h3>
                             <p>Please go back to the course page and select a lesson.</p>
-                            <a href="courses.html" class="btn btn-primary mt-16">Browse Courses</a>
+                            <a href="${routePath('courses')}" class="btn btn-primary mt-16">Browse Courses</a>
                         </div>
                     `;
                 return;
@@ -794,7 +841,7 @@
                     const data = courseDoc.data();
                     courseName.textContent = data.title || 'Course';
                     courseLink.textContent = data.title || 'Course';
-                    courseLink.href = `course-view.html?id=${courseId}`;
+                    courseLink.href = routePath('courseView', { id: courseId });
                 }
 
                 // Load lesson data
@@ -810,7 +857,7 @@
                                 <i class="fas fa-book-open icon-large-block icon-violet"></i>
                                 <h3 class="text-primary">Lesson Not Found</h3>
                                 <p>This lesson may have been removed or is unavailable.</p>
-                                <a href="courses.html" class="btn btn-primary mt-16">Browse Courses</a>
+                                <a href="${routePath('courses')}" class="btn btn-primary mt-16">Browse Courses</a>
                             </div>
                         `;
                     return;
@@ -837,7 +884,7 @@
                             <i class="fas fa-triangle-exclamation icon-large-block icon-gold"></i>
                             <h3 class="text-primary">Failed to Load Lesson</h3>
                             <p id="lesson-load-error-message" class="error-text-small"></p>
-                            <a href="courses.html" class="btn btn-primary mt-16">Back to Courses</a>
+                            <a href="${routePath('courses')}" class="btn btn-primary mt-16">Back to Courses</a>
                         </div>
                     `;
                 const errorMessageEl = document.getElementById('lesson-load-error-message');
@@ -900,12 +947,12 @@
                 // Setup navigation buttons
                 if (currentLessonIndex > 0) {
                     prevBtn.style.display = 'inline-flex';
-                    prevBtn.href = `lesson.html?courseId=${courseId}&lessonId=${allLessons[currentLessonIndex - 1].id}`;
+                    prevBtn.href = routePath('studentLesson', { courseId: courseId, lessonId: allLessons[currentLessonIndex - 1].id });
                 }
 
                 if (currentLessonIndex < allLessons.length - 1) {
                     nextBtn.style.display = 'inline-flex';
-                    nextBtn.href = `lesson.html?courseId=${courseId}&lessonId=${allLessons[currentLessonIndex + 1].id}`;
+                    nextBtn.href = routePath('studentLesson', { courseId: courseId, lessonId: allLessons[currentLessonIndex + 1].id });
                 }
 
             } catch (error) {
@@ -1048,7 +1095,7 @@
         // NAVIGATE TO LESSON
         // =============================================================
         function navigateToLesson(lessonId) {
-            window.location.href = `lesson.html?courseId=${courseId}&lessonId=${lessonId}`;
+            window.location.href = routePath('studentLesson', { courseId: courseId, lessonId: lessonId });
         }
 
         // =============================================================

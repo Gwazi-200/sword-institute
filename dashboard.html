@@ -231,7 +231,7 @@
             color: var(--violet-deep);
         }
 
-        /* ----- AI Mentor Panel ----- */
+        /* ----- Professor SWORD Panel ----- */
         .ai-panel {
             padding: 28px;
             background: rgba(255, 255, 255, 0.35);
@@ -512,20 +512,20 @@
         ============================================================ -->
         <nav>
             <div class="container nav-container">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" data-route="home">
                     <i class="fas fa-shield-halved"></i>
                     Sword<span>Institute</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="courses.html">Courses</a></li>
-                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
-                    <li><a href="ai-message.html" target="_blank">AI Mentor</a></li>
+                    <li><a href="index.html" data-route="home">Home</a></li>
+                    <li><a href="courses.html" data-route="courses">Courses</a></li>
+                    <li><a href="dashboard.html" class="active" data-route="dashboard">Dashboard</a></li>
+                    <li><a href="ai-message.html" target="_blank">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
-                    <a href="#" class="btn btn-outline-violet" id="logoutBtn">
+                    <button type="button" class="btn btn-outline-violet" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -545,7 +545,7 @@
                         <i class="fas fa-sparkles"></i> Welcome back, <strong id="userName">Warrior</strong>
                     </div>
                 </div>
-                <a href="courses.html" class="btn btn-gold">
+                <a href="courses.html" class="btn btn-gold" data-route="courses">
                     <i class="fas fa-plus"></i> Continue Learning
                 </a>
             </div>
@@ -588,28 +588,28 @@
                         </li>
                     </ul>
                     <div class="center-top-12">
-                        <a href="courses.html" class="btn btn-outline-violet btn-sm">
+                        <a href="courses.html" class="btn btn-outline-violet btn-sm" data-route="courses">
                             Browse All Courses <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Right: AI Mentor Panel -->
+                <!-- Right: Professor SWORD Panel -->
                 <div class="ai-panel">
                     <div class="ai-header">
                         <i class="fas fa-robot"></i>
                         <h3>
-                            AI Mentor
-                            <small>Your Spiritual Guide</small>
+                                Professor SWORD
+                                <small>Your Spiritual Guide</small>
                         </h3>
                         <button class="chat-btn" onclick="openAIChat()">
-                            <i class="fas fa-comment"></i> Chat
+                                <i class="fas fa-comment"></i> Chat with Professor SWORD
                         </button>
                     </div>
                     <div class="ai-message" id="aiMessage">
                         <i class="fas fa-sparkles"></i>
                         <div class="ai-text" id="aiAdvice">
-                            <div class="greeting">Loading personalized guidance...</div>
+                                <div class="greeting">Loading Professor SWORD guidance...</div>
                             <div class="message"></div>
                             <div class="recommendation"></div>
                             <div class="tip"></div>
@@ -618,13 +618,13 @@
                     </div>
                     <div class="ai-quick-actions">
                         <button class="btn btn-primary" onclick="openAIChat()">
-                            <i class="fas fa-comment"></i> Chat with AI Mentor
+                                <i class="fas fa-comment"></i> Chat with Professor SWORD
                         </button>
                         <button class="btn btn-gold" onclick="getAIRecommendation()">
-                            <i class="fas fa-lightbulb"></i> Get Recommendation
+                                <i class="fas fa-lightbulb"></i> Get Professor SWORD Recommendation
                         </button>
                         <button class="btn btn-outline-violet" onclick="getStudyTip()">
-                            <i class="fas fa-lightbulb"></i> Get Study Tip
+                                <i class="fas fa-lightbulb"></i> Get Professor SWORD Study Tip
                         </button>
                     </div>
                 </div>
@@ -638,7 +638,7 @@
             <p class="footer-top">
                 <i class="fas fa-shield-halved"></i> Sword Institute &bull; <span class="gold">Sacred Code</span> &bull; Digital Alchemy
             </p>
-            <p>&copy; 2026 All rights reserved. Forged with <i class="fas fa-heart footer-heart"></i> &amp; Divine Light.</p>
+            <p>&copy; 2026 All rights reserved. Forged with <span class="footer-heart" aria-hidden="true">♥</span> &amp; Divine Light.</p>
         </div>
     </div>
 
@@ -651,6 +651,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/sharedRoutes.js"></script>
 
     <!-- ========================================================== -->
     <!-- AI SERVICE                                                -->
@@ -691,26 +692,56 @@
         let currentUserData = null;
         let studentData = null;
 
+        const routePath = (name, query) => {
+            if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
+                return window.SwordRoutes.path(name, { query: query || null });
+            }
+
+            const fallback = {
+                home: 'index.html',
+                login: 'login.html'
+            };
+
+            const base = fallback[name] || 'index.html';
+            if (!query) return base;
+
+            const params = new URLSearchParams(query).toString();
+            return params ? `${base}?${params}` : base;
+        };
+
+        function applyRouteAnchors() {
+            document.querySelectorAll('[data-route]').forEach((node) => {
+                const routeName = node.getAttribute('data-route');
+                if (!routeName) return;
+                node.setAttribute('href', routePath(routeName));
+            });
+        }
+
+        applyRouteAnchors();
+
         // =============================================================
         // 1. AUTH STATE - With Loading Overlay
         // =============================================================
         auth.onAuthStateChanged(async (user) => {
-            // Hide loading overlay once we have an answer
-            loadingOverlay.classList.add('hidden');
-
             if (!user) {
                 // Redirect to login
-                window.location.href = 'login.html';
+                window.location.href = routePath('login');
                 return;
             }
 
             // User is authenticated
-            const name = user.displayName || user.email || 'Warrior';
+            const name = await resolveUserName(user);
             userName.textContent = name;
             currentUserData = user;
 
-            await loadUserDashboard(user.uid);
-            await loadAIRecommendations(user.uid);
+            setDashboardLoadingState();
+
+            try {
+                await loadUserDashboard(user.uid);
+                await loadAIRecommendations(user.uid);
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
         });
 
         // =============================================================
@@ -720,7 +751,7 @@
             e.preventDefault();
             try {
                 await auth.signOut();
-                window.location.href = 'index.html';
+                window.location.href = routePath('home');
             } catch (error) {
                 console.error('Logout error:', error);
                 showToast('Error logging out. Please try again.', 'error');
@@ -743,6 +774,48 @@
                 toast.style.animation = 'slideOut 0.3s ease forwards';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        function setDashboardLoadingState() {
+            enrolledCoursesEl.textContent = 'Loading';
+            completedCoursesEl.textContent = 'Loading';
+            xpPointsEl.innerHTML = 'Loading <span class="gold">XP</span>';
+            streakDaysEl.innerHTML = 'Loading <span class="gold">🔥</span>';
+
+            activityList.innerHTML = `
+                    <li class="activity-item">
+                        <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
+                        <div class="content">
+                            <h4>Loading your courses...</h4>
+                            <p>Getting your progress ready</p>
+                        </div>
+                        <span class="time">—</span>
+                    </li>
+                `;
+
+            aiAdvice.innerHTML = `
+                    <div class="greeting">Loading Professor SWORD guidance...</div>
+                    <div class="message"></div>
+                    <div class="recommendation"></div>
+                    <div class="tip"></div>
+                    <div class="motivation"></div>
+                `;
+        }
+
+        async function resolveUserName(user) {
+            const fallbackName = user.displayName || (user.email ? user.email.split('@')[0] : '') || 'Warrior';
+
+            try {
+                const profileDoc = await db.collection('users').doc(user.uid).get();
+                if (profileDoc.exists) {
+                    const profile = profileDoc.data() || {};
+                    return profile.fullName || profile.displayName || profile.name || fallbackName;
+                }
+            } catch (error) {
+                console.warn('Could not load profile name:', error);
+            }
+
+            return fallbackName;
         }
 
         // =============================================================
@@ -793,15 +866,26 @@
                     enrolledCourses: enrollments,
                     completedCourses: enrollments.filter(e => e.completed),
                     totalXp: totalXp,
-                    userName: currentUserData.displayName || currentUserData.email || 'Warrior',
+                    userName: userName.textContent || currentUserData.displayName || currentUserData.email || 'Warrior',
                     courseDetails: courseDetails
                 };
 
             } catch (error) {
                 console.warn('Could not load dashboard data:', error);
-                enrolledCoursesEl.textContent = '—';
-                completedCoursesEl.textContent = '—';
-                xpPointsEl.innerHTML = '— <span class="gold">XP</span>';
+                enrolledCoursesEl.textContent = '0';
+                completedCoursesEl.textContent = '0';
+                xpPointsEl.innerHTML = '0 <span class="gold">XP</span>';
+                streakDaysEl.innerHTML = '0 <span class="gold">🔥</span>';
+                activityList.innerHTML = `
+                        <li class="activity-item">
+                            <div class="icon"><i class="fas fa-triangle-exclamation"></i></div>
+                            <div class="content">
+                                <h4>Unable to load your stats</h4>
+                                <p>Try refreshing the page.</p>
+                            </div>
+                            <span class="time"><a href="courses.html" class="courses-link">Browse courses</a></span>
+                        </li>
+                    `;
             }
         }
 
@@ -863,7 +947,7 @@
                                 <h4>No activity yet</h4>
                                 <p>Enroll in a course to get started</p>
                             </div>
-                            <span class="time"><a href="courses.html" class="courses-link">Browse →</a></span>
+                            <span class="time"><a href="${routePath('courses')}" class="courses-link">Browse →</a></span>
                         </li>
                     `;
                 return;
@@ -883,7 +967,7 @@
                         <li class="activity-item">
                             <div class="icon"><i class="fas ${icon}"></i></div>
                             <div class="content">
-                                <a href="course-view.html?id=${item.courseId}">
+                                <a href="${routePath('courseView', { id: item.courseId })}">
                                     <h4>${isCompleted ? 'Completed:' : 'Learning:'} ${courseName}</h4>
                                     <p>${status}</p>
                                 </a>
@@ -893,14 +977,14 @@
                                         </div>
                                     ` : ''}
                             </div>
-                            <span class="time"><a href="course-view.html?id=${item.courseId}" class="activity-time-link">${timeLabel}</a></span>
+                            <span class="time"><a href="${routePath('courseView', { id: item.courseId })}" class="activity-time-link">${timeLabel}</a></span>
                         </li>
                     `;
             });
 
             html += `
                     <li class="activity-item activity-center-item">
-                        <a href="courses.html" class="courses-link">
+                        <a href="${routePath('courses')}" class="courses-link">
                             <i class="fas fa-compass"></i> Discover More Courses
                         </a>
                     </li>
@@ -915,7 +999,7 @@
         }
 
         // =============================================================
-        // 8. AI MENTOR FUNCTIONS
+        // 8. PROFESSOR SWORD FUNCTIONS
         // =============================================================
 
         // Initialize AI Service
@@ -957,7 +1041,7 @@
                     });
                 }
                 // Update the AI message panel
-                aiAdvice.innerHTML = `<div class="greeting">🤖 AI Mentor</div><div class="message">${reply}</div>`;
+                aiAdvice.innerHTML = `<div class="greeting">🤖 Professor SWORD</div><div class="message">${reply}</div>`;
             } catch (error) {
                 console.error('AI Error:', error);
                 aiAdvice.innerHTML = `<div class="greeting">❌ Error</div><div class="message">Sorry, I had trouble processing your question. Please try again.</div>`;
@@ -987,7 +1071,7 @@
                 return "🌟 You're doing amazing! Every lesson you complete brings you closer to becoming a Digital Warrior for Social Good. Keep going! 💪";
             }
             if (lower.includes('hello') || lower.includes('hi')) {
-                return "👋 Hello! I'm your AI Mentor. How can I help you with your learning today?";
+                return "👋 Hello! I'm Professor SWORD. How can I help you with your learning today?";
             }
             if (lower.includes('progress')) {
                 return "📊 Check your dashboard to see your progress! You can view your enrolled courses, completed lessons, and XP there.";
@@ -1200,8 +1284,8 @@
                     const aiAdvice = document.getElementById('aiAdvice');
                     if (aiAdvice) {
                         aiAdvice.innerHTML = `
-                                <div class="greeting">${data.greeting || 'Hello, Warrior! 🌟'}</div>
-                                <div class="message">${data.message || 'Welcome to your AI Mentor!'}</div>
+                                        <div class="greeting">${data.greeting || 'Hello, Warrior! 🌟'}</div>
+                                        <div class="message">${data.message || 'Welcome to Professor SWORD!'}</div>
                                 ${data.recommendation ? `<div class="recommendation">🎯 ${data.recommendation}</div>` : ''}
                                 ${data.tip ? `<div class="tip">💡 ${data.tip}</div>` : ''}
                                 ${data.motivation ? `<div class="motivation">✨ ${data.motivation}</div>` : ''}
@@ -1210,6 +1294,10 @@
                 }
             } catch (error) {
                 console.error('Error loading AI recommendations:', error);
+                aiAdvice.innerHTML = `
+                        <div class="greeting">Professor SWORD</div>
+                        <div class="message">Unable to load personalized guidance right now. Try refreshing the page.</div>
+                    `;
             }
         }
 

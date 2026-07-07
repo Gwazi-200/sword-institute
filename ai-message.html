@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Mentor Chat</title>
+    <title>Professor SWORD Chat</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -360,10 +360,10 @@
                     <i class="fas fa-robot"></i>
                 </div>
                 <div class="info">
-                    <h3>AI Mentor</h3>
+                    <h3>Professor SWORD</h3>
                     <p>Your 24/7 Learning Companion</p>
                 </div>
-                <button class="close-btn" onclick="closeChat()">
+                <button class="close-btn" onclick="closeChat()" title="Close chat" aria-label="Close chat">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -391,7 +391,7 @@
             
             <!-- Input -->
             <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="Ask your AI Mentor anything..." onkeypress="if(event.key==='Enter') sendMessage()" />
+                <input type="text" id="chatInput" placeholder="Ask Professor SWORD anything..." onkeypress="if(event.key==='Enter') sendMessage()" />
                 <button onclick="sendMessage()" id="sendBtn">
                     <i class="fas fa-paper-plane"></i> Send
                 </button>
@@ -457,7 +457,7 @@
                     await addWelcomeMessage();
                 } else {
                     // Show login prompt
-                    addMessage('ai', 'Hello! 👋 Please log in to chat with your AI Mentor.');
+                    addMessage('ai', 'Hello! 👋 Please log in to chat with Professor SWORD.');
                 }
             });
         }
@@ -526,7 +526,7 @@
             if (result.success) {
                 const data = result.recommendations;
                 const greeting = data.greeting || `Hello, ${studentData.userName}! 🌟`;
-                const message = data.message || 'Welcome to your AI Mentor! How can I help you today?';
+                const message = data.message || 'Welcome to Professor SWORD! How can I help you today?';
                 const recommendation = data.recommendation || '';
                 const tip = data.tip || '';
                 const motivation = data.motivation || '';
@@ -538,7 +538,7 @@
                 
                 addMessage('ai', fullMessage);
             } else {
-                addMessage('ai', `Hello ${studentData.userName}! 🌟\n\nWelcome to your AI Mentor! I'm here to help you with your learning journey. How can I assist you today?`);
+                addMessage('ai', `Hello ${studentData.userName}! 🌟\n\nWelcome to Professor SWORD! I'm here to help you with your learning journey. How can I assist you today?`);
             }
         }
         
@@ -741,7 +741,7 @@
         // Initialize
         // =============================================================
         initChat();
-        console.log('🤖 AI Mentor chat initialized successfully');
+        console.log('🤖 Professor SWORD chat initialized successfully');
     </script>
 </body>
 </html>
