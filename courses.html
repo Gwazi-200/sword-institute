@@ -1254,7 +1254,7 @@
                     <small class="error">Password is required.</small>
                 </div>
                 <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
-                <button class="btn btn-primary" type="submit"><i class="fas fa-right-to-bracket"></i> Login</button>
+                <button class="btn btn-primary" type="submit" id="loginSubmitBtn"><i class="fas fa-right-to-bracket"></i> Login</button>
                 <small id="loginError" class="error">Invalid credentials.</small>
             </form>
         </div>
@@ -1302,7 +1302,7 @@
                         <option value="instructor">Instructor</option>
                     </select>
                 </div>
-                <button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i> Register</button>
+                <button class="btn btn-primary" type="submit" id="registerSubmitBtn"><i class="fas fa-user-plus"></i> Register</button>
                 <small id="registerSuccess" class="hint"></small>
             </form>
         </div>
@@ -1360,12 +1360,14 @@
         const loginPassword = document.getElementById('loginPassword');
         const rememberMe = document.getElementById('rememberMe');
         const loginError = document.getElementById('loginError');
+        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
         const registerName = document.getElementById('registerName');
         const registerEmail = document.getElementById('registerEmail');
         const registerPassword = document.getElementById('registerPassword');
         const registerConfirm = document.getElementById('registerConfirm');
         const registerRole = document.getElementById('registerRole');
         const registerSuccess = document.getElementById('registerSuccess');
+        const registerSubmitBtn = document.getElementById('registerSubmitBtn');
         const passwordStrength = document.getElementById('passwordStrength');
         const strengthText = document.getElementById('strengthText');
         const passwordPolicy = window.SwordPasswordPolicy || {
@@ -1450,6 +1452,16 @@
         let currentFilter = 'all';
         let currentUser = null;
         let db = null;
+        let firebaseAuth = null;
+
+        const firebaseConfig = {
+            apiKey: 'AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs',
+            authDomain: 'sword-institute-lms.firebaseapp.com',
+            projectId: 'sword-institute-lms',
+            storageBucket: 'sword-institute-lms.firebasestorage.app',
+            messagingSenderId: '478896038426',
+            appId: '1:478896038426:web:c24c6373edc1cba14a67a3'
+        };
 
         function safeParse(json, fallback) {
             try {
@@ -1510,6 +1522,86 @@
 
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function setButtonLoading(button, isLoading, loadingLabel) {
+            if (!button) return;
+
+            if (isLoading) {
+                if (!button.dataset.originalHtml) {
+                    button.dataset.originalHtml = button.innerHTML;
+                }
+                button.disabled = true;
+                button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${loadingLabel}`;
+                return;
+            }
+
+            if (button.dataset.originalHtml) {
+                button.innerHTML = button.dataset.originalHtml;
+            }
+            button.disabled = false;
+        }
+
+        function ensureFirebaseAuth() {
+            if (!window.firebase || typeof window.firebase.auth !== 'function') return null;
+
+            if (!window.firebase.apps.length) {
+                window.firebase.initializeApp(firebaseConfig);
+            }
+
+            if (!firebaseAuth) {
+                firebaseAuth = window.firebase.auth();
+            }
+
+            return firebaseAuth;
+        }
+
+        function upsertLocalUserFromFirebase(firebaseUser, fallbackRole = 'student') {
+            if (!firebaseUser || !firebaseUser.uid) return null;
+
+            const users = getUsers();
+            const email = String(firebaseUser.email || '').toLowerCase();
+            const displayName = firebaseUser.displayName || (email ? email.split('@')[0] : 'Warrior');
+
+            let user = users.find((entry) => entry.id === firebaseUser.uid);
+            if (!user && email) {
+                user = users.find((entry) => String(entry.email || '').toLowerCase() === email);
+            }
+
+            if (user) {
+                user.id = firebaseUser.uid;
+                user.fullName = user.fullName || displayName;
+                user.email = email || user.email;
+                user.role = user.role || fallbackRole;
+                user.progress = user.progress || {};
+            } else {
+                user = {
+                    id: firebaseUser.uid,
+                    fullName: displayName,
+                    email,
+                    role: fallbackRole,
+                    createdAt: new Date().toISOString(),
+                    progress: {}
+                };
+                users.push(user);
+            }
+
+            saveUsers(users);
+            return user;
+        }
+
+        function resolveLoginEmail(identifier) {
+            const normalized = String(identifier || '').trim().toLowerCase();
+            if (!normalized) return '';
+            if (isValidEmail(normalized)) return normalized;
+
+            const user = getUsers().find((entry) => {
+                const fullName = String(entry.fullName || '').toLowerCase();
+                const email = String(entry.email || '').toLowerCase();
+                return fullName === normalized || email === normalized;
+            });
+
+            return user?.email ? String(user.email).toLowerCase() : '';
         }
 
         function passwordResult(password) {
@@ -1778,20 +1870,31 @@
             currentUser = state.isAuthenticated ? state.user : null;
         }
 
-        async function loadCourses() {
-            const firebaseConfig = {
-                apiKey: 'AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs',
-                authDomain: 'sword-institute-lms.firebaseapp.com',
-                projectId: 'sword-institute-lms',
-                storageBucket: 'sword-institute-lms.firebasestorage.app',
-                messagingSenderId: '478896038426',
-                appId: '1:478896038426:web:c24c6373edc1cba14a67a3'
-            };
+        function bindFirebaseAuthState() {
+            const auth = ensureFirebaseAuth();
+            if (!auth) return;
 
-            try {
-                if (window.firebase && !window.firebase.apps.length) {
-                    window.firebase.initializeApp(firebaseConfig);
+            auth.onAuthStateChanged((firebaseUser) => {
+                if (!firebaseUser) return;
+
+                const mappedUser = upsertLocalUserFromFirebase(firebaseUser);
+                if (!mappedUser) return;
+
+                currentUser = mappedUser;
+
+                const existingSession = getSession();
+                if (!existingSession || existingSession.userId !== mappedUser.id) {
+                    activateSession(mappedUser, existingSession?.remember || false);
                 }
+
+                updateAuthUI();
+                renderCourses(getVisibleCourses());
+            });
+        }
+
+        async function loadCourses() {
+            try {
+                ensureFirebaseAuth();
                 if (window.firebase && window.firebase.firestore) {
                     db = window.firebase.firestore();
                 }
@@ -1970,30 +2073,121 @@
                     return;
                 }
 
-                const user = getUserByIdentifier(identifier);
-                const valid = user && user.passwordHash === hashPassword(password);
-
-                if (!valid) {
+                const auth = ensureFirebaseAuth();
+                if (!auth) {
                     loginError.style.display = 'block';
-                    loginError.textContent = 'Invalid credentials. Please try again.';
+                    loginError.textContent = 'Authentication service is unavailable. Please refresh and try again.';
+                    showToast('Authentication service is unavailable.', 'error');
                     return;
                 }
 
-                loginError.style.display = 'none';
-                currentUser = user;
-                activateSession(user, rememberMe.checked);
-                localStorage.removeItem(STORAGE_KEYS.guest);
-
-                updateAuthUI();
-                renderCourses(getVisibleCourses());
-                closeModal('loginModal');
-                showToast(`Welcome back, ${user.fullName}!`);
-
-                if (dashboardBtn && dashboardBtn.getAttribute('href')) {
-                    setTimeout(() => {
-                        window.location.href = dashboardBtn.getAttribute('href');
-                    }, 900);
+                const loginEmail = resolveLoginEmail(identifier);
+                if (!loginEmail) {
+                    loginError.style.display = 'block';
+                    loginError.textContent = 'Use your registered email address to login.';
+                    return;
                 }
+
+                setButtonLoading(loginSubmitBtn, true, 'Logging in...');
+                loginError.style.display = 'none';
+
+                auth.signInWithEmailAndPassword(loginEmail, password).then((credential) => {
+                    const firebaseUser = credential?.user;
+                    const mappedUser = upsertLocalUserFromFirebase(firebaseUser);
+                    if (!mappedUser) {
+                        throw new Error('Unable to establish local session state.');
+                    }
+
+                    currentUser = mappedUser;
+                    activateSession(mappedUser, rememberMe.checked);
+                    localStorage.removeItem(STORAGE_KEYS.guest);
+
+                    updateAuthUI();
+                    renderCourses(getVisibleCourses());
+                    closeModal('loginModal');
+                    showToast(`Welcome back, ${mappedUser.fullName}!`);
+
+                    setTimeout(() => {
+                        window.location.href = routePath('dashboard');
+                    }, 400);
+                }).catch((error) => {
+                    console.error('Courses modal login failed:', error);
+                    loginError.style.display = 'block';
+                    if (error && error.code === 'auth/wrong-password') {
+                        loginError.textContent = 'Incorrect password. Please try again.';
+                    } else if (error && error.code === 'auth/user-not-found') {
+                        loginError.textContent = 'No account found for this email.';
+                    } else if (error && error.code === 'auth/invalid-email') {
+                        loginError.textContent = 'Please enter a valid email address.';
+                    } else if (error && error.code === 'auth/network-request-failed') {
+                        loginError.textContent = 'Network error. Check your connection and try again.';
+                    } else {
+                        loginError.textContent = 'Unable to login right now. Please try again.';
+                    }
+                }).finally(() => {
+                    setButtonLoading(loginSubmitBtn, false, 'Logging in...');
+                });
+            });
+
+            registerForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                registerSuccess.textContent = '';
+
+                if (!validateRegistrationForm()) return;
+
+                const auth = ensureFirebaseAuth();
+                if (!auth) {
+                    registerSuccess.textContent = '';
+                    showToast('Authentication service is unavailable. Please refresh and try again.', 'error');
+                    return;
+                }
+
+                const email = registerEmail.value.trim().toLowerCase();
+                const password = registerPassword.value;
+                const fullName = registerName.value.trim();
+
+                setButtonLoading(registerSubmitBtn, true, 'Registering...');
+
+                auth.createUserWithEmailAndPassword(email, password).then((credential) => {
+                    const firebaseUser = credential?.user;
+                    if (firebaseUser && typeof firebaseUser.updateProfile === 'function') {
+                        return firebaseUser.updateProfile({ displayName: fullName }).then(() => firebaseUser);
+                    }
+                    return firebaseUser;
+                }).then((firebaseUser) => {
+                    const mappedUser = upsertLocalUserFromFirebase(firebaseUser, registerRole.value || 'student');
+                    if (!mappedUser) {
+                        throw new Error('Unable to establish local session state.');
+                    }
+
+                    currentUser = mappedUser;
+                    activateSession(mappedUser, true);
+                    localStorage.removeItem(STORAGE_KEYS.guest);
+
+                    updateAuthUI();
+                    renderCourses(getVisibleCourses());
+                    closeModal('registerModal');
+                    registerSuccess.textContent = 'Registration successful. Redirecting...';
+                    showToast('Registration successful. Welcome to Sword Institute!');
+
+                    setTimeout(() => {
+                        window.location.href = routePath('dashboard');
+                    }, 500);
+                }).catch((error) => {
+                    console.error('Courses modal registration failed:', error);
+                    if (error && error.code === 'auth/email-already-in-use') {
+                        showToast('This email is already registered. Please login instead.', 'error');
+                    } else if (error && error.code === 'auth/invalid-email') {
+                        showToast('Please enter a valid email address.', 'error');
+                    } else if (error && error.code === 'auth/weak-password') {
+                        showToast(passwordPolicy.errorText, 'error');
+                    } else {
+                        showToast('Unable to register right now. Please try again.', 'error');
+                    }
+                }).finally(() => {
+                    setButtonLoading(registerSubmitBtn, false, 'Registering...');
+                });
             });
 
             filterButtons.forEach((btn) => {
@@ -2081,6 +2275,7 @@
             updateAuthUI();
             bindEvents();
             bindRealtimeValidation();
+            bindFirebaseAuthState();
             applyRememberedIdentity();
             initInactivityWatch();
             await loadCourses();
