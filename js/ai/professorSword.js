@@ -11,16 +11,26 @@ function initProfessorSwordWorkspace() {
     const teachingContainer = document.getElementById('teachingModesToolbar');
     const quickContainer = document.getElementById('quickActionsToolbar');
 
-    renderToolbar(teachingContainer, TeachingModes, 'Teaching Mode');
-    renderToolbar(quickContainer, QuickActions, 'Quick Action');
+    // Homepage concierge UI may remove these toolbar containers.
+    // Guard to avoid breaking full student teaching interface.
+    if (teachingContainer) {
+        renderToolbar(teachingContainer, TeachingModes, 'Teaching Mode');
+    }
 
-    setupToolbarDelegation(panel, {
-        onPromptSelected: (promptId) => {
-            const template = PromptTemplates[promptId] || '';
-            if (!template) return;
-            insertPromptIntoInput(template, '#aiInput');
-        }
-    });
+    if (quickContainer) {
+        renderToolbar(quickContainer, QuickActions, 'Quick Action');
+    }
+
+    // Only enable toolbar prompt delegation when toolbars exist.
+    if (teachingContainer || quickContainer) {
+        setupToolbarDelegation(panel, {
+            onPromptSelected: (promptId) => {
+                const template = PromptTemplates[promptId] || '';
+                if (!template) return;
+                insertPromptIntoInput(template, '#aiInput');
+            }
+        });
+    }
 
     ensureConversationHasStarter('#aiMessages');
 }

@@ -115,25 +115,196 @@
             gap: 14px;
         }
 
-        /* ----- Professor SWORD Card (Interactive) ----- */
+        /* ==========================================================
+           Homepage Concierge (Compact Professor SWORD)
+           ========================================================== */
         .ai-mentor-card {
-            padding: 28px;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.35);
-            -webkit-backdrop-filter: blur(24px) saturate(200%);
-            backdrop-filter: blur(24px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: var(--radius-xl);
-            box-shadow: 0 12px 40px -10px rgba(139, 0, 255, 0.06);
-            transition: all 0.4s ease;
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 22px;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 240ms ease, border-color 240ms ease, transform 240ms ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ai-mentor-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .ai-concierge-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 6px 2px;
+        }
+
+        .ai-concierge-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .ai-concierge-title .mentor-title-block {
+            gap: 2px;
+        }
+
+        .ai-concierge-title .mentor-name {
+            font-size: 1.02rem;
+        }
+
+        .ai-concierge-title .mentor-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .ai-header .ai-status,
+        .ai-concierge-header .ai-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #16a34a;
+            background: rgba(22, 163, 74, 0.08);
+            border: 1px solid rgba(22, 163, 74, 0.22);
+            border-radius: 999px;
+            padding: 4px 10px;
+            white-space: nowrap;
+        }
+
+        /* Messages area hidden by default on the concierge UI */
+        .ai-concierge-body {
+            padding: 0 6px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 500px;
         }
-        .ai-mentor-card:hover {
-            border-color: var(--violet-glow);
-            box-shadow: 0 20px 50px -12px rgba(139, 0, 255, 0.12);
+
+        .ai-concierge-welcome {
+            font-size: 0.95rem;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            padding: 2px 2px 4px;
         }
+
+        .ai-messages {
+            width: 100%;
+            max-height: 160px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .ai-messages[hidden] {
+            display: none;
+        }
+
+        .assistant-composer.ai-concierge-composer {
+            padding: 8px 6px 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 2px;
+        }
+
+        .ai-concierge-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 16px;
+            padding: 8px 8px;
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            backdrop-filter: blur(14px) saturate(160%);
+        }
+
+        .ai-concierge-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+        }
+
+        .ai-concierge-input input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .ai-mic-btn,
+        .ai-send-btn {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+        }
+
+        .ai-send-btn {
+            width: 44px;
+            height: 38px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .ai-send-btn:active {
+            transform: scale(0.98);
+        }
+
+        .ai-mic-btn[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ai-suggestion-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding: 0 2px;
+        }
+
+        .ai-chip {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.35);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-radius: 999px;
+            padding: 7px 11px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+        }
+
+        .ai-chip:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ai-chip:focus-visible {
+            outline: 2px solid rgba(91, 92, 235, 0.35);
+            outline-offset: 2px;
+        }
+
 
 
         .ai-messages {
@@ -809,57 +980,54 @@
                 </div>
 
                 <!-- ==========================================================
-                PROFESSOR SWORD CARD - Interactive
+                PROFESSOR SWORD (Homepage Concierge - Lightweight AI)
                 ========================================================== -->
-                <div class="ai-mentor-card" id="aiMentorCard">
-                    <header class="ai-header" aria-label="Professor SWORD header">
-                        <h3>
+                <div class="ai-mentor-card ai-concierge" id="aiMentorCard" aria-label="Professor SWORD homepage concierge">
+                    <header class="ai-concierge-header" aria-label="Professor SWORD header">
+                        <h3 class="ai-concierge-title">
                             <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
                             <span class="mentor-title-block">
                                 <span class="mentor-name">Professor SWORD</span>
-                                <small class="mentor-subtitle">Your Personal Learning Assistant</small>
+                                <small class="mentor-subtitle">Ask me anything about Sword Institute</small>
                             </span>
                         </h3>
-                        <div class="ai-status">
-                            <span class="dot"></span>
+
+                        <div class="ai-status" aria-live="polite">
+                            <span class="dot" aria-hidden="true"></span>
                             <span id="aiStatusText">Online</span>
                         </div>
                     </header>
 
-                    <main class="assistant-panel-main" aria-label="Professor SWORD interaction panel">
-                        <div class="assistant-divider" aria-hidden="true"></div>
+                    <main class="ai-concierge-body" aria-label="Conversation">
+                        <div class="ai-concierge-welcome" id="aiWelcome" role="status">
+                            Hello! I'm Professor SWORD.
+                            <br />
+                            I can answer your questions about our courses, admissions, certificates, learning experience and more.
+                            <br />
+                            How can I help you today?
+                        </div>
 
-                        <section class="assistant-section" aria-label="Teaching modes">
-                            <h4 class="assistant-section-title">Teaching Modes</h4>
-                            <div class="teaching-modes-toolbar" id="teachingModesToolbar" data-toolbar-container="teaching" aria-label="Teaching modes toolbar"></div>
-                        </section>
-
-                        <div class="assistant-divider" aria-hidden="true"></div>
-
-                        <section class="assistant-section" aria-label="Quick actions">
-                            <h4 class="assistant-section-title">Quick Actions</h4>
-                            <div class="quick-actions-toolbar" id="quickActionsToolbar" data-toolbar-container="quick" aria-label="Quick actions toolbar"></div>
-                        </section>
-
-                        <div class="assistant-divider" aria-hidden="true"></div>
-
-                        <section class="assistant-conversation-section" aria-label="Conversation">
-                            <h4 class="assistant-section-title conversation-title">Conversation</h4>
-
-                            <!-- Chat Messages -->
-                            <div class="ai-messages" id="aiMessages">
-                                <!-- Welcome message will be added by JavaScript -->
-                            </div>
-                        </section>
+                        <div class="ai-messages" id="aiMessages" aria-label="AI messages" hidden></div>
                     </main>
 
-                    <footer class="assistant-composer" aria-label="Conversation composer">
-                        <!-- Input -->
-                        <div class="ai-input-row">
-                        <input type="text" id="aiInput" placeholder="Ask me anything..." />
-                        <button id="aiSendBtn" type="button">
-                            <i class="fas fa-paper-plane"></i> Ask
-                        </button>
+                    <footer class="assistant-composer ai-concierge-composer" aria-label="Conversation composer">
+                        <div class="ai-concierge-input" role="group" aria-label="Ask Professor SWORD">
+                            <button type="button" class="ai-mic-btn" aria-label="Voice input (not available)" disabled>
+                                <i class="fas fa-microphone" aria-hidden="true"></i>
+                            </button>
+
+                            <input type="text" id="aiInput" placeholder="Ask Professor SWORD anything..." aria-label="Ask Professor SWORD anything" />
+
+                            <button id="aiSendBtn" type="button" class="ai-send-btn" aria-label="Send message">
+                                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        <div class="ai-suggestion-chips" aria-label="Suggested questions">
+                            <button type="button" class="ai-chip" data-chip="Explore Courses">📚 Explore Courses</button>
+                            <button type="button" class="ai-chip" data-chip="Admission Requirements">🎓 Admission Requirements</button>
+                            <button type="button" class="ai-chip" data-chip="Course Fees">💳 Course Fees</button>
+                            <button type="button" class="ai-chip" data-chip="Certificates">📜 Certificates</button>
                         </div>
                     </footer>
                 </div>
@@ -1137,15 +1305,11 @@
         ];
 
         function setMentorOnline(isOnline) {
-            const statusEl = document.querySelector('.ai-status');
             const statusTextEl = document.getElementById('aiStatusText');
-            if (!statusEl) return;
-            statusEl.style.color = isOnline ? '#16a34a' : '#dc2626';
-            if (statusTextEl) {
-                statusTextEl.textContent = isOnline ? 'Online' : 'Fallback Mode';
-            } else {
-                statusEl.innerHTML = `<span class="dot"></span><span id="aiStatusText">${isOnline ? 'Online' : 'Fallback Mode'}</span>`;
-            }
+            if (!statusTextEl) return;
+            statusTextEl.textContent = isOnline ? 'Online' : 'Fallback Mode';
+            const root = document.documentElement;
+            root.dataset.aiOnline = isOnline ? 'true' : 'false';
         }
 
         // =============================================================
@@ -1305,8 +1469,23 @@
             }
 
             if (aiMessages && aiMessages.children.length === 0) {
-                addAIMessage('ai', 'Welcome to Sword Institute. I can help you choose courses, understand learning paths, and plan your next steps.');
+                // Welcome is rendered in markup; keep messages area empty until user asks.
+                aiMessages.hidden = false;
+                aiMessages.innerHTML = '';
             }
+
+            // Suggested chips: insert question into input (do NOT auto-send).
+            const chips = document.querySelectorAll('.ai-chip[data-chip]');
+            chips.forEach((chipBtn) => {
+                if (chipBtn.dataset.bound === 'true') return;
+                chipBtn.dataset.bound = 'true';
+                chipBtn.addEventListener('click', () => {
+                    const text = chipBtn.getAttribute('data-chip') || '';
+                    if (!text) return;
+                    aiInput.value = text;
+                    aiInput.focus();
+                });
+            });
         });
     </script>
 
