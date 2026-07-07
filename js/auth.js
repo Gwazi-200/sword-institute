@@ -226,7 +226,7 @@ export async function registerUser(userData, options = { sendVerification: true 
             throw new Error('The email address is invalid. Please enter a correct email.');
         }
         if (error.code === 'auth/weak-password') {
-            throw new Error('Your password is too weak. Please choose a stronger password.');
+            throw new Error('Password does not meet policy.');
         }
         if (error.code === 'auth/invalid-api-key') {
             throw new Error('Firebase configuration is invalid. Check your API key and project settings in firebase-config.js.');

@@ -57,8 +57,8 @@
             width: 100%;
             max-width: 440px;
             background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(180%);
             border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 60px -15px rgba(139, 0, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
@@ -158,8 +158,8 @@
             border-radius: var(--radius-md);
             border: 1px solid rgba(139, 0, 255, 0.1);
             background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
@@ -369,9 +369,9 @@
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6" />
+                        <input type="password" id="password" placeholder="Create a password" required autocomplete="new-password" minlength="8" />
                     </div>
-                    <div class="password-hint">Must be at least 6 characters long</div>
+                    <div class="password-hint">At least 8 chars with uppercase, lowercase, and number.</div>
                 </div>
 
                 <div class="form-group">
@@ -391,7 +391,7 @@
 
                 <button type="submit" class="btn btn-primary" id="registerBtn">
                     <span id="registerText">Create Account</span>
-                    <span id="registerSpinner" style="display:none;"><span class="spinner"></span></span>
+                    <span id="registerSpinner" hidden><span class="spinner"></span></span>
                 </button>
             </form>
 
@@ -402,6 +402,7 @@
     </div>
 
     <script src="js/sharedRoutes.js"></script>
+    <script src="js/password-policy.js"></script>
     <script type="module">
         import {
             auth,
@@ -435,6 +436,22 @@
         }
 
         applyRouteAnchors();
+
+        const passwordPolicy = window.SwordPasswordPolicy || {
+            hintText: 'At least 8 chars with uppercase, lowercase, and number.',
+            errorText: 'Password does not meet policy.',
+            validatePassword(password) {
+                const value = String(password || '');
+                const checks = {
+                    length: value.length >= 8,
+                    uppercase: /[A-Z]/.test(value),
+                    lowercase: /[a-z]/.test(value),
+                    number: /\d/.test(value)
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                return { valid: score === 4, score, label: score <= 1 ? 'Weak' : score === 2 ? 'Fair' : score === 3 ? 'Good' : 'Strong', checks };
+            }
+        };
 
         const form = document.getElementById('registerForm');
         const nameInput = document.getElementById('displayName');
@@ -475,8 +492,10 @@
                 return;
             }
 
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters long.');
+            const passwordResult = passwordPolicy.validatePassword(password);
+
+            if (!passwordResult.valid) {
+                showError(passwordPolicy.errorText);
                 return;
             }
 
@@ -519,7 +538,7 @@
                 } else if (error.code === 'auth/invalid-email') {
                     message = 'Please enter a valid email address.';
                 } else if (error.code === 'auth/weak-password') {
-                    message = 'Password is too weak. Please use at least 6 characters.';
+                    message = passwordPolicy.errorText;
                 } else if (error.code === 'auth/operation-not-allowed') {
                     message = 'Email/password accounts are not enabled.';
                 }

@@ -293,7 +293,7 @@ form.addEventListener('submit', async (e) => {
         const friendlyMessage =
             error.code === 'auth/email-already-in-use' ? 'That email is already registered.' :
             error.code === 'auth/invalid-email' ? 'Please enter a valid email address.' :
-            error.code === 'auth/weak-password' ? 'Password is too weak. Please choose a stronger password.' :
+            error.code === 'auth/weak-password' ? 'Password does not meet policy.' :
             error.message || 'Registration failed. Please try again.';
 
         showToast(friendlyMessage, 'error');

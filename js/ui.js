@@ -247,7 +247,8 @@ export function updatePasswordMeter(password, config = {}) {
     }
     
     const strength = calculatePasswordStrength(password);
-    const percentage = (strength.score / 5) * 100;
+    const requirementCount = Object.keys(strength.checks || {}).length || 4;
+    const percentage = (strength.score / requirementCount) * 100;
     
     if (fillElement) {
         fillElement.style.width = `${percentage}%`;
@@ -256,8 +257,7 @@ export function updatePasswordMeter(password, config = {}) {
             1: '#DC2626',
             2: '#F59E0B',
             3: '#F59E0B',
-            4: '#16A34A',
-            5: '#16A34A'
+            4: '#16A34A'
         };
         fillElement.style.backgroundColor = colors[strength.score] || '#DC2626';
     }
@@ -269,8 +269,7 @@ export function updatePasswordMeter(password, config = {}) {
             1: '#DC2626',
             2: '#F59E0B',
             3: '#F59E0B',
-            4: '#16A34A',
-            5: '#16A34A'
+            4: '#16A34A'
         };
         textElement.style.color = colors[strength.score] || '#DC2626';
     }
