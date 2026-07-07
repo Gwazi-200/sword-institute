@@ -406,10 +406,10 @@
     <script type="module">
         import {
             auth,
-            createUserWithEmailAndPassword,
-            updateProfile,
             onAuthStateChanged
         } from './firebase.js';
+        import { registerUser } from './js/services/auth.js';
+
 
         const routePath = (name, query) => {
             if (window.SwordRoutes && typeof window.SwordRoutes.path === 'function') {
@@ -515,12 +515,14 @@
             registerSpinner.style.display = 'inline-block';
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await registerUser({
+                    email,
+                    password,
+                    fullName: name,
+                    phone: "",
+                    country: ""
+                }, { sendVerification: true });
 
-                // Update profile with display name
-                await updateProfile(userCredential.user, {
-                    displayName: name
-                });
 
                 // Show success
                 successText.textContent = 'Account created successfully! Redirecting...';
@@ -532,17 +534,9 @@
                 }, 1500);
 
             } catch (error) {
-                let message = 'Unable to create account. Please try again.';
-                if (error.code === 'auth/email-already-in-use') {
-                    message = 'This email is already registered. Please sign in.';
-                } else if (error.code === 'auth/invalid-email') {
-                    message = 'Please enter a valid email address.';
-                } else if (error.code === 'auth/weak-password') {
-                    message = passwordPolicy.errorText;
-                } else if (error.code === 'auth/operation-not-allowed') {
-                    message = 'Email/password accounts are not enabled.';
-                }
-                showError(message);
+                // registerUser() already maps most Firebase error codes to friendly messages.
+                showError(error?.message || 'Unable to create account. Please try again.');
+
             } finally {
                 registerBtn.disabled = false;
                 registerText.textContent = 'Create Account';
