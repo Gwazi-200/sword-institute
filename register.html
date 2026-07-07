@@ -304,6 +304,11 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 4px;
+            display: none;
+        }
+
+        .form-group:focus-within .password-hint {
+            display: block;
         }
 
         @media (max-width: 480px) {
@@ -380,7 +385,7 @@
                 <div class="form-options">
                     <label>
                         <input type="checkbox" id="termsCheck" required />
-                        I agree to the <a href="#">Terms of Service</a>
+                        I agree to the <a href="terms.html">Terms of Service</a>
                     </label>
                 </div>
 

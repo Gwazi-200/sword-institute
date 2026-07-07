@@ -1,5 +1,5 @@
 /**
- * Firebase Cloud Functions - Sword Institute AI Mentor
+ * Firebase Cloud Functions - Sword Institute Professor SWORD
  * Securely handles OpenFrontier AI API calls
  */
 
@@ -34,7 +34,7 @@ exports.getAIResponse = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError(
             'unauthenticated',
-            'You must be logged in to use the AI Mentor.'
+            'You must be logged in to use Professor SWORD.'
         );
     }
 
@@ -85,7 +85,7 @@ exports.getAIResponse = functions.https.onCall(async (data, context) => {
         });
 
         // Build system prompt
-        let systemPrompt = `You are an AI Mentor for Sword Institute, a community development and social work learning platform.
+        let systemPrompt = `You are Professor SWORD for Sword Institute, a community development and social work learning platform.
 
 STUDENT INFORMATION:
 - Name: ${studentName}
@@ -314,7 +314,7 @@ function getFallbackResponse(message, studentName) {
     }
 
     if (lower.includes('hello') || lower.includes('hi')) {
-        return `👋 Hello ${studentName}! I'm your AI Mentor. How can I help you with your learning today?`;
+        return `👋 Hello ${studentName}! I'm Professor SWORD. How can I help you with your learning today?`;
     }
 
     if (lower.includes('progress')) {

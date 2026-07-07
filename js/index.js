@@ -190,7 +190,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 /* ==========================================================
-   AI Mentor Rotation
+    Professor SWORD Rotation
 ========================================================== */
 
 const mentorMessages = [

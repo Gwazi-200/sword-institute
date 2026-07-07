@@ -1,6 +1,6 @@
 /**
  * ai-service.js
- * Sword Institute - AI Mentor Service
+ * Sword Institute - Professor SWORD Service
  * Communicates with Firebase Cloud Functions
  */
 
@@ -176,7 +176,7 @@ async function callOpenFrontierDirect(message, context = 'Homepage', lessonConte
     }
 
     const systemPrompt = [
-        'You are Sword Institute AI Mentor.',
+        'You are Sword Institute Professor SWORD.',
         'Be concise, practical, warm, and encouraging.',
         'Keep most answers within 2-4 short sentences.',
         `Context: ${context || 'General'}`,
@@ -307,7 +307,7 @@ function getFallbackResponse(message) {
     }
 
     if (lower.includes('hello') || lower.includes('hi')) {
-        return '👋 Hello! I am your AI Mentor. How can I help you with your learning today?';
+        return '👋 Hello! I am Professor SWORD. How can I help you with your learning today?';
     }
 
     if (lower.includes('progress')) {

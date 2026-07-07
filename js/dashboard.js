@@ -58,7 +58,7 @@ function populateUserInfo(user) {
 }
 
 
-// Initialize dashboard (load courses, announcements, AI mentor, etc.)
+// Initialize dashboard (load courses, announcements, Professor SWORD, etc.)
 function initDashboard() {
     // Set current date
     const now = new Date();
@@ -101,7 +101,7 @@ function initDashboard() {
         });
     });
 
-    // --- AI Mentor Messages Rotation ---
+    // --- Professor SWORD Messages Rotation ---
     const mentorMessages = [
         { greeting: 'Hello, Warrior!', message: 'You are making incredible progress.', tip: '💡 Focus on one concept at a time.', advice: '📈 Consider learning Python for AI.', quote: '“The future belongs to those who learn more.”' },
         { greeting: 'Good day, Champion!', message: 'Keep up the momentum!', tip: '💡 Practice coding daily.', advice: '📈 Attend AI workshops to network.', quote: '“Education is the most powerful weapon.”' },
