@@ -946,50 +946,6 @@
             color: var(--text-muted);
         }
 
-        .admin-panel {
-            margin-top: 18px;
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            border-radius: var(--radius-md);
-            background: rgba(255, 215, 0, 0.12);
-            padding: 16px;
-            display: none;
-        }
-
-        .admin-panel.show {
-            display: block;
-        }
-
-        .admin-grid {
-            margin-top: 12px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
-        }
-
-        .admin-card {
-            background: rgba(255, 255, 255, 0.45);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            padding: 10px;
-        }
-
-        .admin-users {
-            margin-top: 12px;
-            max-height: 220px;
-            overflow: auto;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            padding: 8px;
-        }
-
-        .admin-users li {
-            list-style: none;
-            font-size: 0.85rem;
-            padding: 8px;
-            border-bottom: 1px solid rgba(139, 0, 255, 0.08);
-        }
-
         @keyframes slideIn {
             from {
                 transform: translateX(100px);
@@ -1100,10 +1056,6 @@
                     </button>
                     <button class="nav-utility" id="notificationBell" type="button" title="Notifications">
                         <i class="fas fa-bell"></i>
-                        <span class="badge-dot" id="notificationCount">3</span>
-                    </button>
-                    <button class="nav-utility is-hidden" id="adminGear" type="button" title="Admin Panel">
-                        <i class="fas fa-gear"></i>
                     </button>
                     <button class="btn btn-outline-violet" id="loginBtn" type="button">Login</button>
                     <button class="btn btn-primary" id="registerBtn" type="button">Register</button>
@@ -1140,7 +1092,7 @@
                     </div>
                 </div>
                 <div>
-                    <span class="course-count" id="courseCount">Loading courses...</span>
+                    <span class="course-count" id="courseCount"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>
                 </div>
             </div>
 
@@ -1370,6 +1322,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
+    <script src="js/password-policy.js"></script>
     <script src="js/sharedRoutes.js"></script>
     <script src="js/localAuthGuard.js"></script>
 
@@ -1399,8 +1352,6 @@
         const continueSection = document.getElementById('continueSection');
         const continueGrid = document.getElementById('continueGrid');
         const continueCount = document.getElementById('continueCount');
-        const notificationCount = document.getElementById('notificationCount');
-
         const loginModal = document.getElementById('loginModal');
         const registerModal = document.getElementById('registerModal');
         const loginForm = document.getElementById('loginForm');
@@ -1417,6 +1368,25 @@
         const registerSuccess = document.getElementById('registerSuccess');
         const passwordStrength = document.getElementById('passwordStrength');
         const strengthText = document.getElementById('strengthText');
+        const passwordPolicy = window.SwordPasswordPolicy || {
+            errorText: 'Password does not meet policy.',
+            validatePassword(password) {
+                const value = String(password || '');
+                const checks = {
+                    length: value.length >= 8,
+                    uppercase: /[A-Z]/.test(value),
+                    lowercase: /[a-z]/.test(value),
+                    number: /\d/.test(value)
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                return {
+                    valid: score === 4,
+                    score,
+                    label: score <= 1 ? 'Weak' : score === 2 ? 'Fair' : score === 3 ? 'Good' : 'Strong',
+                    checks
+                };
+            }
+        };
 
         const catalogHelpers = window.catalogHelpers || {};
         const mergeCuratedCourses = catalogHelpers.mergeCuratedCourses || ((existing = [], curated = []) => [...curated, ...existing]);
@@ -1475,8 +1445,6 @@
             'Your module progress was synced successfully.',
             'Weekly live session starts tomorrow at 18:00.'
         ];
-
-        notificationCount.textContent = String(mockNotifications.length);
 
         let allCourses = [];
         let currentFilter = 'all';
@@ -1544,24 +1512,8 @@
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        function isStrongPassword(password) {
-            return /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && password.length >= 8;
-        }
-
-        function getStrength(password) {
-            let score = 0;
-            if (password.length >= 8) score += 1;
-            if (/[a-z]/.test(password)) score += 1;
-            if (/[A-Z]/.test(password)) score += 1;
-            if (/\d/.test(password)) score += 1;
-            return score;
-        }
-
-        function strengthLabel(score) {
-            if (score <= 1) return 'Weak';
-            if (score === 2) return 'Fair';
-            if (score === 3) return 'Good';
-            return 'Strong';
+        function passwordResult(password) {
+            return passwordPolicy.validatePassword(password);
         }
 
         function openModal(modalId) {
@@ -1884,10 +1836,10 @@
             const duplicate = users.some(user => user.email.toLowerCase() === email);
             setFieldInvalid('registerNameField', !name, 'Full name is required.');
             setFieldInvalid('registerEmailField', !isValidEmail(email) || duplicate, duplicate ? 'Email already registered.' : 'Enter a valid email.');
-            setFieldInvalid('registerPasswordField', !isStrongPassword(password), 'Password must be at least 8 chars and include upper, lower, number.');
+            setFieldInvalid('registerPasswordField', !passwordResult(password).valid, passwordPolicy.errorText);
             setFieldInvalid('registerConfirmField', !confirm || confirm !== password, 'Passwords do not match.');
 
-            if (!name || !isValidEmail(email) || duplicate || !isStrongPassword(password) || confirm !== password) {
+            if (!name || !isValidEmail(email) || duplicate || !passwordResult(password).valid || confirm !== password) {
                 valid = false;
             }
 
@@ -1906,7 +1858,7 @@
             });
 
             registerPassword.addEventListener('input', () => {
-                setFieldInvalid('registerPasswordField', !isStrongPassword(registerPassword.value), 'Password must be at least 8 chars and include upper, lower, number.');
+                setFieldInvalid('registerPasswordField', !passwordResult(registerPassword.value).valid, passwordPolicy.errorText);
                 if (registerConfirm.value.length > 0) {
                     setFieldInvalid('registerConfirmField', registerConfirm.value !== registerPassword.value, 'Passwords do not match.');
                 }
@@ -1951,7 +1903,6 @@
             });
 
             document.getElementById('notificationBell').addEventListener('click', () => {
-                notificationCount.textContent = '0';
                 showToast(mockNotifications.join(' | '));
             });
 
@@ -1968,11 +1919,11 @@
             logoutBtn.addEventListener('click', () => logout('Logout successful.'));
 
             registerPassword.addEventListener('input', () => {
-                const score = getStrength(registerPassword.value);
-                strengthText.textContent = `Strength: ${strengthLabel(score)}`;
+                const result = passwordResult(registerPassword.value);
+                strengthText.textContent = `Strength: ${result.label}`;
                 const bars = passwordStrength.querySelectorAll('span');
                 bars.forEach((bar, index) => {
-                    bar.style.background = index < score ? 'linear-gradient(90deg, #8B00FF, #FFD700)' : 'rgba(139, 0, 255, 0.12)';
+                    bar.style.background = index < result.score ? 'linear-gradient(90deg, #8B00FF, #FFD700)' : 'rgba(139, 0, 255, 0.12)';
                 });
             });
 

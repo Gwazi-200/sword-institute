@@ -46,7 +46,7 @@ function showLoading() {
     const loader = document.createElement('div');
     loader.id = 'loadingSpinner';
     loader.className = 'loading-spinner';
-    loader.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading courses...';
+    loader.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>';
 
     courseGrid.parentNode.insertBefore(loader, courseGrid);
     courseGrid.style.display = 'none';

@@ -148,6 +148,32 @@
         .stat-number .gold {
             color: var(--gold-radiant);
         }
+
+        .stat-loading,
+        .loading-line {
+            display: inline-block;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(139, 0, 255, 0.08), rgba(255, 215, 0, 0.14));
+        }
+
+        .stat-loading {
+            min-width: 2.5rem;
+            min-height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--violet-deep);
+        }
+
+        .loading-line {
+            width: 100%;
+            height: 0.9rem;
+            margin-top: 0.45rem;
+        }
+
+        .loading-line-short {
+            width: 72%;
+        }
         .stat-label {
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -499,7 +525,6 @@
     <!-- LOADING OVERLAY -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p>Loading your sacred dashboard...</p>
     </div>
 
     <div class="app-wrapper">
@@ -553,19 +578,19 @@
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number" id="enrolledCourses">—</div>
+                    <div class="stat-number" id="enrolledCourses"><span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span></div>
                     <div class="stat-label"><i class="fas fa-book-open"></i>Enrolled Courses</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="completedCourses">—</div>
+                    <div class="stat-number" id="completedCourses"><span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span></div>
                     <div class="stat-label"><i class="fas fa-check-circle"></i>Completed</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="xpPoints">— <span class="gold">XP</span></div>
+                    <div class="stat-number" id="xpPoints"><span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">XP</span></div>
                     <div class="stat-label"><i class="fas fa-star"></i>Divine XP</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="streakDays">— <span class="gold">🔥</span></div>
+                    <div class="stat-number" id="streakDays"><span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">🔥</span></div>
                     <div class="stat-label"><i class="fas fa-fire"></i>Learning Streak</div>
                 </div>
             </div>
@@ -581,10 +606,10 @@
                         <li class="activity-item">
                             <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
                             <div class="content">
-                                <h4>Loading your courses...</h4>
-                                <p>Please wait</p>
+                                <div class="loading-line"></div>
+                                <div class="loading-line loading-line-short"></div>
                             </div>
-                            <span class="time">—</span>
+                            <span class="time"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>
                         </li>
                     </ul>
                     <div class="center-top-12">
@@ -609,11 +634,11 @@
                     <div class="ai-message" id="aiMessage">
                         <i class="fas fa-sparkles"></i>
                         <div class="ai-text" id="aiAdvice">
-                                <div class="greeting">Loading Professor SWORD guidance...</div>
-                            <div class="message"></div>
-                            <div class="recommendation"></div>
-                            <div class="tip"></div>
-                            <div class="motivation"></div>
+                            <div class="greeting"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></div>
+                            <div class="message loading-line"></div>
+                            <div class="recommendation loading-line loading-line-short"></div>
+                            <div class="tip loading-line loading-line-short"></div>
+                            <div class="motivation loading-line loading-line-short"></div>
                         </div>
                     </div>
                     <div class="ai-quick-actions">
@@ -777,28 +802,28 @@
         }
 
         function setDashboardLoadingState() {
-            enrolledCoursesEl.textContent = 'Loading';
-            completedCoursesEl.textContent = 'Loading';
-            xpPointsEl.innerHTML = 'Loading <span class="gold">XP</span>';
-            streakDaysEl.innerHTML = 'Loading <span class="gold">🔥</span>';
+            enrolledCoursesEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>';
+            completedCoursesEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>';
+            xpPointsEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">XP</span>';
+            streakDaysEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">🔥</span>';
 
             activityList.innerHTML = `
                     <li class="activity-item">
                         <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
                         <div class="content">
-                            <h4>Loading your courses...</h4>
-                            <p>Getting your progress ready</p>
+                            <div class="loading-line"></div>
+                            <div class="loading-line loading-line-short"></div>
                         </div>
-                        <span class="time">—</span>
+                        <span class="time"><i class="fas fa-spinner fa-spin"></i></span>
                     </li>
                 `;
 
             aiAdvice.innerHTML = `
-                    <div class="greeting">Loading Professor SWORD guidance...</div>
-                    <div class="message"></div>
-                    <div class="recommendation"></div>
-                    <div class="tip"></div>
-                    <div class="motivation"></div>
+                    <div class="greeting"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></div>
+                    <div class="message loading-line"></div>
+                    <div class="recommendation loading-line loading-line-short"></div>
+                    <div class="tip loading-line loading-line-short"></div>
+                    <div class="motivation loading-line loading-line-short"></div>
                 `;
         }
 

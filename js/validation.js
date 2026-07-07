@@ -105,68 +105,28 @@ export function validateCountry(country) {
  * @returns {Object} { valid: boolean, message: string, score: number, label: string, checks: Object }
  */
 export function validatePassword(password) {
-    const value = password || '';
-    
-    if (!value) {
-        return { 
-            valid: false, 
-            message: 'Password is required.',
-            score: 0,
-            label: 'Weak',
-            checks: {
-                length: false,
-                uppercase: false,
-                lowercase: false,
-                number: false,
-                special: false
-            }
-        };
+    const policy = window.SwordPasswordPolicy;
+    if (policy && typeof policy.validatePassword === 'function') {
+        return policy.validatePassword(password);
     }
-    
+
+    const value = password || '';
     const checks = {
         length: value.length >= 8,
         uppercase: /[A-Z]/.test(value),
         lowercase: /[a-z]/.test(value),
-        number: /\d/.test(value),
-        special: /[^A-Za-z0-9]/.test(value)
+        number: /\d/.test(value)
     };
-    
+
     const score = Object.values(checks).filter(Boolean).length;
-    
-    let label = 'Weak';
-    let valid = false;
-    
-    if (score >= 5) {
-        label = 'Excellent';
-        valid = true;
-    } else if (score >= 4) {
-        label = 'Strong';
-        valid = true;
-    } else if (score >= 3) {
-        label = 'Good';
-        valid = false;
-    } else if (score >= 2) {
-        label = 'Fair';
-        valid = false;
-    } else {
-        label = 'Weak';
-        valid = false;
-    }
-    
-    const messages = [];
-    if (!checks.length) messages.push('at least 8 characters');
-    if (!checks.uppercase) messages.push('uppercase letter');
-    if (!checks.lowercase) messages.push('lowercase letter');
-    if (!checks.number) messages.push('number');
-    if (!checks.special) messages.push('special character');
-    
-    const message = valid ? 'Password meets all requirements.' : `Password needs: ${messages.join(', ')}.`;
-    
+    const valid = score === 4;
+    const message = valid ? 'Password meets policy.' : 'Password does not meet policy.';
+
     return {
         valid,
         message,
         score,
-        label,
+        label: score <= 1 ? 'Weak' : score === 2 ? 'Fair' : score === 3 ? 'Good' : 'Strong',
         checks
     };
 }
@@ -214,44 +174,24 @@ export function validateTerms(accepted) {
  * @returns {Object} { score: number, label: string, checks: Object }
  */
 export function calculatePasswordStrength(password) {
-    const value = password || '';
-    
-    if (!value) {
-        return {
-            score: 0,
-            label: 'Enter a password',
-            checks: {
-                length: false,
-                uppercase: false,
-                lowercase: false,
-                number: false,
-                special: false
-            }
-        };
+    const policy = window.SwordPasswordPolicy;
+    if (policy && typeof policy.calculatePasswordStrength === 'function') {
+        return policy.calculatePasswordStrength(password);
     }
-    
+
+    const value = password || '';
     const checks = {
         length: value.length >= 8,
         uppercase: /[A-Z]/.test(value),
         lowercase: /[a-z]/.test(value),
-        number: /\d/.test(value),
-        special: /[^A-Za-z0-9]/.test(value)
+        number: /\d/.test(value)
     };
-    
+
     const score = Object.values(checks).filter(Boolean).length;
-    
-    const labels = {
-        0: 'Weak',
-        1: 'Weak',
-        2: 'Fair',
-        3: 'Good',
-        4: 'Strong',
-        5: 'Excellent'
-    };
-    
+
     return {
         score,
-        label: labels[score] || 'Weak',
+        label: score <= 1 ? 'Weak' : score === 2 ? 'Fair' : score === 3 ? 'Good' : 'Strong',
         checks
     };
 }
