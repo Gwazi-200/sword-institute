@@ -1222,12 +1222,12 @@
             addAIMessage('ai', '...', true);
 
             try {
-                if (typeof AIService === 'undefined' || !AIService.initAIService()) {
+                if (typeof window.AIService === 'undefined' || !window.AIService.initAIService()) {
                     throw new Error('AI service is unavailable on this page');
                 }
 
-                const result = AIService.sendAIMessageLive
-                    ? await AIService.sendAIMessageLive(message, 'Homepage')
+                const result = window.AIService.sendAIMessageLive
+                    ? await window.AIService.sendAIMessageLive(message, 'Homepage')
                     : {
                         reply: await AIService.sendAIMessage(message, 'Homepage'),
                         live: AIService.isLastResponseLive ? AIService.isLastResponseLive() : true,
