@@ -15,8 +15,10 @@
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
+    <link rel="stylesheet" href="css/dashboard-glass-cards.css" />
 
     <style>
+
         /* ============================================================
            ROOT: PEARLESCENT + VIOLET + GOLD
            ============================================================ */
@@ -645,7 +647,7 @@
                         <button class="btn btn-primary" onclick="openAIChat()">
                                 <i class="fas fa-comment"></i> Chat with Professor SWORD
                         </button>
-                        <button class="btn btn-gold" onclick="getAIRecommendation()">
+                        <button class="btn btn-gold" onclick="getAIRecommendation(event)">
                                 <i class="fas fa-lightbulb"></i> Get Professor SWORD Recommendation
                         </button>
                         <button class="btn btn-outline-violet" onclick="getStudyTip()">
@@ -1047,7 +1049,10 @@
         // Send AI Question (Dashboard)
         async function sendAIQuestion() {
             const input = document.getElementById('aiInput');
-            if (!input) return;
+            if (!input) {
+                showToast('AI input is not available on this page.', 'error');
+                return;
+            }
             const message = input.value.trim();
             if (!message) return;
 
@@ -1110,8 +1115,8 @@
         // =============================================================
         // AI RECOMMENDATION
         // =============================================================
-        async function getAIRecommendation() {
-            const btn = event?.target?.closest('.btn') || document.querySelector('.btn-gold');
+        async function getAIRecommendation(e) {
+            const btn = e?.target?.closest?.('.btn') || document.querySelector('.btn-gold');
             if (!btn) return;
 
             const originalText = btn.innerHTML;

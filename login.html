@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -386,7 +386,10 @@
     <script src="js/sharedRoutes.js"></script>
 
     <script type="module">
-        import { auth, signInWithEmailAndPassword, onAuthStateChanged } from './js/firebase.js';
+        import { auth, onAuthStateChanged } from './js/firebase.js';
+        import { loginUser } from './js/services/auth.js';
+
+
 
         // DOM References
         const form = document.getElementById('loginForm');
@@ -451,7 +454,8 @@
             loginSpinner.style.display = 'inline-block';
 
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                await loginUser(email, password);
+
 
                 successText.textContent = 'Welcome back! Redirecting...';
                 successMessage.classList.add('show');
@@ -460,8 +464,10 @@
                     window.location.href = routePath('dashboard');
                 }, 1500);
             } catch (error) {
+                // loginUser() already maps most Firebase error codes to friendly messages.
                 const code = error?.code;
                 let message = error?.message || 'Invalid email or password. Please try again.';
+
 
                 if (code === 'auth/user-not-found') {
                     message = 'No account found with this email address.';

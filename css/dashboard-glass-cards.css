@@ -1,0 +1,88 @@
+/* Dashboard extra glass cards styles (student profile, AI mentor, etc.) */
+
+/* Base glass effect */
+.glass {
+    background-color: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Student Profile card */
+.student-profile {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* AI Mentor card */
+.ai-mentor {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Continue Learning card */
+.continue-learning {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Learning Academies card */
+.learning-academies {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Announcements card */
+.announcements {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Statistics card */
+.statistics {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Recent Activity card */
+.recent-activity {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Footer */
+footer {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .content {
+        width: 100%;
+    }
+}
+
