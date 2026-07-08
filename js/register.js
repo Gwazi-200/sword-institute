@@ -37,15 +37,16 @@ import {
 // ============================================================
 // DOM REFS
 // ============================================================
-const form = document.getElementById('registration-form');
-const fullName = document.getElementById('fullName');
+// Support both legacy IDs (registration-form/fullName/terms/...) and current register.html IDs (registerForm/displayName/termsCheck/...).
+const form = document.getElementById('registration-form') || document.getElementById('registerForm');
+const fullName = document.getElementById('fullName') || document.getElementById('displayName');
 const email = document.getElementById('email');
-const phone = document.getElementById('phone');
-const country = document.getElementById('country');
+const phone = document.getElementById('phone') || { value: '', type: 'text' }; // optional
+const country = document.getElementById('country') || { value: '', type: 'text' }; // optional
 const password = document.getElementById('password');
 const confirmPassword = document.getElementById('confirmPassword');
-const terms = document.getElementById('terms');
-const submitBtn = document.getElementById('register-submit');
+const terms = document.getElementById('terms') || document.getElementById('termsCheck');
+const submitBtn = document.getElementById('register-submit') || document.getElementById('registerBtn');
 let isSubmitting = false;
 
 if (!form || !submitBtn) {

@@ -1,10 +1,11 @@
 ﻿import { loginUser } from './js/auth.js';
 import { showToast, clearToasts, showLoading, hideLoading, setFormDisabled } from './js/ui.js';
 
-const form = document.getElementById('login-form');
-const emailInput = document.getElementById('login-email');
-const passwordInput = document.getElementById('login-password');
-const submitBtn = document.getElementById('login-submit');
+// Support both legacy IDs (login-form/login-email/...) and current login.html IDs (loginForm/email/...).
+const form = document.getElementById('login-form') || document.getElementById('loginForm');
+const emailInput = document.getElementById('login-email') || document.getElementById('email');
+const passwordInput = document.getElementById('login-password') || document.getElementById('password');
+const submitBtn = document.getElementById('login-submit') || document.getElementById('loginBtn');
 
 function createStudentPayload(user) {
     return {
