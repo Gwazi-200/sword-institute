@@ -385,6 +385,14 @@
 
     <script src="js/sharedRoutes.js"></script>
 
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/": "https://www.gstatic.com/firebasejs/10.14.1/"
+            }
+        }
+    </script>
+
     <script type="module">
         import { auth, onAuthStateChanged } from './js/firebase.js';
         import { loginUser } from './js/services/auth.js';
