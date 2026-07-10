@@ -4,6 +4,9 @@
  * Communicates with Firebase Cloud Functions
  */
 
+import { auth as fbAuth, db as fbDb, storage as fbStorage, functions as fbFunctions, app as fbApp } from './firebase.js';
+import { httpsCallable } from 'firebase/functions';
+
 // =============================================================
 // STATE
 // =============================================================
@@ -13,6 +16,7 @@ let currentUser = null;
 let lastResponseSource = 'fallback';
 const OPENFRONTIER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENFRONTIER_MODEL = 'openai/gpt-3.5-turbo';
+
 
 function resolveOpenFrontierApiKey() {
     const windowKey = typeof window !== 'undefined'
@@ -240,8 +244,8 @@ async function getRecommendation() {
     }
 
     try {
-        const functions = firebase.functions();
-        const getAIRecommendation = functions.httpsCallable('getAIRecommendation');
+        const getAIRecommendation = httpsCallable(fbFunctions, 'getAIRecommendation');
+
 
         const result = await getAIRecommendation({ userToken: userToken });
 

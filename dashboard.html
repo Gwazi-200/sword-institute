@@ -670,7 +670,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- FIREBASE CDN                                              -->
+    <!-- FIREBASE CDN (LEFT AS-IS; dashboard still uses compat)   -->
     <!-- ========================================================== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
@@ -680,10 +680,13 @@
     </script>
     <script src="js/sharedRoutes.js"></script>
 
+
     <!-- ========================================================== -->
-    <!-- AI SERVICE                                                -->
     <!-- ========================================================== -->
-    <script src="ai-service.js"></script>
+    <!-- AI SERVICE (ES MODULE)                                   -->
+    <!-- ========================================================== -->
+    <script type="module" src="./ai-service.js"></script>
+
 
     <script>
         // =============================================================
