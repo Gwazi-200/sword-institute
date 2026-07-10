@@ -1845,15 +1845,16 @@
         function updateAuthUI() {
             const isAuthenticated = Boolean(currentUser);
 
-            loginBtn.classList.toggle('is-hidden', isAuthenticated);
-            registerBtn.classList.toggle('is-hidden', isAuthenticated);
-            dashboardBtn.classList.toggle('is-hidden', !isAuthenticated);
-            profileWrap.classList.toggle('is-hidden', !isAuthenticated);
+            if (loginBtn) loginBtn.classList.toggle('is-hidden', isAuthenticated);
+            if (registerBtn) registerBtn.classList.toggle('is-hidden', isAuthenticated);
+            // Keep dashboard hidden here; dashboard page itself is enrollment-gated.
+            if (dashboardBtn) dashboardBtn.classList.toggle('is-hidden', true);
+            if (profileWrap) profileWrap.classList.toggle('is-hidden', !isAuthenticated);
 
             if (isAuthenticated) {
-                profileNameItem.innerHTML = `<i class="fas fa-user"></i> ${currentUser.fullName}`;
+                if (profileNameItem) profileNameItem.innerHTML = `<i class="fas fa-user"></i> ${currentUser.fullName || 'Warrior'}`;
             } else {
-                profileDropdown.classList.remove('show');
+                if (profileDropdown) profileDropdown.classList.remove('show');
             }
         }
 
@@ -1897,14 +1898,11 @@
             return users.find(user => user.email.toLowerCase() === normalized || user.fullName.toLowerCase() === normalized);
         }
 
+        // Firebase is the single source of truth for auth.
+        // Guest mode is handled separately via STORAGE_KEYS.guest.
         function restoreSession() {
-            if (!window.SwordLocalAuth || typeof window.SwordLocalAuth.getState !== 'function') {
-                currentUser = null;
-                return;
-            }
-
-            const state = window.SwordLocalAuth.getState();
-            currentUser = state.isAuthenticated ? state.user : null;
+            // No-op (kept for backward compatibility with earlier code).
+            currentUser = null;
         }
 
         function bindFirebaseAuthState() {
@@ -2237,7 +2235,7 @@
             });
 
             coursesContainer.addEventListener('click', (event) => {
-                const completeBtn = event.target.closest('[data-complete-course]');
+                const completeBtn = event.target && event.target.closest ? event.target.closest('[data-complete-course]') : null;
                 if (completeBtn && currentUser?.role === 'student') {
                     event.preventDefault();
                     event.stopPropagation();
@@ -2249,7 +2247,7 @@
                 }
 
                 // Firestore-backed enrollment
-                const enrollBtn = event.target.closest('[data-enroll-course]');
+                const enrollBtn = event.target && event.target.closest ? event.target.closest('[data-enroll-course]') : null;
                 if (enrollBtn && currentUser && window.EnrollmentUI && typeof window.EnrollmentUI.enrollUserInCourse === 'function') {
                     event.preventDefault();
                     event.stopPropagation();
@@ -2282,7 +2280,7 @@
                     return;
                 }
 
-                const courseLink = event.target.closest('[data-course-link="true"]');
+                const courseLink = event.target && event.target.closest ? event.target.closest('[data-course-link="true"]') : null;
                 if (!courseLink) return;
 
                 if (!currentUser) {
@@ -2300,17 +2298,23 @@
                 updateCourseProgress(courseId, { percent: 20, completed: false });
             });
 
-            document.getElementById('myCoursesItem').addEventListener('click', (event) => {
-                event.preventDefault();
-                continueSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                profileDropdown.classList.remove('show');
-            });
+            const myCoursesItem = document.getElementById('myCoursesItem');
+            if (myCoursesItem && continueSection && profileDropdown) {
+                myCoursesItem.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    continueSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    profileDropdown.classList.remove('show');
+                });
+            }
 
-            document.getElementById('settingsItem').addEventListener('click', (event) => {
-                event.preventDefault();
-                toggleTheme();
-                showToast('Settings updated: theme toggled.');
-            });
+            const settingsItem = document.getElementById('settingsItem');
+            if (settingsItem) {
+                settingsItem.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    toggleTheme();
+                    showToast('Settings updated: theme toggled.');
+                });
+            }
 
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {

@@ -710,8 +710,10 @@
             appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase (idempotent)
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -728,6 +730,9 @@
         const activityList = document.getElementById('activityList');
         const courseInfo = document.getElementById('courseInfo');
         const aiAdvice = document.getElementById('aiAdvice');
+
+        // Avoid duplicated IDs causing unexpected DOM selection. (Some pages have two #activityList.)
+        const activityListPrimary = activityList && activityList.id ? activityList : null;
 
 
         let currentUserData = null;
@@ -764,9 +769,11 @@
         // 1. AUTH STATE - With Loading Overlay
         // =============================================================
         auth.onAuthStateChanged(async (user) => {
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+
             // If not authenticated, redirect to login.
             if (!user) {
-                loadingOverlay.classList.add('hidden');
+                if (loadingOverlay) loadingOverlay.classList.add('hidden');
                 window.location.href = routePath('login');
                 return;
             }
@@ -804,16 +811,18 @@
         // =============================================================
         // 2. LOGOUT
         // =============================================================
-        logoutBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-                await auth.signOut();
-                window.location.href = routePath('home');
-            } catch (error) {
-                console.error('Logout error:', error);
-                showToast('Error logging out. Please try again.', 'error');
-            }
-        });
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await auth.signOut();
+                    window.location.href = routePath('home');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    showToast('Error logging out. Please try again.', 'error');
+                }
+            });
+        }
 
         // =============================================================
         // 3. TOAST NOTIFICATION
@@ -834,12 +843,13 @@
         }
 
         function setDashboardLoadingState() {
-            enrolledCoursesEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>';
-            completedCoursesEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>';
-            xpPointsEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">XP</span>';
-            streakDaysEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">🔥</span>';
+            if (enrolledCoursesEl) enrolledCoursesEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>';
+            if (completedCoursesEl) completedCoursesEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>';
+            if (xpPointsEl) xpPointsEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">XP</span>';
+            if (streakDaysEl) streakDaysEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">🔥</span>';
 
-                activityList.innerHTML = `
+            const listEl = activityListPrimary || activityList;
+            if (listEl) listEl.innerHTML = `
                     <li class="activity-item">
 
                         <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
@@ -1015,8 +1025,11 @@
         // 7. UPDATE ACTIVITY LIST
         // =============================================================
         function updateActivityList(courses) {
+            const listEl = activityListPrimary || activityList;
+            if (!listEl) return;
+
             if (!courses || courses.length === 0) {
-                activityList.innerHTML = `
+                listEl.innerHTML = `
                         <li class="activity-item">
                             <div class="icon"><i class="fas fa-info-circle"></i></div>
                             <div class="content">
@@ -1066,9 +1079,9 @@
                     </li>
                 `;
 
-            activityList.innerHTML = html;
+            listEl.innerHTML = html;
 
-            activityList.querySelectorAll('.js-progress-fill').forEach((el) => {
+            listEl.querySelectorAll('.js-progress-fill').forEach((el) => {
                 const progressValue = Number(el.getAttribute('data-progress')) || 0;
                 el.style.width = `${progressValue}%`;
             });
