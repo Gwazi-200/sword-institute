@@ -1146,19 +1146,19 @@
 
             <!-- Courses Grid -->
             <div class="courses-grid" id="coursesContainer">
-                <!-- Skeleton Loaders -->
-                <div class="course-card">
-                    <div class="skeleton skeleton-thumb"></div>
-                    <div class="course-body">
-                        <div class="skeleton skeleton-title"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text skeleton-text-narrow"></div>
-                        <div class="course-meta skeleton-meta-row">
-                            <span class="skeleton skeleton-meta"></span>
-                            <span class="skeleton skeleton-meta skeleton-meta-short"></span>
+                    <!-- Skeleton Loaders -->
+                    <div class="course-card">
+                        <div class="skeleton skeleton-thumb"></div>
+                        <div class="course-body">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text skeleton-text-narrow"></div>
+                            <div class="course-meta skeleton-meta-row">
+                                <span class="skeleton skeleton-meta"></span>
+                                <span class="skeleton skeleton-meta skeleton-meta-short"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <div class="course-card">
                     <div class="skeleton skeleton-thumb"></div>
                     <div class="course-body">
@@ -1325,8 +1325,10 @@
     <script src="js/password-policy.js"></script>
     <script src="js/sharedRoutes.js"></script>
     <script src="js/localAuthGuard.js"></script>
+    <script src="js/enrollment-ui.js"></script>
 
     <script>
+
         const STORAGE_KEYS = {
             users: 'sword_users',
             session: 'sword_session',
@@ -1652,6 +1654,15 @@
             return user?.progress || {};
         }
 
+        function getEnrollmentStateForCourse(courseId) {
+            // This page currently tracks course progress in localStorage session.
+            // For showing Enroll/Enrolled state, we use local progress as a fallback.
+            // Firestore enrollment persistence is handled by the Enroll button handler.
+            const item = getProgressMap(currentUser)[courseId];
+            // Convention: if completed or percent>0, consider enrolled.
+            return Boolean(item && (item.completed || (item.percent || 0) > 0));
+        }
+
         function refreshCurrentUser() {
             const users = getUsers();
             currentUser = users.find(u => u.id === currentUser?.id) || currentUser;
@@ -1660,6 +1671,7 @@
 
         function updateCourseProgress(courseId, payload = {}) {
             if (!currentUser) return;
+
 
             const now = new Date().toISOString();
             updateUser((users) => users.map((user) => {
@@ -1780,13 +1792,21 @@
                     ? `<button class="complete-btn" type="button" data-complete-course="${course.id}">${itemProgress.completed ? 'Completed' : 'Mark Assignment Complete'}</button>`
                     : '';
 
+                // Enrollment UI (Firestore-backed)
+                const enrolledBadge = statusBadge;
+                const enrollBtn = !isAuthenticated
+                    ? ''
+                    : itemProgress?.enrolled || false
+                        ? `<button class="btn-sm btn-success" type="button" disabled>Enrolled</button>`
+                        : `<button class="btn-sm btn-primary" type="button" data-enroll-course="${course.id}">Enroll</button>`;
+
                 return `
                     <a href="${courseHref}" class="${cardClass}" data-course-id="${course.id}" data-course-link="true">
                         <div class="course-thumb">
                             <i class="fas ${icon}"></i>
                             <span class="badge">${level}</span>
                             <span class="lesson-badge">${totalLessons} Lessons</span>
-                            ${statusBadge}
+                            ${enrolledBadge}
                         </div>
                         <div class="course-body">
                             <h4>${title}</h4>
@@ -1798,6 +1818,7 @@
                             </div>
                             ${editUI}
                             ${completeUI}
+                            ${isAuthenticated ? `<div class="course-enroll">${enrollBtn}</div>` : ''}
                         </div>
                     </a>
                 `;
@@ -1849,10 +1870,12 @@
             if (reason) showToast(reason, 'error');
         }
 
+        // Disable local inactivity redirects on the course catalogue to avoid conflicts
+        // with Firebase auth state (which may look like random logouts when navigating).
         function initInactivityWatch() {
-            if (!window.SwordLocalAuth || typeof window.SwordLocalAuth.watchActivity !== 'function') return;
-            window.SwordLocalAuth.watchActivity();
+            // Intentionally no-op.
         }
+
 
         function getUserByIdentifier(identifier) {
             const users = getUsers();
@@ -2211,6 +2234,40 @@
                     return;
                 }
 
+                // Firestore-backed enrollment
+                const enrollBtn = event.target.closest('[data-enroll-course]');
+                if (enrollBtn && currentUser && window.EnrollmentUI && typeof window.EnrollmentUI.enrollUserInCourse === 'function') {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const courseId = enrollBtn.getAttribute('data-enroll-course');
+                    if (!courseId) return;
+
+                    try {
+                        enrollBtn.disabled = true;
+                        enrollBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enrolling...';
+
+                        window.EnrollmentUI.enrollUserInCourse({
+                            userId: currentUser.id,
+                            courseId: courseId
+                        }).then(() => {
+                            // reflect immediately in local session so UI updates
+                            updateCourseProgress(courseId, { percent: 0, completed: false });
+                            renderCourses(getVisibleCourses());
+                            showToast('Enrolled successfully. Dashboard unlocked!');
+                        }).catch((err) => {
+                            console.error('Enroll failed:', err);
+                            showToast('Enroll failed. Please try again.', 'error');
+                        }).finally(() => {
+                            // re-render will restore button state
+                        });
+                    } catch (err) {
+                        console.error('Enroll handler error:', err);
+                        showToast('Enroll failed. Please try again.', 'error');
+                    }
+                    return;
+                }
+
                 const courseLink = event.target.closest('[data-course-link="true"]');
                 if (!courseLink) return;
 
@@ -2277,7 +2334,10 @@
             bindRealtimeValidation();
             bindFirebaseAuthState();
             applyRememberedIdentity();
+
+            // Avoid local inactivity redirect conflicts on this page.
             initInactivityWatch();
+
             await loadCourses();
             enforcePdfAuth();
             renderCourses(getVisibleCourses());

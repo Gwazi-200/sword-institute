@@ -679,7 +679,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
     <script src="js/sharedRoutes.js"></script>
-
+    <script src="js/enrollment-ui.js"></script>
 
     <!-- ========================================================== -->
     <!-- ========================================================== -->
@@ -689,6 +689,7 @@
 
 
     <script>
+
         // =============================================================
         // FIREBASE CONFIG
         // =============================================================
@@ -753,22 +754,38 @@
         // 1. AUTH STATE - With Loading Overlay
         // =============================================================
         auth.onAuthStateChanged(async (user) => {
+            // If not authenticated, redirect to login.
             if (!user) {
-                // Redirect to login
+                loadingOverlay.classList.add('hidden');
                 window.location.href = routePath('login');
                 return;
             }
 
-            // User is authenticated
-            const name = await resolveUserName(user);
-            userName.textContent = name;
+            // Authenticated, but Dashboard requires active enrollment.
+            setDashboardLoadingState();
             currentUserData = user;
 
-            setDashboardLoadingState();
-
             try {
+                const enrolled = await (window.EnrollmentUI && typeof window.EnrollmentUI.hasActiveEnrollment === 'function'
+                    ? window.EnrollmentUI.hasActiveEnrollment(user.uid)
+                    : false);
+
+                if (!enrolled) {
+                    // Not enrolled: send them to courses (do not sign out).
+                    loadingOverlay.classList.add('hidden');
+                    window.location.href = routePath('courses');
+                    return;
+                }
+
+                const name = await resolveUserName(user);
+                userName.textContent = name;
+
                 await loadUserDashboard(user.uid);
                 await loadAIRecommendations(user.uid);
+            } catch (e) {
+                console.warn('Dashboard eligibility check failed:', e);
+                loadingOverlay.classList.add('hidden');
+                window.location.href = routePath('courses');
             } finally {
                 loadingOverlay.classList.add('hidden');
             }

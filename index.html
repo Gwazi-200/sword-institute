@@ -1269,6 +1269,7 @@
     </script>
 
     <script src="ai-service.js"></script>
+    <script src="js/enrollment-ui.js"></script>
     <script type="module" src="js/ai/professorSword.js"></script>
 
     <script>
@@ -1419,17 +1420,34 @@
             }
         }
 
-        auth.onAuthStateChanged((user) => {
+        // Dashboard visibility depends on active enrollment, not just auth.
+        // Uses js/enrollment-ui.js (window.EnrollmentUI).
+        auth.onAuthStateChanged(async (user) => {
             currentUser = user || null;
 
+            // Basic auth actions
             if (user) {
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
-                dashboardBtn.style.display = 'inline-flex';
             } else {
                 loginBtn.style.display = 'inline-flex';
                 registerBtn.style.display = 'inline-flex';
+            }
+
+            // Enrollment-gated dashboard
+            if (dashboardBtn) {
                 dashboardBtn.style.display = 'none';
+                try {
+                    if (user && window.EnrollmentUI && typeof window.EnrollmentUI.hasActiveEnrollment === 'function') {
+                        const enrolled = await window.EnrollmentUI.hasActiveEnrollment(user.uid);
+                        dashboardBtn.style.display = enrolled ? 'inline-flex' : 'none';
+                    } else {
+                        dashboardBtn.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.warn('Enrollment check failed:', e);
+                    dashboardBtn.style.display = 'none';
+                }
             }
         });
 
