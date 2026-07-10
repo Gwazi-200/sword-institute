@@ -568,7 +568,8 @@
                         <i class="fas fa-shield-halved icon-violet"></i>
                         <span class="violet">Sacred</span> Dashboard
                     </h1>
-                    <div class="welcome" id="welcomeMessage">
+                    <h1 id="welcomeMessage">Welcome to your Dashboard</h1>
+                    <div class="welcome">
                         <i class="fas fa-sparkles"></i> Welcome back, <strong id="userName">Warrior</strong>
                     </div>
                 </div>
@@ -605,14 +606,21 @@
                         <i class="fas fa-clock icon-violet"></i> Recent Activity
                     </h3>
                     <ul class="activity-list" id="activityList">
-                        <li class="activity-item">
-                            <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
-                            <div class="content">
-                                <div class="loading-line"></div>
-                                <div class="loading-line loading-line-short"></div>
-                            </div>
-                            <span class="time"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>
-                        </li>
+                    <li class="activity-item">
+                        <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
+                        <div class="content">
+                            <div class="loading-line"></div>
+                            <div class="loading-line loading-line-short"></div>
+                        </div>
+                        <span class="time"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>
+                    </li>
+                </ul>
+
+                <div class="center-top-12">
+                    <div id="courseInfo"></div>
+                </div>
+
+                <ul class="activity-list" id="activityList" style="display:none">
                     </ul>
                     <div class="center-top-12">
                         <a href="courses.html" class="btn btn-outline-violet btn-sm" data-route="courses">
@@ -718,7 +726,9 @@
         const xpPointsEl = document.getElementById('xpPoints');
         const streakDaysEl = document.getElementById('streakDays');
         const activityList = document.getElementById('activityList');
+        const courseInfo = document.getElementById('courseInfo');
         const aiAdvice = document.getElementById('aiAdvice');
+
 
         let currentUserData = null;
         let studentData = null;
@@ -829,8 +839,9 @@
             xpPointsEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">XP</span>';
             streakDaysEl.innerHTML = '<span class="stat-loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span> <span class="gold">🔥</span>';
 
-            activityList.innerHTML = `
+                activityList.innerHTML = `
                     <li class="activity-item">
+
                         <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
                         <div class="content">
                             <div class="loading-line"></div>
@@ -909,7 +920,25 @@
 
                 updateActivityList(courseDetails);
 
+                if (courseInfo) {
+                    const items = courseDetails || [];
+                    const lines = items.map((en) => {
+                        const title = en.course?.title || 'Untitled Course';
+                        const pct = typeof en.progress === 'number' ? en.progress : (en.progress || 0);
+                        if (en.completed) {
+                            return `• ${title} — ✅ Completed`;
+                        }
+                        return `• ${title} — ${pct}% in progress`;
+                    });
+
+                    courseInfo.innerHTML = `
+                        <h3 class="section-title"><i class="fas fa-book-open icon-violet"></i> Your Courses</h3>
+                        ${lines.length ? `<div class="course-info-list">${lines.join('<br/>')}</div>` : '<p>No enrolled courses yet.</p>'}
+                    `;
+                }
+
                 studentData = {
+
                     enrolledCourses: enrollments,
                     completedCourses: enrollments.filter(e => e.completed),
                     totalXp: totalXp,

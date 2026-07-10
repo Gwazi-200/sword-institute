@@ -442,9 +442,19 @@
 
         applyRouteAnchors();
 
+        // Shared global auth listener (sets session + optional page hooks)
+        // Falls back to redirect-only behavior.
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                // Allow shared module hook if present
+                if (typeof window.SwordAuthSync?.onUser === 'function') {
+                    window.SwordAuthSync.onUser(user);
+                }
                 window.location.href = routePath('dashboard');
+            } else {
+                if (typeof window.SwordAuthSync?.onUser === 'function') {
+                    window.SwordAuthSync.onUser(null);
+                }
             }
         });
 

@@ -445,6 +445,105 @@ function injectSortDropdown() {
 }
 
 // ============================================================
+// SIMPLE ENROLL UI ("Available Courses" list)
+// ============================================================
+function normalizeTitle(title) {
+    return String(title || '')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, ' ');
+}
+
+function resolveCourseIdByTitle(title) {
+    const needle = normalizeTitle(title);
+    const found = allCourses.find(c => normalizeTitle(c.title) === needle);
+    return found?.id || null;
+}
+
+function setCoursesListState(courseId, courseTitle) {
+    const list = document.getElementById('coursesList');
+    if (!list) return;
+
+    const btn = list.querySelector(`button[data-course-title="${CSS.escape(courseTitle)}"]`);
+    if (!btn) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Enrolled';
+    btn.classList.remove('enroll-btn');
+    btn.classList.add('enrolled-btn');
+}
+
+function renderAvailableCoursesList() {
+    const list = document.getElementById('coursesList');
+    if (!list) return;
+
+    const desired = [
+        'Community Development 101',
+        'AI for Social Good',
+        'Leadership & Governance'
+    ];
+
+    // Ensure courses have been loaded.
+    const html = desired.map((title) => {
+        const courseId = resolveCourseIdByTitle(title);
+        // If not found in Firestore, still render the UI but disable.
+        const disabled = !courseId ? 'disabled' : '';
+        const btnClass = courseId ? 'enroll-btn' : 'enroll-btn is-hidden-course';
+        return `
+            <div class="course">
+                <h3>${title}</h3>
+                <button ${disabled} class="${btnClass}" type="button" data-course-title="${title}" ${courseId ? `data-course-id="${courseId}"` : ''} title="Enroll">
+                    Enroll
+                </button>
+            </div>
+        `;
+    }).join('');
+
+    list.innerHTML = html;
+}
+
+function bindAvailableCoursesEnrollButtons() {
+    const list = document.getElementById('coursesList');
+    if (!list) return;
+
+    list.querySelectorAll('button[data-course-title]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+            const courseTitle = btn.getAttribute('data-course-title');
+            const courseId = btn.getAttribute('data-course-id');
+            if (!courseId) return;
+
+            btn.disabled = true;
+            const original = btn.textContent;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Enrolling...';
+
+            try {
+                const { user } = window.__COURSE_CATALOG_AUTH_STATE || {};
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!window.EnrollmentUI || typeof window.EnrollmentUI.enrollUserInCourse !== 'function') {
+                    throw new Error('EnrollmentUI is not available');
+                }
+
+                await window.EnrollmentUI.enrollUserInCourse({
+                    userId: user.uid,
+                    courseId
+                });
+
+                setCoursesListState(courseId, courseTitle);
+            } catch (e) {
+                console.error('Enroll button failed:', e);
+                btn.disabled = false;
+                btn.textContent = original || 'Enroll';
+                alert('Enroll failed. Please try again.');
+            }
+        });
+    });
+}
+
+// ============================================================
 // EVENT LISTENERS
 // ============================================================
 function setupEventListeners() {
@@ -521,6 +620,37 @@ function setupEventListeners() {
 // AUTH & INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+    // shared auth snapshot for the "Available Courses" enroll buttons
+    window.__COURSE_CATALOG_AUTH_STATE = window.__COURSE_CATALOG_AUTH_STATE || { user: null };
+
+    // Expose required global enrollCourse(courseTitle) as requested by the snippet.
+    window.enrollCourse = async (courseTitle) => {
+        try {
+            const state = window.__COURSE_CATALOG_AUTH_STATE || {};
+            const user = state.user;
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const courseId = resolveCourseIdByTitle(courseTitle);
+            if (!courseId) {
+                alert('Course not found.');
+                return;
+            }
+
+            if (!window.EnrollmentUI || typeof window.EnrollmentUI.enrollUserInCourse !== 'function') {
+                throw new Error('EnrollmentUI is not available');
+            }
+
+            await window.EnrollmentUI.enrollUserInCourse({ userId: user.uid, courseId });
+            // Best-effort UI sync: disable matching button if present.
+            setCoursesListState(courseId, courseTitle);
+        } catch (e) {
+            console.error('enrollCourse failed:', e);
+            alert('Enroll failed. Please try again.');
+        }
+    };
     onAuthStateChanged(auth, (user) => {
         if (!user) {
             window.location.href = 'login.html';
@@ -535,7 +665,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 
         // Load courses
-        loadCourses();
+        loadCourses().then(() => {
+            renderAvailableCoursesList();
+            bindAvailableCoursesEnrollButtons();
+        });
         setupEventListeners();
     });
 
