@@ -1,12 +1,15 @@
-# TODO - Professor SWORD Homepage AI Concierge Redesign
+# TODO
 
-- [x] Understand current homepage AI assistant markup + JS hooks in `index.html` and related modules.
-- [x] Create a plan for compact Apple-style glassmorphism UI and remove large panel sections (teaching modes, quick actions, big messages).
-- [x] Refactor `index.html` AI assistant markup to: compact header + single welcome message + glass input + 4 suggestion chips.
-- [ ] Add/adjust CSS (component-based, no inline): glass styles, max width 420px, theme via CSS variables, responsive.
-- [x] Implement lightweight JS for suggestion chips insertion and message sending (do not auto-send).
-- [x] Ensure existing full teaching interface inside student dashboard/lesson player remains unaffected (only homepage).
-- [ ] Verify accessibility: semantic labels, ARIA where needed, keyboard support.
-- [ ] Smoke test in browser: load page, chips insert prompt, Enter sends, glass UI renders.
+## Goal
+Align any dashboard/nav visibility logic with the existing Firebase auth + Firestore enrollment gating (EnrollmentUI), not the simulated `userSession` snippet.
 
+## Steps
+1. Verify current dashboard-nav elements across pages (`index.html`, `courses.html`, others) and ensure visibility is controlled via `window.EnrollmentUI.hasActiveEnrollment`.
+2. Implement/standardize a small helper call pattern: after Firebase `onAuthStateChanged`, call `EnrollmentUI.updateDashboardNav({ user })` (or equivalent selector-based update) so the Dashboard button is shown only when enrolled.
+3. Ensure the EnrollmentUI default selector (`#dashboardBtn`) matches each page’s DOM; if not, pass `dashboardButtonSelector`.
+4. Remove or prevent any legacy/simulated session code from interfering (if it exists in the repo and is wired anywhere).
+5. Manual test checklist:
+   - Logged out: Dashboard hidden.
+   - Logged in but not enrolled: Dashboard hidden and direct navigation to `dashboard.html` redirects to courses.
+   - Enrolled: Dashboard visible and dashboard loads.
 

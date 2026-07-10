@@ -946,9 +946,9 @@
                     <li><a href="ai-message.html">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
-                    <a href="login.html" class="btn btn-outline-violet" id="loginBtn">Login</a>
-                    <a href="register.html" class="btn btn-primary" id="registerBtn">Register</a>
-                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardBtn">
+<a href="login.html" class="btn btn-outline-violet" id="loginLink">Login</a>
+<a href="register.html" class="btn btn-primary" id="registerLink">Register</a>
+<a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardLink" style="display:none;">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -1287,8 +1287,8 @@
         }
 
         const auth = firebase.auth();
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
+const loginBtn = document.getElementById('loginLink') || document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerLink') || document.getElementById('registerBtn');
         const dashboardBtn = document.getElementById('dashboardBtn');
         const aiMessages = document.getElementById('aiMessages');
         const aiInput = document.getElementById('aiInput');
