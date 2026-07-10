@@ -1559,16 +1559,20 @@
         }
 
         function upsertLocalUserFromFirebase(firebaseUser, fallbackRole = 'student') {
+            // Never allow null/undefined to crash login flows.
             if (!firebaseUser || !firebaseUser.uid) return null;
 
-            const users = getUsers();
+            // Local user storage can be corrupted / empty / non-array. Normalize defensively.
+            const users = Array.isArray(getUsers()) ? getUsers() : [];
+
             const email = String(firebaseUser.email || '').toLowerCase();
             const displayName = firebaseUser.displayName || (email ? email.split('@')[0] : 'Warrior');
 
-            let user = users.find((entry) => entry.id === firebaseUser.uid);
+            let user = users.find((entry) => entry && entry.id === firebaseUser.uid);
             if (!user && email) {
-                user = users.find((entry) => String(entry.email || '').toLowerCase() === email);
+                user = users.find((entry) => entry && String(entry.email || '').toLowerCase() === email);
             }
+
 
             if (user) {
                 user.id = firebaseUser.uid;
@@ -1588,21 +1592,19 @@
                 users.push(user);
             }
 
-            // Defensive auth provider mapping: some Firebase user objects may not expose providerData immediately.
-            // Keep flow unblocked when providerData is missing.
-            const providerData = firebaseUser && firebaseUser.providerData ? firebaseUser.providerData : null;
-            if (!providerData || !Array.isArray(providerData)) {
-                // No-op: continue using fallbackRole without provider-based inference.
-            } else {
-                const passwordProvider = providerData.find(p => p && p.providerId === 'password');
-                // Example: could set flags based on passwordProvider availability.
-                // Intentionally no behavior change beyond ensuring no crashes.
-                void passwordProvider;
-            }
+            // Defensive provider mapping: providerData can be missing, null, or non-array.
+            const providerData = Array.isArray(firebaseUser?.providerData)
+                ? firebaseUser.providerData
+                : [];
+
+            // Example: could infer something from providerData if needed.
+            const passwordProvider = providerData.find(p => p && p.providerId === 'password');
+            void passwordProvider;
 
             saveUsers(users);
             return user;
         }
+
 
         function resolveLoginEmail(identifier) {
             const normalized = String(identifier || '').trim().toLowerCase();
