@@ -388,10 +388,15 @@
     <script type="importmap">
         {
             "imports": {
-                "firebase/": "https://www.gstatic.com/firebasejs/10.14.1/"
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js",
+                "firebase/functions": "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js"
             }
         }
     </script>
+
 
     <script type="module">
         import { auth, onAuthStateChanged } from './js/firebase.js';
