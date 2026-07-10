@@ -1,9 +1,8 @@
 # TODO
 
-- [ ] Update `dashboard.html`:
-  - [ ] Change welcome element to exact snippet: `<h1 id="welcomeMessage">Welcome to your Dashboard</h1>`.
-  - [ ] Add `<div id="courseInfo"></div>` placeholder.
-  - [ ] Populate `#courseInfo` inside `loadUserDashboard()` using computed `courseDetails`.
-  - [ ] Ensure existing IDs used by stats/activity/AI remain intact.
-- [ ] Smoke test by opening `dashboard.html` in browser after login.
+- [ ] Implement “vault login” on `login.html`.
+  - [ ] Add `#vaultLoginBtn` button.
+  - [ ] On click, prompt for email/password and call the same modular `loginUser(email, password)`.
+  - [ ] Reuse existing UI states (disable button, show spinner, show errors/success).
+- [ ] Test locally: open `login.html`, attempt vault login, verify redirect + error handling.
 

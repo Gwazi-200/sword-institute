@@ -346,7 +346,16 @@
                 <span id="successText">Success!</span>
             </div>
 
+            <div class="vault-login" style="margin-bottom: 18px;">
+                <button type="button" class="btn" style="background: rgba(139, 0, 255, 0.12); color: var(--violet-deep); border: 1px solid rgba(139, 0, 255, 0.25); width: 100%;" id="vaultLoginBtn">
+                    <i class="fas fa-key"></i> Vault Login
+                </button>
+            </div>
+
+            
+
             <form id="loginForm">
+
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
@@ -458,7 +467,60 @@
             }
         });
 
+        // Vault login (prompt-based) uses the same modular loginUser() as the form.
+        const vaultLoginBtn = document.getElementById('vaultLoginBtn');
+        if (vaultLoginBtn) {
+            vaultLoginBtn.addEventListener('click', async () => {
+                errorMessage.classList.remove('show');
+                successMessage.classList.remove('show');
+
+                const email = prompt('Enter your email:');
+                const password = prompt('Enter your password:');
+
+                if (!email || !password) {
+                    showError('Please enter both email and password.');
+                    return;
+                }
+
+                // Reuse existing UI state for a consistent experience.
+                loginBtn.disabled = true;
+                loginText.textContent = 'Signing in...';
+                loginSpinner.style.display = 'inline-block';
+
+                try {
+                    await loginUser(String(email).trim(), String(password));
+                    successText.textContent = 'Welcome back! Redirecting...';
+                    successMessage.classList.add('show');
+                    setTimeout(() => {
+                        window.location.href = routePath('dashboard');
+                    }, 1500);
+                } catch (error) {
+                    const code = error?.code;
+                    let message = error?.message || 'Invalid email or password. Please try again.';
+
+                    if (code === 'auth/user-not-found') {
+                        message = 'No account found with this email address.';
+                    } else if (code === 'auth/wrong-password') {
+                        message = 'Incorrect password. Please try again.';
+                    } else if (code === 'auth/too-many-requests') {
+                        message = 'Too many failed attempts. Please try again later.';
+                    } else if (code === 'auth/invalid-email') {
+                        message = 'Please enter a valid email address.';
+                    } else if (code === 'auth/network-request-failed') {
+                        message = 'Network error. Please check your internet connection.';
+                    }
+
+                    showError(message);
+                } finally {
+                    loginBtn.disabled = false;
+                    loginText.textContent = 'Sign In';
+                    loginSpinner.style.display = 'none';
+                }
+            });
+        }
+
         form.addEventListener('submit', async (e) => {
+
             e.preventDefault();
 
             errorMessage.classList.remove('show');
