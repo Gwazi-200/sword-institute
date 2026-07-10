@@ -1588,6 +1588,18 @@
                 users.push(user);
             }
 
+            // Defensive auth provider mapping: some Firebase user objects may not expose providerData immediately.
+            // Keep flow unblocked when providerData is missing.
+            const providerData = firebaseUser && firebaseUser.providerData ? firebaseUser.providerData : null;
+            if (!providerData || !Array.isArray(providerData)) {
+                // No-op: continue using fallbackRole without provider-based inference.
+            } else {
+                const passwordProvider = providerData.find(p => p && p.providerId === 'password');
+                // Example: could set flags based on passwordProvider availability.
+                // Intentionally no behavior change beyond ensuring no crashes.
+                void passwordProvider;
+            }
+
             saveUsers(users);
             return user;
         }
