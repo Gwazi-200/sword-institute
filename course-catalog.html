@@ -67,7 +67,7 @@
                 <div class="hero-search">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Search for courses, skills, or topics..." />
-                    <button id="searchBtn"><i class="fas fa-arrow-right"></i></button>
+                    <button id="searchBtn" aria-label="Search" title="Search"><i class="fas fa-arrow-right"></i></button>
                 </div>
                 <div class="hero-stats">
                     <span><i class="fas fa-book"></i> <span id="totalCourses">0</span> Courses</span>
@@ -168,18 +168,18 @@
             <section class="popular-section">
                 <h2><i class="fas fa-fire"></i> Popular Courses</h2>
                 <div class="carousel-wrapper">
-                    <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous courses" title="Previous"><i class="fas fa-chevron-left"></i></button>
                     <div class="carousel-track" id="carouselTrack">
                         <!-- Rendered by JS -->
                     </div>
-                    <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+                    <button class="carousel-btn next" id="carouselNext" aria-label="Next courses" title="Next"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </section>
 
             <!-- ===== COURSE DETAILS MODAL ===== -->
             <div class="modal-overlay" id="courseModal">
                 <div class="modal-content glass">
-                    <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+<button class="modal-close" id="modalClose" aria-label="Close" title="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
                     <div id="modalBody">
                         <!-- Dynamically filled -->
                     </div>

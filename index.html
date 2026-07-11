@@ -1012,7 +1012,7 @@
 
                     <footer class="assistant-composer ai-concierge-composer" aria-label="Conversation composer">
                         <div class="ai-concierge-input" role="group" aria-label="Ask Professor SWORD">
-                            <button type="button" class="ai-mic-btn" aria-label="Voice input (not available)" disabled>
+<button type="button" class="ai-mic-btn" aria-label="Voice input (not available)" title="Voice input (not available)" disabled>
                                 <i class="fas fa-microphone" aria-hidden="true"></i>
                             </button>
 
@@ -1268,9 +1268,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous" referrerpolicy="no-referrer">
     </script>
 
-    <script src="ai-service.js"></script>
+    <script type="module" src="ai-service.js"></script>
     <script src="js/enrollment-ui.js"></script>
     <script type="module" src="js/ai/professorSword.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js",
+                "firebase/functions": "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js"
+            }
+        }
+    </script>
 
     <script>
         const firebaseConfig = {
@@ -1281,6 +1293,7 @@
             messagingSenderId: "478896038426",
             appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
         };
+
 
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);

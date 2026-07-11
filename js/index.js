@@ -20,6 +20,8 @@ Version 1.0
 ========================================================== */
 
 const dashboardButton = document.getElementById("dashboardButton");
+const dashboardLink = document.getElementById("dashboardLink") || document.getElementById("dashboardBtn");
+
 
 const counters = document.querySelectorAll(".counter");
 
@@ -46,11 +48,18 @@ function checkAuthentication() {
 
     */
 
-    dashboardButton.style.display = "none";
-
+    // Some pages (like homepage) may not include the expected dashboard element id.
+    // Guard to avoid runtime crashes.
+    if (dashboardButton) {
+        dashboardButton.style.display = "none";
+    }
+    if (dashboardLink) {
+        dashboardLink.style.display = "none";
+    }
 }
 
 checkAuthentication();
+
 
 /* ==========================================================
    HERO BUTTONS
