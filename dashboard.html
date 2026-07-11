@@ -560,9 +560,10 @@
         <!-- ============================================================
         DASHBOARD CONTENT
         ============================================================ -->
-        <div class="container">
-            <!-- Header -->
-            <div class="dashboard-header">
+            <div class="container">
+                <div id="authStatus" style="display:none;"></div>
+                <!-- Header -->
+                <div class="dashboard-header">
                 <div>
                     <h1>
                         <i class="fas fa-shield-halved icon-violet"></i>
@@ -775,6 +776,11 @@
         auth.onAuthStateChanged(async (user) => {
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
 
+            const authStatusEl = document.getElementById('authStatus');
+            if (authStatusEl) {
+                authStatusEl.style.display = user ? 'block' : 'none';
+            }
+
             // If not authenticated, redirect to login.
             if (!user) {
                 if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -785,6 +791,7 @@
             // Authenticated, but Dashboard requires active enrollment.
             setDashboardLoadingState();
             currentUserData = user;
+
 
             try {
                 const enrolled = await (window.EnrollmentUI && typeof window.EnrollmentUI.hasActiveEnrollment === 'function'
