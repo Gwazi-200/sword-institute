@@ -1,0 +1,46 @@
+INSERT INTO courses.html (near other modals, after registerModal is a safe place):
+
+<div class="auth-modal" id="enrollmentModal" aria-hidden="true">
+  <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="enrollmentTitle">
+    <div class="auth-header">
+      <div>
+        <h3 id="enrollmentTitle">Enroll to Unlock</h3>
+        <p>Provide your details to access this course.</p>
+      </div>
+      <button class="auth-close" type="button" data-close-modal="enrollmentModal"><i class="fas fa-xmark"></i></button>
+    </div>
+
+    <form class="auth-form" id="enrollmentForm" novalidate>
+      <div class="field">
+        <label>Course</label>
+        <input id="enrollmentCourseTitle" type="text" disabled />
+        <input id="enrollmentCourseId" type="hidden" />
+      </div>
+
+      <div class="field" id="admissionField">
+        <label for="admissionNumber">Admission Number</label>
+        <input id="admissionNumber" type="text" autocomplete="off" required />
+        <small class="error">Admission Number is required.</small>
+      </div>
+
+      <div class="field" id="learnerNameField">
+        <label for="learnerName">Name</label>
+        <input id="learnerName" type="text" autocomplete="name" required />
+        <small class="error">Name is required.</small>
+      </div>
+
+      <div class="field" id="learnerPhoneField">
+        <label for="learnerPhone">Phone Number</label>
+        <input id="learnerPhone" type="tel" autocomplete="tel" required />
+        <small class="error">Phone Number is required.</small>
+      </div>
+
+      <small id="enrollmentFormError" class="error"></small>
+
+      <button class="btn btn-primary" type="submit" id="enrollmentSubmitBtn">
+        <i class="fas fa-lock-open"></i> Unlock Course
+      </button>
+    </form>
+  </div>
+</div>
+
