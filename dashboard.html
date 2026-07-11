@@ -727,7 +727,11 @@
         const completedCoursesEl = document.getElementById('completedCourses');
         const xpPointsEl = document.getElementById('xpPoints');
         const streakDaysEl = document.getElementById('streakDays');
-        const activityList = document.getElementById('activityList');
+        // NOTE: this page has duplicate IDs in markup in some builds.
+        // Use querySelectorAll + first element to avoid weird DOM selection.
+        const activityListEls = document.querySelectorAll('#activityList');
+        const activityList = activityListEls && activityListEls.length ? activityListEls[0] : null;
+
         const courseInfo = document.getElementById('courseInfo');
         const aiAdvice = document.getElementById('aiAdvice');
 
@@ -787,6 +791,7 @@
                     ? window.EnrollmentUI.hasActiveEnrollment(user.uid)
                     : false);
 
+                // Defensive: if not enrolled, ensure UI stays off-route.
                 if (!enrolled) {
                     // Not enrolled: send them to courses (do not sign out).
                     loadingOverlay.classList.add('hidden');

@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="no-store" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sword Institute | Course Catalogue</title>
@@ -1234,6 +1235,7 @@
     </div>
 
     <div class="auth-modal" id="loginModal" aria-hidden="true">
+
         <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
             <div class="auth-header">
                 <div>
@@ -1261,8 +1263,10 @@
     </div>
 
     <div class="auth-modal" id="registerModal" aria-hidden="true">
+        
         <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
-            <div class="auth-header">
+
+        <div class="auth-header">
                 <div>
                     <h3 id="registerTitle">Create Your Account</h3>
                     <p>Join as a student or instructor.</p>
@@ -1270,6 +1274,7 @@
                 <button class="auth-close" type="button" data-close-modal="registerModal"><i class="fas fa-xmark"></i></button>
             </div>
             <form class="auth-form" id="registerForm" novalidate>
+
                 <div class="field" id="registerNameField">
                     <label for="registerName">Full Name</label>
                     <input id="registerName" type="text" autocomplete="name" required />
@@ -1308,10 +1313,55 @@
         </div>
     </div>
 
+    <div class="auth-modal" id="enrollmentModal" aria-hidden="true">
+      <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="enrollmentTitle">
+        <div class="auth-header">
+          <div>
+            <h3 id="enrollmentTitle">Enroll to Unlock</h3>
+            <p>Provide your details to access this course.</p>
+          </div>
+          <button class="auth-close" type="button" data-close-modal="enrollmentModal"><i class="fas fa-xmark"></i></button>
+        </div>
+
+        <form class="auth-form" id="enrollmentForm" novalidate>
+          <div class="field">
+            <label>Course</label>
+            <input id="enrollmentCourseTitle" type="text" disabled />
+            <input id="enrollmentCourseId" type="hidden" />
+          </div>
+
+          <div class="field" id="admissionField">
+            <label for="admissionNumber">Admission Number</label>
+            <input id="admissionNumber" type="text" autocomplete="off" required />
+            <small class="error">Admission Number is required.</small>
+          </div>
+
+          <div class="field" id="learnerNameField">
+            <label for="learnerName">Name</label>
+            <input id="learnerName" type="text" autocomplete="name" required />
+            <small class="error">Name is required.</small>
+          </div>
+
+          <div class="field" id="learnerPhoneField">
+            <label for="learnerPhone">Phone Number</label>
+            <input id="learnerPhone" type="tel" autocomplete="tel" required />
+            <small class="error">Phone Number is required.</small>
+          </div>
+
+          <small id="enrollmentFormError" class="error"></small>
+
+          <button class="btn btn-primary" type="submit" id="enrollmentSubmitBtn">
+            <i class="fas fa-lock-open"></i> Unlock Course
+          </button>
+        </form>
+      </div>
+    </div>
+
     <!-- ========================================================== -->
     <!-- COURSE CATALOGUE HELPERS                                  -->
     <!-- ========================================================== -->
     <script src="js/catalog-helpers.js"></script>
+
 
     <!-- ========================================================== -->
     <!-- FIREBASE CDN                                              -->
@@ -1326,6 +1376,10 @@
     <script src="js/sharedRoutes.js"></script>
     <script src="js/localAuthGuard.js"></script>
     <script src="js/enrollment-ui.js"></script>
+    <script src="js/session-utils.js"></script>
+    <script src="js/enrollment-modal-ui.js"></script>
+
+
 
     <script>
 
@@ -1669,7 +1723,10 @@
         }
 
         function getEnrollmentStateForCourse(courseId) {
+            // Deprecated in this page: we gate by getUserUnlockedCourseIds().
+
             // This page currently tracks course progress in localStorage session.
+
             // For showing Enroll/Enrolled state, we use local progress as a fallback.
             // Firestore enrollment persistence is handled by the Enroll button handler.
             const item = getProgressMap(currentUser)[courseId];
@@ -1754,9 +1811,42 @@
             }).join('');
         }
 
+        const PROfESSOR_SWORD_COURSE_ID = 'PSWORD-MGMT-001';
+        
+        function getUserUnlockedCourseIds() {
+            const unlocked = new Set();
+
+            // Default unlock: only Professor SWORD Academy.
+            unlocked.add(PROfESSOR_SWORD_COURSE_ID);
+
+            // If we have an enrollment in Firestore, show unlocked.
+            // We keep this defensive: if EnrollmentUI isn't ready, fall back to local progress.
+            try {
+                const session = getSession() || {};
+                if (session && session.course && typeof session.course === 'string') {
+                    unlocked.add(session.course);
+                }
+
+                // Local progress fallback: if something is marked completed/started, unlock that course.
+                if (currentUser && currentUser.progress) {
+                    const progressMap = getProgressMap(currentUser);
+                    Object.keys(progressMap || {}).forEach((courseId) => {
+                        const item = progressMap[courseId];
+                        if (item && (item.completed || (item.percent || 0) > 0)) unlocked.add(courseId);
+                    });
+                }
+            } catch (_) {
+                // ignore
+            }
+
+            return unlocked;
+        }
+
         function renderCourses(courses) {
             const isAuthenticated = Boolean(currentUser);
             const isGuest = localStorage.getItem(STORAGE_KEYS.guest) === 'true';
+            const unlockedCourseIds = getUserUnlockedCourseIds();
+
 
             if (!courses || courses.length === 0) {
                 coursesContainer.innerHTML = `
@@ -1794,9 +1884,12 @@
                 const courseHref = getCourseHref(course);
 
                 const itemProgress = progressMap[course.id] || { percent: 0, completed: false };
-                const locked = !isAuthenticated;
+
+                const unlocked = unlockedCourseIds.has(course.id);
+                const locked = !unlocked;
                 const statusBadge = locked ? '<span class="lock-badge">🔒 Locked</span>' : '<span class="unlock-badge">✅ Unlocked</span>';
                 const cardClass = locked ? 'course-card locked' : 'course-card';
+
 
                 const editUI = currentUser?.role === 'instructor'
                     ? '<div class="instructor-edit"><i class="fas fa-pen"></i> Edit Course</div>'
@@ -1814,8 +1907,9 @@
                         ? `<button class="btn-sm btn-success" type="button" disabled>Enrolled</button>`
                         : `<button class="btn-sm btn-primary" type="button" data-enroll-course="${course.id}">Enroll</button>`;
 
-                return `
+                    return `
                     <a href="${courseHref}" class="${cardClass}" data-course-id="${course.id}" data-course-link="true">
+
                         <div class="course-thumb">
                             <i class="fas ${icon}"></i>
                             <span class="badge">${level}</span>
@@ -1922,10 +2016,33 @@
                     activateSession(mappedUser, existingSession?.remember || false);
                 }
 
+                // If enrollment modal exists, bind its submit handler once auth is ready.
+                if (window.EnrollmentModalUI && typeof window.EnrollmentModalUI.bindEnrollmentModalEvents === 'function') {
+                    window.EnrollmentModalUI.bindEnrollmentModalEvents({
+                        getCurrentUser: () => currentUser,
+                        onSuccess: ({ courseId }) => {
+                            // ensure UI unlocks immediately
+                            try {
+                                // persist unlocked course in session is handled by modal UI
+                                renderCourses(getVisibleCourses());
+                            } catch (_) {}
+
+                            showToast('Course unlocked!');
+
+                            // Optional smooth nav: scroll to that course section on unlock.
+                            const el = document.querySelector(`[data-course-id="${courseId}"]`);
+                            if (el && typeof el.scrollIntoView === 'function') {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                    });
+                }
+
                 updateAuthUI();
                 renderCourses(getVisibleCourses());
             });
         }
+
 
         async function loadCourses() {
             try {
@@ -2246,41 +2363,44 @@
                     return;
                 }
 
-                // Firestore-backed enrollment
+                // Firestore-backed enrollment (locked courses): show modal first.
                 const enrollBtn = event.target && event.target.closest ? event.target.closest('[data-enroll-course]') : null;
-                if (enrollBtn && currentUser && window.EnrollmentUI && typeof window.EnrollmentUI.enrollUserInCourse === 'function') {
+                if (enrollBtn) {
                     event.preventDefault();
                     event.stopPropagation();
 
                     const courseId = enrollBtn.getAttribute('data-enroll-course');
                     if (!courseId) return;
 
-                    try {
-                        enrollBtn.disabled = true;
-                        enrollBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enrolling...';
-
-                        window.EnrollmentUI.enrollUserInCourse({
-                            userId: currentUser.id,
-                            courseId: courseId
-                        }).then(() => {
-                            // reflect immediately in local session so UI updates
-                            updateCourseProgress(courseId, { percent: 0, completed: false });
-                            renderCourses(getVisibleCourses());
-                            showToast('Enrolled successfully. Dashboard unlocked!');
-                        }).catch((err) => {
-                            console.error('Enroll failed:', err);
-                            showToast('Enroll failed. Please try again.', 'error');
-                        }).finally(() => {
-                            // re-render will restore button state
-                        });
-                    } catch (err) {
-                        console.error('Enroll handler error:', err);
-                        showToast('Enroll failed. Please try again.', 'error');
+                    if (!currentUser) {
+                        showToast('Please login to enroll.', 'error');
+                        openModal('loginModal');
+                        return;
                     }
+
+                    // If already unlocked, just ignore.
+                    if (getUserUnlockedCourseIds().has(courseId)) {
+                        showToast('Course already unlocked.');
+                        return;
+                    }
+
+                    // Modal open (Admission Number, Name, Phone)
+                    const courseTitle = enrollBtn.closest('[data-course-id]')?.getAttribute('data-course-id')
+                        ? (enrollBtn.closest('[data-course-id]')?.querySelector('h4')?.textContent || 'Course')
+                        : (enrollBtn.parentElement?.closest('a[data-course-id]')?.querySelector('h4')?.textContent || 'Course');
+
+                    if (window.EnrollmentModalUI && typeof window.EnrollmentModalUI.openEnrollmentModal === 'function') {
+                        window.EnrollmentModalUI.openEnrollmentModal(courseId, courseTitle);
+                    } else {
+                        showToast('Enrollment modal unavailable.', 'error');
+                    }
+
                     return;
                 }
 
+
                 const courseLink = event.target && event.target.closest ? event.target.closest('[data-course-link="true"]') : null;
+
                 if (!courseLink) return;
 
                 if (!currentUser) {
