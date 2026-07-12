@@ -314,15 +314,9 @@ function createAcademyCard(academy) {
                 <h3 class="academy-card__title">${escapeHTML(academy.title)}</h3>
                 <p class="academy-card__subtitle">${escapeHTML(academy.subtitle)}</p>
             </div>
-            <div class="academy-card__stats">
-                <div class="academy-card__stat"><strong>${academy.coursesCount}</strong>Courses</div>
-                <div class="academy-card__stat"><strong>${academy.learningPaths}</strong>Learning Paths</div>
-                <div class="academy-card__stat"><strong>${academy.certificates}</strong>Certificates</div>
-                <div class="academy-card__stat"><strong>${academy.hours}</strong>Hours</div>
-            </div>
             <div class="academy-card__footer">
                 <span class="academy-card__level">⬢ ${escapeHTML(currentLevel)}</span>
-                <span class="academy-card__button">Explore Academy →</span>
+                <span class="academy-card__button">Explore</span>
             </div>
         </a>
     `;
@@ -445,7 +439,8 @@ function createAcademyDetailPage(academy, continueLearning = null) {
 
 function renderAcademyCards(container) {
     if (!container) return;
-    container.innerHTML = ACADEMY_DATA.map(createAcademyCard).join('');
+    const visibleAcademies = ACADEMY_DATA.slice(0, 10);
+    container.innerHTML = visibleAcademies.map(createAcademyCard).join('');
 }
 
 function renderSkeleton(container) {
@@ -502,7 +497,8 @@ export async function initAcademies() {
             });
 
             const enriched = ACADEMY_DATA.map((academy) => ({ ...academy, coursesCount: courseCountByAcademy.get(academy.slug) || academy.coursesCount }));
-            academyGrid.innerHTML = enriched.map(createAcademyCard).join('');
+            const visibleAcademies = enriched.slice(0, 10);
+            academyGrid.innerHTML = visibleAcademies.map(createAcademyCard).join('');
         } else {
             renderAcademyCards(academyGrid);
         }

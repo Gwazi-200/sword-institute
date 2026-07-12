@@ -811,8 +811,369 @@
         }
 
         /* ==========================================================
-           RESPONSIVE
+           REFINED HOMEPAGE EXPERIENCE
            ========================================================== */
+        .hero-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.9fr);
+            gap: 36px;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 620px;
+        }
+
+        .hero-content .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(139, 0, 255, 0.14);
+            background: rgba(255, 255, 255, 0.58);
+            color: var(--violet-deep);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.45rem, 4.4vw, 4rem);
+            font-weight: 800;
+            line-height: 1.02;
+            letter-spacing: -0.035em;
+            margin-bottom: 16px;
+        }
+
+        .hero-content p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .hero-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ai-mentor-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.54);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            box-shadow: 0 16px 40px rgba(139, 0, 255, 0.08);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+        }
+
+        .ai-mentor-card .ai-concierge-header {
+            padding: 0 0 10px;
+        }
+
+        .ai-mentor-card .ai-concierge-title {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-mentor-card .mentor-title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .ai-mentor-card .mentor-name {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .ai-mentor-card .mentor-subtitle {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .ai-concierge-body {
+            padding: 0;
+        }
+
+        .ai-concierge-welcome {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .ai-concierge-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .ai-concierge-input input {
+            flex: 1;
+            border: 0;
+            background: transparent;
+            outline: none;
+            font: inherit;
+            color: var(--text-primary);
+        }
+
+        .ai-send-btn {
+            min-width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 0;
+            background: var(--violet-deep);
+            color: #fff;
+        }
+
+        .ai-suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .ai-chip {
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.64);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .lazy-section {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .lazy-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stats-grid {
+            gap: 16px;
+        }
+
+        .stat-item {
+            padding: 18px 12px;
+            min-height: 128px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.7rem, 2.4vw, 2.1rem);
+        }
+
+        .section-header .sub {
+            font-size: 0.95rem;
+        }
+
+        .academies-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .academy-card {
+            min-height: 220px;
+            padding: 18px;
+            gap: 12px;
+        }
+
+        .academy-card__icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            font-size: 1.25rem;
+        }
+
+        .academy-card__title {
+            font-size: 0.98rem;
+        }
+
+        .academy-card__subtitle {
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .academy-card__footer {
+            margin-top: auto;
+            padding-top: 4px;
+        }
+
+        .course-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .course-thumb {
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        .course-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 6px;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            width: fit-content;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(255, 215, 0, 0.18);
+            color: var(--violet-dark);
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .testimonial-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+            gap: 16px;
+        }
+
+        .testimonial-card .rating {
+            color: var(--gold-radiant);
+            letter-spacing: 0.1em;
+        }
+
+        .testimonial-card .quote {
+            font-size: 0.98rem;
+            line-height: 1.75;
+            min-height: 84px;
+            margin: 0;
+        }
+
+        .cta-box {
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .cta-box h2 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            margin-bottom: 10px;
+        }
+
+        .cta-box p {
+            margin-bottom: 20px;
+        }
+
+        .btn:focus-visible,
+        .nav-links a:focus-visible,
+        .logo:focus-visible,
+        .identity-hub-trigger:focus-visible,
+        .ai-chip:focus-visible,
+        .ai-send-btn:focus-visible,
+        .ai-concierge-input input:focus-visible,
+        .academy-card:focus-visible,
+        .course-card:focus-visible {
+            outline: 3px solid rgba(139, 0, 255, 0.25);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 1180px) {
+            .hero-shell {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .academies-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .academies-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2.3rem;
+            }
+            .academies-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-item {
+                min-height: 110px;
+                padding: 14px 10px;
+            }
+            .hero-buttons .btn {
+                width: 100%;
+            }
+            .ai-concierge-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ai-send-btn {
+                width: 100%;
+            }
+        }
+
         @media (max-width: 1024px) {
             .app-wrapper {
                 padding: 16px;
@@ -959,37 +1320,37 @@
         HERO
         ========================================================== -->
         <section id="hero">
-            <div class="container hero-grid">
+            <div class="container hero-shell">
                 <div class="hero-content">
+                    <div class="eyebrow"><i class="fas fa-sparkles"></i> Premium learning for modern impact</div>
                     <h1>
-                        Forging <span class="highlight-violet">Digital Warriors</span><br />
-                        for <span class="highlight-gold">Sacred</span> Social Good
+                        Build skills that <span class="highlight-violet">matter</span><br />
+                        with calm, focused <span class="highlight-gold">guidance</span>
                     </h1>
                     <p>
-                        Professional education for NGOs, Government, Business, AI, Leadership,
-                        and Community Development. Illuminate your path.
+                        Learn from practical courses in AI, leadership, business, community development, and digital innovation through a streamlined experience designed for momentum.
                     </p>
                     <div class="hero-buttons">
                         <a href="courses.html" class="btn btn-primary">
                             <i class="fas fa-rocket"></i> Start Learning
                         </a>
                         <a href="#featured-courses" class="btn btn-gold">
-                            <i class="fas fa-compass"></i> Explore Courses
+                            <i class="fas fa-compass"></i> Browse Courses
                         </a>
+                    </div>
+                    <div class="hero-meta" aria-label="Platform highlights">
+                        <span><i class="fas fa-check-circle"></i> Flexible learning</span>
+                        <span><i class="fas fa-shield-halved"></i> Guided by Professor SWORD</span>
                     </div>
                 </div>
 
-                <!-- ==========================================================
-                PROFESSOR SWORD (Homepage Concierge - Lightweight AI)
-                ========================================================== -->
                 <div class="ai-mentor-card ai-concierge" id="aiMentorCard" aria-label="Professor SWORD homepage concierge">
-                    <div id="professorSwordWidgetHost"></div>
                     <header class="ai-concierge-header" aria-label="Professor SWORD header">
                         <h3 class="ai-concierge-title">
-                            <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
+                            <span class="professor-emoji" role="img" aria-label="Professor SWORD">👨‍🏫</span>
                             <span class="mentor-title-block">
                                 <span class="mentor-name">Professor SWORD</span>
-                                <small class="mentor-subtitle">Ask me anything about Sword Institute</small>
+                                <small class="mentor-subtitle">Your AI Learning Assistant</small>
                             </span>
                         </h3>
 
@@ -1001,11 +1362,7 @@
 
                     <main class="ai-concierge-body" aria-label="Conversation">
                         <div class="ai-concierge-welcome" id="aiWelcome" role="status">
-                            Hello! I'm Professor SWORD.
-                            <br />
-                            I can answer your questions about our courses, admissions, certificates, learning experience and more.
-                            <br />
-                            How can I help you today?
+                            Welcome back. I can help you explore courses, admissions, certificates, fees, and the next best step for your learning journey.
                         </div>
 
                         <div class="ai-messages" id="aiMessages" aria-label="AI messages" hidden></div>
@@ -1013,12 +1370,7 @@
 
                     <footer class="assistant-composer ai-concierge-composer" aria-label="Conversation composer">
                         <div class="ai-concierge-input" role="group" aria-label="Ask Professor SWORD">
-<button type="button" class="ai-mic-btn" aria-label="Voice input (not available)" title="Voice input (not available)" disabled>
-                                <i class="fas fa-microphone" aria-hidden="true"></i>
-                            </button>
-
                             <input type="text" id="aiInput" placeholder="Ask Professor SWORD anything..." aria-label="Ask Professor SWORD anything" />
-
                             <button id="aiSendBtn" type="button" class="ai-send-btn" aria-label="Send message">
                                 <i class="fas fa-paper-plane" aria-hidden="true"></i>
                             </button>
@@ -1026,8 +1378,8 @@
 
                         <div class="ai-suggestion-chips" aria-label="Suggested questions">
                             <button type="button" class="ai-chip" data-chip="Explore Courses">📚 Explore Courses</button>
-                            <button type="button" class="ai-chip" data-chip="Admission Requirements">🎓 Admission Requirements</button>
-                            <button type="button" class="ai-chip" data-chip="Course Fees">💳 Course Fees</button>
+                            <button type="button" class="ai-chip" data-chip="Admissions">🎓 Admissions</button>
+                            <button type="button" class="ai-chip" data-chip="Fees">💳 Fees</button>
                             <button type="button" class="ai-chip" data-chip="Certificates">📜 Certificates</button>
                         </div>
                     </footer>
@@ -1038,15 +1390,15 @@
         <!-- ==========================================================
         STATISTICS
         ========================================================== -->
-        <section id="statistics">
+        <section id="statistics" class="lazy-section" data-lazy-section="true">
             <div class="container stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number" id="totalStudents">12,000<span class="violet">+</span></div>
+                    <div class="stat-number" id="totalStudents">12k<span class="violet">+</span></div>
                     <div class="stat-label"><i class="fas fa-users"></i>Students</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number" id="totalCourses">18</div>
-                    <div class="stat-label"><i class="fas fa-book-open"></i>Sacred Courses</div>
+                    <div class="stat-label"><i class="fas fa-book-open"></i>Courses</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number" id="completionRate">97<span class="gold">%</span></div>
@@ -1054,7 +1406,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-number" id="studentRating">4.9<span class="gold">★</span></div>
-                    <div class="stat-label"><i class="fas fa-star"></i>Divine Rating</div>
+                    <div class="stat-label"><i class="fas fa-star"></i>Rating</div>
                 </div>
             </div>
         </section>
@@ -1062,13 +1414,13 @@
         <!-- ==========================================================
         SACRED ACADEMIES
         ========================================================== -->
-        <section id="categories" class="academies-section">
+        <section id="categories" class="academies-section lazy-section" data-lazy-section="true">
             <div class="container">
                 <div class="section-header">
                     <h2>
-                        <i class="fas fa-university"></i> Sacred Academies
+                        <i class="fas fa-university"></i> Explore Our Academies
                     </h2>
-                    <span class="sub">Choose your faculty and begin your next transformation <i class="fas fa-sparkles"></i></span>
+                    <span class="sub">Choose a focused path and begin your next transformation <i class="fas fa-sparkles"></i></span>
                 </div>
                 <div class="academies-grid" id="academiesContainer" aria-live="polite"></div>
             </div>
@@ -1077,16 +1429,15 @@
         <!-- ==========================================================
         FEATURED COURSES
         ========================================================== -->
-        <section id="featured-courses">
+        <section id="featured-courses" class="lazy-section" data-lazy-section="true">
             <div class="container">
                 <div class="section-header">
                     <h2>
                         <i class="fas fa-graduation-cap"></i> Featured Courses
                     </h2>
-                    <span class="sub">Powered by Sacred AI <i class="fas fa-sparkles"></i></span>
+                    <span class="sub">A refined collection of flagship learning paths <i class="fas fa-sparkles"></i></span>
                 </div>
-                <div class="courses-grid" id="coursesContainer">
-                    <!-- Skeleton Loaders -->
+                <div class="courses-grid" id="coursesContainer" data-lazy-content="featured-courses">
                     <div class="course-card">
                         <div class="skeleton skeleton-thumb"></div>
                         <div class="course-body">
@@ -1142,17 +1493,18 @@
         <!-- ==========================================================
         TESTIMONIALS
         ========================================================== -->
-        <section id="testimonials">
+        <section id="testimonials" class="lazy-section" data-lazy-section="true">
             <div class="container">
                 <div class="section-header">
                     <h2>
                         <i class="fas fa-quote-left quote-icon-violet"></i> What Our Students Say
                     </h2>
-                    <span class="sub">Real stories from real warriors <i class="fas fa-sparkles"></i></span>
+                    <span class="sub">Real stories from learners building meaningful momentum <i class="fas fa-sparkles"></i></span>
                 </div>
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
-                        <div class="quote">"Sword Institute transformed my career. Professor SWORD helped me stay on track and the courses are incredibly practical."</div>
+                        <div class="rating" aria-label="Five star rating">★★★★★</div>
+                        <div class="quote">“The experience feels calm, practical, and deeply relevant. I finally have a clear path.”</div>
                         <div class="author">
                             <div class="avatar">M</div>
                             <div>
@@ -1162,7 +1514,8 @@
                         </div>
                     </div>
                     <div class="testimonial-card">
-                        <div class="quote">"The community development courses gave me the tools I needed to make a real difference in my community."</div>
+                        <div class="rating" aria-label="Five star rating">★★★★★</div>
+                        <div class="quote">“Professor SWORD helped me stay focused and choose the right course at the right time.”</div>
                         <div class="author">
                             <div class="avatar">S</div>
                             <div>
@@ -1172,12 +1525,24 @@
                         </div>
                     </div>
                     <div class="testimonial-card">
-                        <div class="quote">"I love how Professor SWORD personalizes my learning experience. It feels like having a personal guide."</div>
+                        <div class="rating" aria-label="Five star rating">★★★★★</div>
+                        <div class="quote">“The lessons are practical, the guidance is thoughtful, and the platform is beautifully simple.”</div>
                         <div class="author">
                             <div class="avatar">J</div>
                             <div>
                                 <div class="name">James W.</div>
                                 <div class="role">Social Worker</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="rating" aria-label="Five star rating">★★★★★</div>
+                        <div class="quote">“I loved the polished experience and the clear next steps for each module.”</div>
+                        <div class="author">
+                            <div class="avatar">A</div>
+                            <div>
+                                <div class="name">Aisha N.</div>
+                                <div class="role">Business Founder</div>
                             </div>
                         </div>
                     </div>
@@ -1188,17 +1553,17 @@
         <!-- ==========================================================
         CTA SECTION
         ========================================================== -->
-        <section id="cta">
+        <section id="cta" class="lazy-section" data-lazy-section="true">
             <div class="container">
                 <div class="cta-box">
-                    <h2>Ready to <span class="violet">Transform</span> Your Career?</h2>
-                    <p>Join thousands of students already forging their path to becoming Digital Warriors for Social Good.</p>
+                    <h2>Start Building Skills That Matter</h2>
+                    <p>Join thousands of learners mastering AI, Leadership, Business, Community Development, and Digital Innovation.</p>
                     <div class="cta-buttons">
                         <a href="register.html" class="btn btn-primary">
-                            <i class="fas fa-user-plus"></i> Get Started Free
+                            <i class="fas fa-user-plus"></i> Start Learning
                         </a>
                         <a href="courses.html" class="btn btn-gold">
-                            <i class="fas fa-compass"></i> Explore Courses
+                            <i class="fas fa-compass"></i> Browse Courses
                         </a>
                     </div>
                 </div>
@@ -1244,18 +1609,12 @@
     <script type="module">
         import { applyTheme } from './js/services/themeService.js';
         import { createIdentityHub } from './js/components/identityHub.js';
-        import { createProfessorSwordWidget } from './js/components/professorSwordWidget.js';
 
         applyTheme();
 
         const identityHost = document.getElementById('identityHubHost');
         if (identityHost) {
             createIdentityHub(identityHost);
-        }
-
-        const swordHost = document.getElementById('professorSwordWidgetHost');
-        if (swordHost) {
-            createProfessorSwordWidget(swordHost);
         }
     </script>
 
@@ -1511,5 +1870,24 @@ const registerBtn = document.getElementById('registerLink') || document.getEleme
     <script type="module" src="js/index.js"></script>
     <script type="module" src="js/homeCourses.js"></script>
     <script type="module" src="js/academies.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lazySections = document.querySelectorAll('.lazy-section');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { rootMargin: '120px 0px 0px 0px' });
+
+                lazySections.forEach((section) => observer.observe(section));
+            } else {
+                lazySections.forEach((section) => section.classList.add('is-visible'));
+            }
+        });
+    </script>
 </body>
 </html>

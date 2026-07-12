@@ -10,6 +10,12 @@ function createIdentityHub(container, options = {}) {
         theme: getStoredTheme()
     };
 
+    const closeMenu = () => {
+        container.querySelector('.identity-menu')?.classList.remove('is-open');
+        const trigger = container.querySelector('.identity-hub-trigger');
+        trigger?.setAttribute('aria-expanded', 'false');
+    };
+
     const render = () => {
         const user = state.user || getCurrentUser();
         const themeMeta = getThemeMeta(state.theme);
@@ -19,22 +25,16 @@ function createIdentityHub(container, options = {}) {
         container.innerHTML = `
             <div class="identity-hub glass-card" role="region" aria-label="Identity hub">
                 ${user ? `
-                    <button class="identity-hub-trigger" type="button" aria-haspopup="menu" aria-expanded="false">
-                        <span class="identity-avatar" aria-hidden="true">${getUserInitials(user)}</span>
-                        <span class="identity-copy">
-                            <span class="identity-greeting">${getGreeting()}</span>
-                            <span class="identity-name">${getDisplayName(user)}</span>
-                        </span>
-                        <span class="identity-status" aria-label="Online status">● Online</span>
-                    </button>
-                    <div class="identity-menu" role="menu" aria-label="User menu">
-                        <a href="profile.html" role="menuitem">👤 My Profile</a>
-                        <a href="courses.html" role="menuitem">🎓 My Courses</a>
-                        <a href="dashboard.html" role="menuitem">📊 Dashboard</a>
-                        <a href="settings.html" role="menuitem">⚙ Settings</a>
-                        <button class="theme-toggle-btn" type="button" data-action="theme">🎨 ${themeMeta.label}</button>
-                        <button class="notification-toggle-btn" type="button" data-action="notifications">🔔 ${unreadCount} unread</button>
-                        <button class="logout-btn" type="button" data-action="logout">🚪 Logout</button>
+                    <div class="identity-hub-user">
+                        <button class="identity-hub-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Open profile menu">
+                            <span class="identity-avatar" aria-hidden="true">${getUserInitials(user)}</span>
+                        </button>
+                        <div class="identity-menu" role="menu" aria-label="User menu">
+                            <a href="dashboard.html" role="menuitem">📊 Dashboard</a>
+                            <a href="courses.html" role="menuitem">🎓 My Courses</a>
+                            <a href="settings.html" role="menuitem">⚙ Settings</a>
+                            <button class="logout-btn" type="button" data-action="logout">🚪 Logout</button>
+                        </div>
                     </div>
                 ` : `
                     <div class="identity-hub-auth">
@@ -50,37 +50,29 @@ function createIdentityHub(container, options = {}) {
 
     const attachEvents = () => {
         const trigger = container.querySelector('.identity-hub-trigger');
-        const themeButton = container.querySelector('[data-action="theme"]');
-        const notificationsButton = container.querySelector('[data-action="notifications"]');
         const logoutButton = container.querySelector('[data-action="logout"]');
 
         if (trigger) {
             trigger.addEventListener('click', () => {
-                container.querySelector('.identity-menu')?.classList.toggle('is-open');
-                trigger.setAttribute('aria-expanded', container.querySelector('.identity-menu')?.classList.contains('is-open') ? 'true' : 'false');
-            });
-        }
-
-        if (themeButton) {
-            themeButton.addEventListener('click', () => {
-                state.theme = toggleTheme();
-                render();
-            });
-        }
-
-        if (notificationsButton) {
-            notificationsButton.addEventListener('click', async () => {
-                markAllRead();
-                render();
+                const menu = container.querySelector('.identity-menu');
+                const isOpen = menu?.classList.toggle('is-open');
+                trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             });
         }
 
         if (logoutButton) {
             logoutButton.addEventListener('click', async () => {
                 await signOutUser();
+                closeMenu();
                 render();
             });
         }
+
+        document.addEventListener('click', (event) => {
+            if (!container.contains(event.target)) {
+                closeMenu();
+            }
+        });
     };
 
     const getGreeting = () => {
