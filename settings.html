@@ -8,13 +8,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/premium-nav.css" />
     <style>
         :root { --pearl-light:#FCFAF5; --pearl-mid:#F5F2EB; --pearl-shadow:#E8E2D8; --violet-deep:#8B00FF; --violet-soft:#A855F7; --gold-radiant:#FFD700; --text-primary:#1E1029; --text-secondary:#4B3A5C; }
         * { box-sizing:border-box; }
-        body { margin:0; min-height:100vh; font-family:'Inter',sans-serif; background:radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow)); color:var(--text-primary); display:grid; place-items:center; padding:24px; }
-        .card { width:min(640px, 100%); background:rgba(255,255,255,.55); backdrop-filter:blur(28px) saturate(180%); border:1px solid rgba(255,255,255,.65); border-radius:28px; box-shadow:0 25px 60px -15px rgba(139,0,255,.08); padding:36px; }
-        h1 { margin:0 0 12px; font-size:clamp(2rem, 4vw, 3rem); }
-        p { color:var(--text-secondary); line-height:1.7; margin:0 0 16px; }
+        body { margin:0; min-height:100vh; font-family:'Inter',sans-serif; background:radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow)); color:var(--text-primary); padding:24px 24px 48px; }
+        .page-shell { max-width: 900px; margin: 0 auto; display:flex; flex-direction:column; gap:20px; }
+        .card { width:100%; background:rgba(255,255,255,.55); backdrop-filter:blur(28px) saturate(180%); border:1px solid rgba(255,255,255,.65); border-radius:28px; box-shadow:0 25px 60px -15px rgba(139,0,255,.08); padding:36px; }
+        .card h1 { margin:0 0 12px; font-size:clamp(2rem, 4vw, 3rem); }
+        .card p { color:var(--text-secondary); line-height:1.7; margin:0 0 16px; }
         .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
         a { text-decoration:none; }
         .btn { display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; font-weight:700; }
@@ -22,17 +24,36 @@
         .secondary { background:rgba(139,0,255,.08); color:var(--violet-deep); }
         .brand { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:18px; }
         .brand i { color:var(--gold-radiant); }
+        .theme-host { margin-top: 10px; }
     </style>
 </head>
 <body>
-    <main class="card">
-        <div class="brand"><i class="fas fa-shield-halved"></i> Sword Institute</div>
-        <h1>Settings</h1>
-        <p>The settings page is coming soon. For now, theme and account controls live in the main course and dashboard views.</p>
-        <div class="actions">
-            <a class="btn primary" href="dashboard.html"><i class="fas fa-gauge-high"></i> Open Dashboard</a>
-            <a class="btn secondary" href="about.html"><i class="fas fa-circle-info"></i> About</a>
-        </div>
-    </main>
+    <div class="page-shell">
+        <div id="navbarHost"></div>
+        <main class="card">
+            <div class="brand"><i class="fas fa-shield-halved"></i> Sword Institute</div>
+            <h1>Settings</h1>
+            <p>Personalize your learning space with a refined theme and keep your account controls close at hand.</p>
+            <div class="theme-host" id="themeHost"></div>
+            <div class="actions">
+                <a class="btn primary" href="dashboard.html"><i class="fas fa-gauge-high"></i> Open Dashboard</a>
+                <a class="btn secondary" href="about.html"><i class="fas fa-circle-info"></i> About</a>
+            </div>
+        </main>
+    </div>
+    <script type="module">
+        import { createNavbar } from './js/components/navbar.js';
+        import { createThemeManager } from './js/components/themeManager.js';
+
+        const navbarHost = document.getElementById('navbarHost');
+        const themeHost = document.getElementById('themeHost');
+
+        if (navbarHost) {
+            createNavbar(navbarHost, { activePage: 'home' });
+        }
+        if (themeHost) {
+            createThemeManager(themeHost);
+        }
+    </script>
 </body>
 </html>

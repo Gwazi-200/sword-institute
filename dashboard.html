@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
+    <link rel="stylesheet" href="css/premium-nav.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
     <link rel="stylesheet" href="css/dashboard-glass-cards.css" />
 
@@ -535,27 +536,9 @@
         <div class="orb orb-2"></div>
 
         <!-- ============================================================
-        NAVIGATION
+        PREMIUM NAVIGATION
         ============================================================ -->
-        <nav>
-            <div class="container nav-container">
-                <a href="index.html" class="logo" data-route="home">
-                    <i class="fas fa-shield-halved"></i>
-                    Sword<span>Institute</span>
-                </a>
-                <ul class="nav-links">
-                    <li><a href="index.html" data-route="home">Home</a></li>
-                    <li><a href="courses.html" data-route="courses">Courses</a></li>
-                    <li><a href="dashboard.html" class="active" data-route="dashboard">Dashboard</a></li>
-                    <li><a href="ai-message.html" target="_blank">Professor SWORD</a></li>
-                </ul>
-                <div class="nav-actions" id="navActions">
-<button type="button" class="btn btn-outline-violet" id="logoutBtn" title="Logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
-            </div>
-        </nav>
+        <div id="navbarHost"></div>
 
         <!-- ============================================================
         DASHBOARD CONTENT
@@ -578,6 +561,8 @@
                     <i class="fas fa-plus"></i> Continue Learning
                 </a>
             </div>
+
+            <div id="studentIntelligenceHost"></div>
 
             <!-- Stats -->
             <div class="stats-grid">
@@ -692,15 +677,22 @@
 
     <script type="module">
         import { fetchDashboardData } from './js/services/dashboardService.js';
+        import { getStudentIntelligenceSnapshot } from './js/services/studentProfileService.js';
+        import { getAnalyticsSnapshot } from './js/services/analyticsService.js';
+        import { getCareerRecommendations } from './js/services/careerService.js';
+        import { renderStudentIntelligenceCard } from './js/components/studentIntelligenceCard.js';
         window.dashboardService = { fetchDashboardData };
-    </script>
-
+        window.studentIntelligence = { getStudentIntelligenceSnapshot, getAnalyticsSnapshot, getCareerRecommendations, renderStudentIntelligenceCard };
     <!-- ========================================================== -->
     <!-- ========================================================== -->
     <!-- AI SERVICE (ES MODULE)                                   -->
     <!-- ========================================================== -->
     <script type="module" src="./ai-service.js"></script>
-
+    <script type="module">
+        import { createNavbar } from './js/components/navbar.js';
+        const navbarHost = document.getElementById('navbarHost');
+        if (navbarHost) createNavbar(navbarHost, { activePage: 'dashboard' });
+    </script>
 
     <script>
 
@@ -813,8 +805,11 @@
 
                 const name = await resolveUserName(user);
                 userName.textContent = name;
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) welcomeMessage.textContent = `Welcome back ${name.split(' ')[0] || 'learner'}`;
 
                 await loadUserDashboard(user.uid);
+                await loadStudentIntelligence(user.uid);
                 await loadAIRecommendations(user.uid);
             } catch (e) {
                 console.warn('Dashboard eligibility check failed:', e);
@@ -906,6 +901,29 @@
         // =============================================================
         // 4. LOAD USER DASHBOARD
         // =============================================================
+        async function loadStudentIntelligence(uid) {
+            try {
+                const snapshot = await window.studentIntelligence.getStudentIntelligenceSnapshot(uid);
+                const analytics = await window.studentIntelligence.getAnalyticsSnapshot(uid);
+                const recommendations = await window.studentIntelligence.getCareerRecommendations(uid);
+                const host = document.getElementById('studentIntelligenceHost');
+                if (!host) return;
+                const cards = [
+                    { label: 'Today', value: snapshot.todayGoal || 'Complete one focused study block' },
+                    { label: 'Weekly Progress', value: `${analytics.weeklyProgress}%` },
+                    { label: 'Current Streak', value: `${analytics.currentStreak} days` },
+                    { label: 'Career Focus', value: recommendations[0]?.title || 'Growing your path' },
+                ];
+                host.innerHTML = window.studentIntelligence.renderStudentIntelligenceCard({
+                    title: snapshot.welcomeLabel || 'Welcome back',
+                    subtitle: 'Your learning path is now connected across courses, knowledge, and Professor SWORD.',
+                    items: cards,
+                });
+            } catch (error) {
+                console.warn('Could not load student intelligence card:', error);
+            }
+        }
+
         async function loadUserDashboard(uid) {
             try {
                 const dashboardData = await window.dashboardService.fetchDashboardData(uid);

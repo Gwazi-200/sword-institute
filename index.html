@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
+    <link rel="stylesheet" href="css/premium-nav.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
     <link rel="stylesheet" href="css/professorSword.css" />
     <link rel="stylesheet" href="css/academies.css" />
@@ -1295,26 +1296,7 @@
         <!-- ==========================================================
         NAVIGATION
         ========================================================== -->
-        <nav>
-            <div class="container nav-container">
-                <a href="index.html" class="logo">
-                    <i class="fas fa-shield-halved"></i>
-                    Sword<span>Institute</span>
-                </a>
-                <ul class="nav-links">
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="courses.html">Courses</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="ai-message.html">Professor SWORD</a></li>
-                </ul>
-                <div class="nav-actions" id="navActions">
-                    <div id="identityHubHost" aria-label="Identity hub"></div>
-                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardLink" style="display:none;">
-                        <i class="fas fa-shield-halved"></i> Dashboard
-                    </a>
-                </div>
-            </div>
-        </nav>
+        <div id="navbarHost"></div>
 
         <!-- ==========================================================
         HERO
@@ -1608,14 +1590,19 @@
     <script type="module" src="js/ai/professorSword.js"></script>
     <script type="module">
         import { applyTheme } from './js/services/themeService.js';
-        import { createIdentityHub } from './js/components/identityHub.js';
+        import { createNavbar } from './js/components/navbar.js';
+        import { getStudentIntelligenceSnapshot } from './js/services/studentProfileService.js';
+        import { getCareerRecommendations } from './js/services/careerService.js';
+        import { saveConversationTurn } from './js/services/memoryService.js';
 
         applyTheme();
 
-        const identityHost = document.getElementById('identityHubHost');
-        if (identityHost) {
-            createIdentityHub(identityHost);
+        const navbarHost = document.getElementById('navbarHost');
+        if (navbarHost) {
+            createNavbar(navbarHost, { activePage: 'home' });
         }
+
+        window.__studentIntelligence = { getStudentIntelligenceSnapshot, getCareerRecommendations, saveConversationTurn };
     </script>
 
     <script type="importmap">
@@ -1758,6 +1745,10 @@ const registerBtn = document.getElementById('registerLink') || document.getEleme
                         live: AIService.isLastResponseLive ? AIService.isLastResponseLive() : true,
                         source: AIService.getLastResponseSource ? AIService.getLastResponseSource() : 'unknown'
                     };
+
+                if (currentUser && window.__studentIntelligence?.saveConversationTurn) {
+                    await window.__studentIntelligence.saveConversationTurn(currentUser.uid, message, 'student');
+                }
 
                 setMentorOnline(Boolean(result.live));
 

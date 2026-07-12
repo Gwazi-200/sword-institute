@@ -443,18 +443,7 @@
 </head>
 <body>
     <div class="page-shell">
-        <nav class="site-nav" aria-label="Primary">
-            <a href="index.html" class="site-brand">
-                <i class="fas fa-shield-halved"></i>
-                Sword<span>Institute</span>
-            </a>
-            <div class="site-nav-links">
-                <a href="index.html">Home</a>
-                <a href="courses.html">Courses</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="ai-message.html">Professor SWORD</a>
-            </div>
-        </nav>
+        <div id="navbarHost"></div>
 
         <main class="chat-stage">
             <div class="chat-wrapper">
@@ -529,10 +518,14 @@
         // IMPORTS
         // =============================================================
         import { getAIRecommendations } from './aiService.js';
+        import { saveConversationTurn } from './js/services/memoryService.js';
+        import { getStudentProfile, updateStudentProfile } from './js/services/studentProfileService.js';
+        import { createNavbar } from './js/components/navbar.js';
         
         // =============================================================
         // DOM References
         // =============================================================
+        const navbarHost = document.getElementById('navbarHost');
         const messagesContainer = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -568,6 +561,12 @@
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     currentUser = user;
+                    await updateStudentProfile(user.uid, {
+                        fullName: user.displayName || user.email || 'Student',
+                        email: user.email || '',
+                        lastLogin: new Date().toISOString(),
+                    }).catch(() => null);
+                    await getStudentProfile(user.uid, { force: true }).catch(() => null);
                     await loadStudentData(user.uid);
                     await addWelcomeMessage();
                 } else {
@@ -690,6 +689,9 @@
             
             // Add user message
             addMessage('user', text);
+            if (currentUser?.uid) {
+                await saveConversationTurn(currentUser.uid, text, 'student');
+            }
             chatInput.value = '';
             
             // Show typing indicator
@@ -732,6 +734,9 @@
                 response = `That's a great question! Let me think about that... 🤔\n\nI'd recommend exploring our courses on community development and social work. You might find "Communication Skills" or "Introduction to Community Health" particularly helpful.\n\nWould you like a specific course recommendation?`;
             }
             
+            if (currentUser?.uid) {
+                await saveConversationTurn(currentUser.uid, response, 'assistant');
+            }
             // Add AI response with typing delay
             await typeResponse(response);
         }

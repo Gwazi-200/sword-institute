@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/premium-nav.css" />
 
     <style>
         /* ============================================================
@@ -1037,46 +1038,9 @@
         <div class="orb orb-2"></div>
 
         <!-- ============================================================
-        NAVIGATION - CORRECTED
+        PREMIUM NAVIGATION
         ============================================================ -->
-        <nav>
-            <div class="container nav-container">
-                <a href="index.html" class="logo" data-route="home">
-                    <i class="fas fa-shield-halved"></i>
-                    Sword<span>Institute</span>
-                </a>
-                <ul class="nav-links">
-                    <li><a href="index.html" data-route="home">Home</a></li>
-                    <li><a href="courses.html" class="active" data-route="courses">Courses</a></li>
-                    <li><a href="dashboard.html" data-route="dashboard">Dashboard</a></li>
-                    <li><a href="ai-message.html">Professor SWORD</a></li>
-                </ul>
-                <div class="nav-actions" id="navActions">
-                    <button class="nav-utility" id="themeToggle" type="button" title="Toggle Theme">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="nav-utility" id="notificationBell" type="button" title="Notifications">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                    <button class="btn btn-outline-violet" id="loginBtn" type="button">Login</button>
-                    <button class="btn btn-primary" id="registerBtn" type="button">Register</button>
-                    <a href="dashboard.html" class="btn btn-gold is-hidden" id="dashboardBtn" data-route="dashboard">
-                        <i class="fas fa-shield-halved"></i> Dashboard
-                    </a>
-                    <div class="profile-menu-wrap is-hidden" id="profileWrap">
-                        <button class="nav-utility" id="profileButton" type="button" title="Profile Menu">
-                            <i class="fas fa-user-circle"></i>
-                        </button>
-                        <div class="profile-dropdown" id="profileDropdown">
-                                <a href="profile.html" id="profileNameItem"><i class="fas fa-user"></i> My Profile</a>
-                                <a href="courses.html" id="myCoursesItem"><i class="fas fa-layer-group"></i> My Courses</a>
-                                <a href="settings.html" id="settingsItem"><i class="fas fa-sliders"></i> Settings</a>
-                            <button type="button" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        <div id="navbarHost"></div>
 
         <!-- ============================================================
         COURSE CATALOGUE
@@ -1125,6 +1089,8 @@
                 </div>
                 <div class="continue-grid" id="continueGrid"></div>
             </section>
+
+            <div id="courseIntelligenceBanner" aria-live="polite" style="margin: 16px 0 22px; padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,0.56); border: 1px solid rgba(139,0,255,0.16); box-shadow: 0 14px 32px rgba(139,0,255,0.08);"></div>
 
             <!-- Filter Bar -->
             <div class="filter-bar" id="filterBar">
@@ -1380,6 +1346,15 @@
     <script src="js/enrollment-modal-ui.js"></script>
 
 
+
+    <script type="module">
+        import { getStudentProfile, updateStudentProfile, addStudentCourse, markCourseCompleted } from './js/services/studentProfileService.js';
+        import { getCareerRecommendations } from './js/services/careerService.js';
+        import { createNavbar } from './js/components/navbar.js';
+        window.studentProfileBridge = { getStudentProfile, updateStudentProfile, addStudentCourse, markCourseCompleted, getCareerRecommendations };
+        const navbarHost = document.getElementById('navbarHost');
+        if (navbarHost) createNavbar(navbarHost, { activePage: 'courses' });
+    </script>
 
     <script>
 
@@ -1740,9 +1715,8 @@
             return currentUser;
         }
 
-        function updateCourseProgress(courseId, payload = {}) {
+        async function updateCourseProgress(courseId, payload = {}) {
             if (!currentUser) return;
-
 
             const now = new Date().toISOString();
             updateUser((users) => users.map((user) => {
@@ -1768,6 +1742,18 @@
             }));
 
             refreshCurrentUser();
+
+            const courseTitle = allCourses.find((course) => course.id === courseId)?.title || courseId;
+            try {
+                if (payload.percent > 0 && window.studentProfileBridge?.addStudentCourse) {
+                    await window.studentProfileBridge.addStudentCourse(currentUser.id, { id: courseId, title: courseTitle });
+                }
+                if (payload.completed && window.studentProfileBridge?.markCourseCompleted) {
+                    await window.studentProfileBridge.markCourseCompleted(currentUser.id, courseId, courseTitle);
+                }
+            } catch (error) {
+                console.warn('Student profile sync skipped:', error);
+            }
         }
 
         function getVisibleCourses() {
@@ -1936,6 +1922,24 @@
             updateContinueLearning();
         }
 
+        async function refreshCourseIntelligence() {
+            const host = document.getElementById('courseIntelligenceBanner');
+            if (!host) return;
+            if (!currentUser?.id) {
+                host.innerHTML = '<div style="font-size:0.95rem; color:#5F4C73;">Log in to unlock a personalized learning path.</div>';
+                return;
+            }
+            try {
+                const profile = await window.studentProfileBridge?.getStudentProfile(currentUser.id, { force: true });
+                const recommendations = await window.studentProfileBridge?.getCareerRecommendations(currentUser.id);
+                const goal = profile?.learningGoals?.[0] || 'Complete your first course';
+                const title = recommendations?.[0]?.title || 'Career path';
+                host.innerHTML = `<div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;"><div><strong style="color:#1E1029;">${profile?.studentName || currentUser.fullName || 'Learner'}</strong><div style="color:#5F4C73; font-size:0.92rem;">Today's focus: ${goal}. Recommended next direction: ${title}.</div></div><a href="dashboard.html" class="btn btn-outline-violet" style="padding:8px 14px; font-size:0.84rem;">Open Dashboard</a></div>`;
+            } catch (error) {
+                host.innerHTML = '<div style="font-size:0.95rem; color:#5F4C73;">Your personalized course guidance is warming up.</div>';
+            }
+        }
+
         function updateAuthUI() {
             const isAuthenticated = Boolean(currentUser);
 
@@ -1975,6 +1979,7 @@
             clearSession();
             updateAuthUI();
             renderCourses(getVisibleCourses());
+            refreshCourseIntelligence();
             continueSection.classList.add('is-hidden');
             if (reason) showToast(reason, 'error');
         }
@@ -2011,6 +2016,15 @@
 
                 currentUser = mappedUser;
 
+                if (window.studentProfileBridge?.getStudentProfile && firebaseUser?.uid) {
+                    window.studentProfileBridge.getStudentProfile(firebaseUser.uid, { force: true }).catch(() => null);
+                    window.studentProfileBridge.updateStudentProfile(firebaseUser.uid, {
+                        fullName: mappedUser.fullName || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Student',
+                        email: firebaseUser.email || mappedUser.email || '',
+                        lastLogin: new Date().toISOString(),
+                    }).catch(() => null);
+                }
+
                 const existingSession = getSession();
                 if (!existingSession || existingSession.userId !== mappedUser.id) {
                     activateSession(mappedUser, existingSession?.remember || false);
@@ -2040,6 +2054,7 @@
 
                 updateAuthUI();
                 renderCourses(getVisibleCourses());
+                refreshCourseIntelligence();
             });
         }
 
@@ -2135,7 +2150,8 @@
         }
 
         function bindEvents() {
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
             const openLogin = () => openModal('loginModal');
             const openRegister = () => openModal('registerModal');
@@ -2157,21 +2173,30 @@
                 renderCourses(getVisibleCourses());
             });
 
-            document.getElementById('notificationBell').addEventListener('click', () => {
-                showToast(mockNotifications.join(' | '));
-            });
+            const notificationBell = document.getElementById('notificationBell');
+            if (notificationBell) {
+                notificationBell.addEventListener('click', () => {
+                    showToast(mockNotifications.join(' | '));
+                });
+            }
 
-            profileButton.addEventListener('click', () => {
-                profileDropdown.classList.toggle('show');
-            });
+            if (profileButton && profileDropdown) {
+                profileButton.addEventListener('click', () => {
+                    profileDropdown.classList.toggle('show');
+                });
+            }
 
-            document.addEventListener('click', (event) => {
-                if (!profileWrap.contains(event.target)) {
-                    profileDropdown.classList.remove('show');
-                }
-            });
+            if (profileWrap && profileButton && profileDropdown) {
+                document.addEventListener('click', (event) => {
+                    if (!profileWrap.contains(event.target)) {
+                        profileDropdown.classList.remove('show');
+                    }
+                });
+            }
 
-            logoutBtn.addEventListener('click', () => logout('Logout successful.'));
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => logout('Logout successful.'));
+            }
 
             registerPassword.addEventListener('input', () => {
                 const result = passwordResult(registerPassword.value);

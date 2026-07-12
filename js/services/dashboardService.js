@@ -28,7 +28,7 @@ async function fetchDashboardData(uid) {
     const cached = getCachedDashboard(uid);
     if (cached) return cached;
 
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(db, 'students', uid);
     const userSnap = await getDoc(userRef);
     const userData = userSnap.exists() ? userSnap.data() : {};
 
