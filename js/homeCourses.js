@@ -8,11 +8,8 @@
 
 import { getFeaturedCourses } from "./services/courseService.js";
 
-const container = document.getElementById("featuredCourses");
+const container = document.getElementById("coursesContainer");
 
-/**
- * Escape HTML
- */
 function escapeHTML(text = "") {
     return String(text)
         .replace(/&/g, "&amp;")
@@ -22,154 +19,112 @@ function escapeHTML(text = "") {
         .replace(/'/g, "&#039;");
 }
 
-/**
- * Build one course card
- */
 function createCourseCard(course) {
+    const thumbnail = course.thumbnail || "images/courses/default-course.jpg";
+    const duration = course.duration || course.length || "Self-paced";
+    const difficulty = course.difficulty || "Beginner";
+    const certificateBadge = course.certificate ? '<span class="course-badge"><i class="fas fa-award"></i> Certificate</span>' : '';
 
     return `
-        <article class="programme-card">
-
+        <article class="course-card" aria-label="${escapeHTML(course.title)}">
             <img
-                class="programme-image"
-                src="${course.thumbnail}"
+                class="course-thumb"
+                src="${thumbnail}"
                 alt="${escapeHTML(course.title)}"
                 loading="lazy"
+                decoding="async"
                 onerror="this.src='images/courses/default-course.jpg'"
             >
-
-            <div class="programme-content">
-
-                <span class="tag">
-                    ${escapeHTML(course.category)}
-                </span>
-
-                <h3>
-                    ${escapeHTML(course.title)}
-                </h3>
-
-                <p>
-                    ${escapeHTML(course.shortDescription)}
-                </p>
-
+            <div class="course-body">
+                <div class="course-badge-row">${certificateBadge}</div>
+                <h4>${escapeHTML(course.title)}</h4>
+                <p>${escapeHTML(course.shortDescription || course.description || "Practical learning designed for real-world impact.")}</p>
                 <div class="course-meta">
-
-                    <span>⭐ ${course.rating}</span>
-
-                    <span>📚 ${course.lessons} Lessons</span>
-
+                    <span><i class="fas fa-clock"></i> ${escapeHTML(duration)}</span>
+                    <span><i class="fas fa-layer-group"></i> ${escapeHTML(difficulty)}</span>
                 </div>
-
-                <div class="course-meta">
-
-                    <span>⏱ ${course.duration}</span>
-
-                    <span>👥 ${course.students}</span>
-
+                <div class="course-footer">
+                    <span class="text-muted">${escapeHTML(course.category || "Featured")}</span>
+                    <a href="course.html?slug=${encodeURIComponent(course.slug || course.id)}" class="btn btn-outline-violet">Enroll</a>
                 </div>
-
-                <div class="programme-footer">
-
-                    <strong>
-
-                        ${
-                            course.certificate
-                                ? "🎓 Certificate"
-                                : ""
-
-                        }
-
-                    </strong>
-
-                    <a
-                        href="course.html?slug=${course.slug}"
-                        class="btn btn-primary"
-                    >
-
-                        View Course
-
-                    </a>
-
-                </div>
-
             </div>
-
         </article>
     `;
 }
 
-/**
- * Render courses
- */
 async function renderCourses() {
-
     if (!container) return;
 
+    const existingCards = container.querySelectorAll('.course-card');
+    if (existingCards.length) {
+        existingCards.forEach((card) => card.remove());
+    }
+
     container.innerHTML = `
-        <div class="loading-courses">
-
-            <div class="loader"></div>
-
-            <p>Loading Professional Programmes...</p>
-
+        <div class="course-card">
+            <div class="skeleton skeleton-thumb"></div>
+            <div class="course-body">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text skeleton-text-short"></div>
+                <div class="course-meta course-meta-skeleton">
+                    <span class="skeleton skeleton-meta"></span>
+                    <span class="skeleton skeleton-meta skeleton-meta-short"></span>
+                </div>
+            </div>
+        </div>
+        <div class="course-card">
+            <div class="skeleton skeleton-thumb"></div>
+            <div class="course-body">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text skeleton-text-short"></div>
+                <div class="course-meta course-meta-skeleton">
+                    <span class="skeleton skeleton-meta"></span>
+                    <span class="skeleton skeleton-meta skeleton-meta-short"></span>
+                </div>
+            </div>
+        </div>
+        <div class="course-card">
+            <div class="skeleton skeleton-thumb"></div>
+            <div class="course-body">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text skeleton-text-short"></div>
+                <div class="course-meta course-meta-skeleton">
+                    <span class="skeleton skeleton-meta"></span>
+                    <span class="skeleton skeleton-meta skeleton-meta-short"></span>
+                </div>
+            </div>
+        </div>
+        <div class="course-card">
+            <div class="skeleton skeleton-thumb"></div>
+            <div class="course-body">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text skeleton-text-short"></div>
+                <div class="course-meta course-meta-skeleton">
+                    <span class="skeleton skeleton-meta"></span>
+                    <span class="skeleton skeleton-meta skeleton-meta-short"></span>
+                </div>
+            </div>
         </div>
     `;
 
     try {
-
-        const courses = await getFeaturedCourses();
+        const courses = await getFeaturedCourses(4);
 
         if (!courses.length) {
-
-            container.innerHTML = `
-
-                <div class="empty-state">
-
-                    <h3>No Featured Courses</h3>
-
-                    <p>
-                        Featured courses will appear here once published.
-                    </p>
-
-                </div>
-
-            `;
-
+            container.innerHTML = '<div class="empty-state"><h3>No featured courses available yet.</h3><p>Fresh courses will appear here as they are published.</p></div>';
             return;
-
         }
 
-        container.innerHTML = courses
-            .map(createCourseCard)
-            .join("");
-
-    }
-
-    catch (error) {
-
+        container.innerHTML = courses.map(createCourseCard).join("");
+    } catch (error) {
         console.error(error);
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <h3>Unable to Load Courses</h3>
-
-                <p>
-                    Please refresh the page and try again.
-                </p>
-
-            </div>
-
-        `;
-
+        container.innerHTML = '<div class="empty-state"><h3>Unable to load featured courses.</h3><p>Please refresh and try again.</p></div>';
     }
-
 }
 
-/**
- * Initialise
- */
 document.addEventListener("DOMContentLoaded", renderCourses);
-
 console.log("🏠 Homepage Course Loader Ready");
