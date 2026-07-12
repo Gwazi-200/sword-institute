@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Hub - Sword Institute</title>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app":"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+        "firebase/auth":"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+        "firebase/firestore":"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+      }
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --success: #51cf66;
+            --danger: #ff6b6b;
+            --warning: #ffd93d;
+            --text: #333;
+            --text-light: #666;
+            --border: #e9ecef;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+                Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f8f9fa 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-breadcrumb {
+            font-size: 12px;
+            opacity: 0.9;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .header-breadcrumb a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .header-breadcrumb a:hover {
+            opacity: 1;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Hub Layout */
+        .hub-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .hub-sidebar {
+            position: sticky;
+            top: 120px;
+        }
+
+        .hub-main {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Search Bar Container */
+        .search-container {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        search-bar {
+            display: block;
+        }
+
+        /* Filter Panel Container */
+        filter-panel {
+            display: block;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-sm);
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--white);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            backdrop-filter: blur(4px);
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Grid Container */
+        resource-grid {
+            display: block;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        /* Status Messages */
+        .status-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            background: var(--white);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            z-index: 300;
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .status-message.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .status-message.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .status-message.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hub-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .hub-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 16px 0;
+            }
+
+            .header-container {
+                padding: 0 16px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .header-breadcrumb {
+                display: none;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .stats-bar {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+
+        /* Utility Classes */
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="header-title">
+                <span>📚</span>
+                <span>Knowledge Hub</span>
+            </div>
+            <div class="header-breadcrumb">
+                <a href="/">Home</a>
+                <span>/</span>
+                <span>Knowledge Hub</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Discover Learning Resources</h1>
+            <p class="page-subtitle">
+                Explore 50+ curated books, videos, research papers, podcasts, and articles across
+                AI, Data Science, Business, and Leadership
+            </p>
+        </div>
+
+        <!-- Hub Layout -->
+        <div class="hub-layout">
+            <!-- Sidebar: Filters -->
+            <aside class="hub-sidebar">
+                <filter-panel id="filters"></filter-panel>
+            </aside>
+
+            <!-- Main: Search + Stats + Grid -->
+            <main class="hub-main">
+                <!-- Search Container -->
+                <div class="search-container">
+                    <search-bar id="search" placeholder="Search 50+ resources..."></search-bar>
+                </div>
+
+                <!-- Stats Bar -->
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-label">Results:</span>
+                        <span class="stat-value" id="result-count">50</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Page:</span>
+                        <span class="stat-value" id="page-info">1 / 5</span>
+                    </div>
+                    <div class="action-buttons" id="actions" style="margin-left: auto;">
+                        <button class="btn" id="reset-btn">↻ Reset</button>
+                        <button class="btn btn-primary" id="export-btn">⬇ Export</button>
+                    </div>
+                </div>
+
+                <!-- Resource Grid -->
+                <resource-grid id="grid" data-student-id="student_demo" data-page-size="12">
+                </resource-grid>
+            </main>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Status Message Template -->
+    <template id="status-template">
+        <div class="status-message">
+            <span id="status-message-text"></span>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script type="module">
+        // Import services
+        import { loadResources, searchResources } from "./js/services/resourceService.js";
+        import { startReading } from "./js/services/readingProgressService.js";
+
+        // Import components
+        import "./js/components/SearchBar.js";
+        import "./js/components/FilterPanel.js";
+        import "./js/components/ResourceGrid.js";
+        import "./js/components/ResourceCard.js";
+
+        // DOM Elements
+        const search = document.querySelector("#search");
+        const filters = document.querySelector("#filters");
+        const grid = document.querySelector("#grid");
+        const loading = document.querySelector("#loading");
+        const resultCount = document.querySelector("#result-count");
+        const pageInfo = document.querySelector("#page-info");
+        const resetBtn = document.querySelector("#reset-btn");
+        const exportBtn = document.querySelector("#export-btn");
+
+        // State
+        let allResources = [];
+        const studentId = "student_demo";
+
+        // ========================================
+        // Initialization
+        // ========================================
+
+        async function initializePage() {
+            try {
+                showLoading(true);
+
+                // Load all resources
+                allResources = await loadResources();
+                grid.setResources(allResources);
+
+                updateStats(allResources.length);
+                showMessage(`Loaded ${allResources.length} resources`, "info");
+            } catch (error) {
+                console.error("Error initializing page:", error);
+                showMessage("Error loading resources", "error");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ========================================
+        // Search & Filter Integration
+        // ========================================
+
+        async function performSearch() {
+            try {
+                showLoading(true);
+
+                const query = search.getValue();
+                const activeFilters = filters.getActiveFilters();
+
+                // Search with current query and filters
+                const results = await searchResources({
+                    query,
+                    filters: activeFilters,
+                });
+
+                grid.setResources(results);
+                updateStats(results.length);
+
+                if (results.length === 0) {
+                    showMessage("No resources match your search", "info");
+                }
+            } catch (error) {
+                console.error("Search error:", error);
+                showMessage("Error searching resources", "error");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Search event
+        search.addEventListener("search", async e => {
+            performSearch();
+        });
+
+        // Filter change
+        filters.addEventListener("filters-changed", async e => {
+            performSearch();
+        });
+
+        // ========================================
+        // Grid Events
+        // ========================================
+
+        grid.addEventListener("resource-view", async e => {
+            const { resourceId, resource } = e.detail;
+
+            try {
+                // Track that user started reading
+                await startReading(studentId, resourceId);
+
+                // In a real app, navigate to detail page
+                // window.location.href = `/knowledge-hub/resource/${resourceId}`;
+
+                showMessage(`Started reading: ${resource.title}`, "success");
+            } catch (error) {
+                console.error("Error starting reading:", error);
+            }
+        });
+
+        grid.addEventListener("resource-saved", e => {
+            const { resourceId, isSaved } = e.detail;
+            showMessage(
+                isSaved ? "✓ Resource saved to bookshelf" : "✗ Resource removed",
+                "success"
+            );
+        });
+
+        grid.addEventListener("resource-liked", e => {
+            const { resourceId, isLiked } = e.detail;
+            showMessage(isSaved ? "❤️ You liked this resource" : "👍 Like removed", "info");
+        });
+
+        // ========================================
+        // Action Buttons
+        // ========================================
+
+        resetBtn.addEventListener("click", () => {
+            search.clear();
+            filters.clearFilters();
+            performSearch();
+            showMessage("Filters cleared", "info");
+        });
+
+        exportBtn.addEventListener("click", () => {
+            const pageInfo = grid.getPageInfo();
+            const csv = convertToCSV(grid.resources || []);
+            downloadCSV(csv, "knowledge-hub-resources.csv");
+            showMessage("Downloaded resource list", "success");
+        });
+
+        // ========================================
+        // Utility Functions
+        // ========================================
+
+        function updateStats(count) {
+            resultCount.textContent = count;
+
+            const pageInfo_ = grid.getPageInfo();
+            pageInfo.textContent = `${pageInfo_.currentPage} / ${pageInfo_.totalPages}`;
+        }
+
+        function showLoading(show) {
+            if (show) {
+                loading.classList.add("active");
+            } else {
+                loading.classList.remove("active");
+            }
+        }
+
+        function showMessage(text, type = "info") {
+            const template = document.querySelector("#status-template");
+            const message = template.content.cloneNode(true);
+
+            const el = message.querySelector(".status-message");
+            el.classList.add(type);
+            el.querySelector("#status-message-text").textContent = text;
+
+            document.body.appendChild(message);
+
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                el.remove();
+            }, 4000);
+        }
+
+        function convertToCSV(resources) {
+            const headers = ["ID", "Title", "Type", "Difficulty", "Rating", "Academy", "Time"];
+            const rows = resources.map(r => [
+                r.resourceId,
+                r.title,
+                r.type,
+                r.difficulty,
+                r.rating,
+                r.academy,
+                r.estimatedTime,
+            ]);
+
+            const csv = [
+                headers.join(","),
+                ...rows.map(row =>
+                    row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")
+                ),
+            ].join("\n");
+
+            return csv;
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = "hidden";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ========================================
+        // Initialize on load
+        // ========================================
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initializePage);
+        } else {
+            initializePage();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener("keydown", e => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+                e.preventDefault();
+                search.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>
