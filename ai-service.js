@@ -4,8 +4,14 @@
  * Communicates with Firebase Cloud Functions
  */
 
-import { auth as fbAuth, db as fbDb, storage as fbStorage, functions as fbFunctions, app as fbApp } from './firebase.js';
-import { httpsCallable } from 'firebase/functions';
+import {
+    auth as fbAuth,
+    db as fbDb,
+    storage as fbStorage,
+    functions as fbFunctions,
+    app as fbApp,
+    httpsCallable
+} from './firebase.js';
 
 // =============================================================
 // STATE
