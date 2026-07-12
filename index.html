@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
     <link rel="stylesheet" href="css/professorSword.css" />
+    <link rel="stylesheet" href="css/academies.css" />
 
     <style>
         /* ==========================================================
@@ -1059,48 +1060,17 @@
         </section>
 
         <!-- ==========================================================
-        LEARNING CATEGORIES
+        SACRED ACADEMIES
         ========================================================== -->
-        <section id="categories">
+        <section id="categories" class="academies-section">
             <div class="container">
                 <div class="section-header">
                     <h2>
-                        <i class="fas fa-tree"></i> Sacred Learning Paths
+                        <i class="fas fa-university"></i> Sacred Academies
                     </h2>
-                    <span class="sub">Choose your journey <i class="fas fa-sparkles"></i></span>
+                    <span class="sub">Choose your faculty and begin your next transformation <i class="fas fa-sparkles"></i></span>
                 </div>
-                <div class="categories-grid" id="categoriesContainer">
-                    <a href="courses.html?category=AI%20%26%20Alchemy" class="category-card">
-                        <span class="icon"><i class="fas fa-brain"></i></span>
-                        <h4>AI &amp; Alchemy</h4>
-                        <p>Artificial Intelligence &amp; Machine Learning</p>
-                    </a>
-                    <a href="courses.html?category=NGO%20Leadership" class="category-card">
-                        <span class="icon"><i class="fas fa-hand-holding-heart"></i></span>
-                        <h4>NGO Leadership</h4>
-                        <p>Community development &amp; social impact</p>
-                    </a>
-                    <a href="courses.html?category=Digital%20Wellbeing" class="category-card">
-                        <span class="icon"><i class="fas fa-heart-pulse"></i></span>
-                        <h4>Digital Wellbeing</h4>
-                        <p>Mindfulness &amp; sacred technology</p>
-                    </a>
-                    <a href="courses.html?category=Smart%20Governance" class="category-card">
-                        <span class="icon"><i class="fas fa-city"></i></span>
-                        <h4>Smart Governance</h4>
-                        <p>Government &amp; policy innovation</p>
-                    </a>
-                    <a href="courses.html?category=Sacred%20Business" class="category-card">
-                        <span class="icon"><i class="fas fa-chart-line"></i></span>
-                        <h4>Sacred Business</h4>
-                        <p>Ethical entrepreneurship &amp; impact</p>
-                    </a>
-                    <a href="courses.html?category=Global%20Community" class="category-card">
-                        <span class="icon"><i class="fas fa-globe-africa"></i></span>
-                        <h4>Global Community</h4>
-                        <p>Cross-cultural collaboration &amp; unity</p>
-                    </a>
-                </div>
+                <div class="academies-grid" id="academiesContainer" aria-live="polite"></div>
             </div>
         </section>
 
@@ -1337,8 +1307,9 @@ const registerBtn = document.getElementById('registerLink') || document.getEleme
 
         function setMentorOnline(isOnline) {
             const statusTextEl = document.getElementById('aiStatusText');
-            if (!statusTextEl) return;
-            statusTextEl.textContent = isOnline ? 'Online' : 'Fallback Mode';
+            if (statusTextEl) {
+                statusTextEl.textContent = isOnline ? 'Online' : 'Fallback Mode';
+            }
             const root = document.documentElement;
             root.dataset.aiOnline = isOnline ? 'true' : 'false';
         }
@@ -1539,5 +1510,6 @@ const registerBtn = document.getElementById('registerLink') || document.getEleme
 
     <script type="module" src="js/index.js"></script>
     <script type="module" src="js/homeCourses.js"></script>
+    <script type="module" src="js/academies.js"></script>
 </body>
 </html>
