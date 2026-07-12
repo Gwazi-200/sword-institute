@@ -2,6 +2,140 @@
     SWORD COMPONENTS
 ==========================================================*/
 
+.identity-hub {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+.identity-hub-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 999px;
+}
+
+.identity-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.identity-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.identity-greeting {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.identity-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.identity-status {
+    margin-left: auto;
+    color: #2ecc71;
+    font-size: 0.9rem;
+}
+
+.identity-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    z-index: 30;
+}
+
+.identity-menu.is-open {
+    display: flex;
+}
+
+.identity-menu a,
+.identity-menu button {
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.identity-menu a:hover,
+.identity-menu button:hover {
+    background: rgba(255,255,255,0.14);
+}
+
+.professor-sword-widget {
+    margin-bottom: 16px;
+    padding: 16px;
+}
+
+.professor-sword-widget__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.professor-sword-widget__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-size: 1.2rem;
+}
+
+.professor-sword-widget__copy h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.professor-sword-widget__copy p {
+    margin: 2px 0 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.professor-sword-widget__status {
+    margin-left: auto;
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+.professor-sword-widget__body {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
 .glass-card{
 
 background:var(--glass);

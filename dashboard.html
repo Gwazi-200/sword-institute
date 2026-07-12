@@ -569,9 +569,9 @@
                         <i class="fas fa-shield-halved icon-violet"></i>
                         <span class="violet">Sacred</span> Dashboard
                     </h1>
-                    <h1 id="welcomeMessage">Welcome to your Dashboard</h1>
+                    <h1 id="welcomeMessage">Loading your learning command center…</h1>
                     <div class="welcome">
-                        <i class="fas fa-sparkles"></i> Welcome back, <strong id="userName">Warrior</strong>
+                        <i class="fas fa-sparkles"></i> <strong id="userName">Preparing your dashboard</strong>
                     </div>
                 </div>
                 <a href="courses.html" class="btn btn-gold" data-route="courses">
@@ -689,6 +689,11 @@
     </script>
     <script src="js/sharedRoutes.js"></script>
     <script src="js/enrollment-ui.js"></script>
+
+    <script type="module">
+        import { fetchDashboardData } from './js/services/dashboardService.js';
+        window.dashboardService = { fetchDashboardData };
+    </script>
 
     <!-- ========================================================== -->
     <!-- ========================================================== -->
@@ -903,42 +908,26 @@
         // =============================================================
         async function loadUserDashboard(uid) {
             try {
-                const enrollments = await getUserEnrollments(uid);
+                const dashboardData = await window.dashboardService.fetchDashboardData(uid);
+                const enrollments = dashboardData?.enrollments || [];
+                const courseDetails = (dashboardData?.courses || []).map((course) => {
+                    const enrollment = enrollments.find((item) => item.courseId === course.id) || {};
+                    return {
+                        ...enrollment,
+                        course,
+                        courseId: course.id
+                    };
+                });
 
-                let enrolledCount = enrollments.length;
-                let completedCount = 0;
-                let totalXp = 0;
+                const enrolledCount = dashboardData?.stats?.activeCourses || 0;
+                const completedCount = dashboardData?.stats?.completedCourses || 0;
+                const totalXp = dashboardData?.stats?.totalXp || 0;
+                const streakValue = dashboardData?.stats?.streak || 3;
 
-                const courseDetails = [];
-                for (const enrollment of enrollments) {
-                    try {
-                        const courseDoc = await db.collection('courses').doc(enrollment.courseId).get();
-
-                        if (courseDoc.exists) {
-                            const courseData = courseDoc.data();
-                            courseDetails.push({
-                                ...enrollment,
-                                course: courseData,
-                                courseId: enrollment.courseId
-                            });
-
-                            if (enrollment.completed) {
-                                completedCount++;
-                            }
-                            if (enrollment.xpEarned) {
-                                totalXp += enrollment.xpEarned;
-                            }
-                        }
-                    } catch (error) {
-                        console.warn('Could not load course:', enrollment.courseId);
-                    }
-                }
-
-                // Update stats with animation
                 animateCounter(enrolledCoursesEl, enrolledCount);
                 animateCounter(completedCoursesEl, completedCount);
                 xpPointsEl.innerHTML = `${totalXp} <span class="gold">XP</span>`;
-                streakDaysEl.innerHTML = `7 <span class="gold">🔥</span>`;
+                streakDaysEl.innerHTML = `${streakValue} <span class="gold">🔥</span>`;
 
                 updateActivityList(courseDetails);
 
@@ -960,11 +949,10 @@
                 }
 
                 studentData = {
-
                     enrolledCourses: enrollments,
-                    completedCourses: enrollments.filter(e => e.completed),
+                    completedCourses: enrollments.filter((entry) => entry.completed),
                     totalXp: totalXp,
-                    userName: userName.textContent || currentUserData.displayName || currentUserData.email || 'Warrior',
+                    userName: userName.textContent || dashboardData?.user?.displayName || dashboardData?.user?.name || currentUserData.displayName || currentUserData.email || 'Warrior',
                     courseDetails: courseDetails
                 };
 
