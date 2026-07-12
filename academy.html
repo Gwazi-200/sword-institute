@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/academies.css" />
+    <link rel="stylesheet" href="css/knowledge-hub.css" />
     <script type="importmap">
         {
             "imports": {
@@ -42,8 +43,67 @@
     <div class="academy-page-shell">
         <a href="index.html" class="academy-pill" aria-label="Back to home"><i class="fas fa-arrow-left"></i> Back to home</a>
         <div id="academyPage"></div>
+        <!-- ============================================================
+        KNOWLEDGE HUB CONTENT SECTION
+        ============================================================ -->
+        <div id="academy-knowledge-hub" style="margin-top: 60px;"></div>
     </div>
 
     <script type="module" src="js/academies.js"></script>
+
+    <!-- ============================================================
+    ACADEMY INTEGRATION - KNOWLEDGE HUB CONTENT
+    ============================================================ -->
+    <script type="module">
+        import { AcademyIntegration } from './js/integrations/academyIntegration.js';
+
+        // Wait for page to load
+        async function initAcademyContent() {
+            try {
+                // Get academy name from URL or page
+                const params = new URLSearchParams(window.location.search);
+                const academySlug = params.get('academy') || 'sacred-ai-academy';
+                
+                // Map slug to academy name
+                const academyNames = {
+                    'sacred-ai-academy': 'Sacred AI Academy',
+                    'sacred-management-administration-academy': 'Sacred Management & Administration Academy',
+                    'sacred-community-development-academy': 'Sacred Community Development Academy',
+                    'sacred-business-entrepreneurship-academy': 'Sacred Business & Entrepreneurship Academy',
+                    'sacred-psychology-counselling-academy': 'Sacred Psychology & Counselling Academy'
+                };
+
+                const academyName = academyNames[academySlug] || 'Sacred Academy';
+
+                const academy = new AcademyIntegration(academyName, {
+                    showFeaturedResources: true,
+                    showCollections: true,
+                    showLearningPaths: true,
+                    featuredLimit: 8,
+                    collectionsLimit: 4,
+                    pathsLimit: 3
+                });
+
+                // Wait a moment for the main page to load
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Inject content after the main academy content
+                const mainContent = document.querySelector('#academyPage');
+                if (mainContent) {
+                    await academy.injectIntoPage('#academy-knowledge-hub');
+                    console.log("[Academy] Knowledge Hub content loaded");
+                }
+            } catch (error) {
+                console.error("[Academy] Error loading Knowledge Hub content:", error);
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAcademyContent);
+        } else {
+            initAcademyContent();
+        }
+    </script>
 </body>
 </html>

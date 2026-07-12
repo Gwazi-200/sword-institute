@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../css/shared-components.css" />
     <link rel="stylesheet" href="../css/shared-navigation-buttons.css" />
     <link rel="stylesheet" href="../css/shared-utilities.css" />
+    <link rel="stylesheet" href="../css/knowledge-hub.css" />
 
     <style>
         /* ============================================================
@@ -677,6 +678,11 @@
         </div>
 
         <!-- ============================================================
+        LESSON RESOURCES SECTION (Knowledge Hub Integration)
+        ============================================================ -->
+        <div id="lesson-resources" style="margin-top: 40px;"></div>
+
+        <!-- ============================================================
         FOOTER
         ============================================================ -->
         <div class="footer container">
@@ -1177,6 +1183,62 @@
         }
 
         console.log('📖 Lesson page initialized successfully');
+    </script>
+
+    <!-- ============================================================
+    LESSON INTEGRATION - KNOWLEDGE HUB RESOURCES
+    ============================================================ -->
+    <script type="module">
+        import { LessonPlayerIntegration } from '../js/integrations/lessonPlayerIntegration.js';
+
+        // Wait for page to load
+        async function initLessonResources() {
+            try {
+                // Get lesson data
+                const lessonTitle = document.querySelector('.lesson-header h1')?.textContent || 'Lesson';
+                const courseId = 'course_001'; // Can be extracted from page data
+                
+                const lessonData = {
+                    id: 'lesson_001',
+                    courseId: courseId,
+                    title: lessonTitle,
+                    description: document.querySelector('.lesson-header .subtitle')?.textContent || '',
+                    topics: ['Learning', lessonTitle.split(' ')[0]]
+                };
+
+                const lesson = new LessonPlayerIntegration(lessonData, {
+                    showRelatedResources: true,
+                    showSupplementary: true,
+                    showDownloads: true,
+                    supplementaryLimit: 6
+                });
+
+                // Inject resources
+                await lesson.injectIntoLessonPlayer(
+                    ".lesson-player-section", 
+                    "#lesson-resources"
+                );
+
+                // Also create a simple resource list in the main resources div
+                const resources = await lesson.loadSupplementaryResources();
+                if (resources.length > 0) {
+                    const container = document.querySelector('#lesson-resources');
+                    const readingList = lesson.createReadingList();
+                    container.appendChild(readingList);
+                }
+
+                console.log("[Lesson] Knowledge Hub resources loaded");
+            } catch (error) {
+                console.error("[Lesson] Error loading Knowledge Hub resources:", error);
+            }
+        }
+
+        // Initialize when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initLessonResources);
+        } else {
+            initLessonResources();
+        }
     </script>
 </body>
 </html>
