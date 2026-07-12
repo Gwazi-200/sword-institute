@@ -236,6 +236,78 @@ body {
     cursor: pointer;
 }
 
+/* Discovery Panel */
+.discovery-panel {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.discovery-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 6px;
+}
+.discovery-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.discovery-highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+.highlight-card {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 16px;
+}
+.highlight-card h3 {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+.highlight-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.highlight-card li {
+    color: var(--text-light);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+.path-bullet {
+    color: var(--primary);
+    font-weight: 700;
+}
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tag-chip {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--primary);
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 /* Filter Panel */
 .filter-panel {
     padding: 20px;
