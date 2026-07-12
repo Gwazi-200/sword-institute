@@ -12,6 +12,7 @@ import {
     app as fbApp,
     httpsCallable
 } from './firebase.js';
+import { askProfessorSWORD } from './js/ai/aiOrchestrator.js';
 
 // =============================================================
 // STATE
@@ -111,47 +112,52 @@ async function sendAIMessageCore(message, context = 'General', lessonContent = '
 
     const userToken = await getUserToken();
 
-    // Keep server-side callable for authenticated users.
-    if (currentUser && userToken && typeof firebase !== 'undefined' && firebase.functions) {
-        try {
-            const functions = firebase.functions();
-            const getAIResponse = functions.httpsCallable('getAIResponse');
-
-            // Compatibility: accept object payload used by lesson/dashboard integrations.
-            let normalizedLessonContent = lessonContent;
-            if (lessonContent && typeof lessonContent === 'object') {
-                const lessonCtx = lessonContent.lessonContext || {};
-                normalizedLessonContent = lessonCtx.lessonSummary || '';
+    const orchestrated = await askProfessorSWORD(
+        {
+            message,
+            context,
+            lessonContent,
+            studentData: {
+                userName: currentUser?.displayName || currentUser?.email || 'Warrior'
             }
+        },
+        {
+            intent: 'chat',
+            context,
+            studentData: {
+                userName: currentUser?.displayName || currentUser?.email || 'Warrior'
+            },
+            getCallable: async (payload) => {
+                if (!currentUser || !userToken || typeof firebase === 'undefined' || !firebase.functions) {
+                    throw new Error('Callable AI is unavailable');
+                }
 
-            const result = await getAIResponse({
-                message: message,
-                context: context,
-                lessonContent: normalizedLessonContent,
-                userToken: userToken
-            });
+                const functions = firebase.functions();
+                const getAIResponse = functions.httpsCallable('getAIResponse');
+                const result = await getAIResponse({
+                    message: payload.message,
+                    context: payload.context,
+                    lessonContent: payload.lessonContent,
+                    userToken,
+                    type: payload.type
+                });
 
-            if (result.data && result.data.success) {
-                lastResponseSource = 'callable';
-                return result.data.reply;
+                if (result?.data?.success) {
+                    return result.data;
+                }
+
+                throw new Error('AI service returned an error');
             }
-
-            throw new Error('AI service returned an error');
-        } catch (error) {
-            console.error('Callable AI Error:', error);
         }
+    );
+
+    if (orchestrated?.response) {
+        lastResponseSource = orchestrated.source === 'cloud-function' ? 'callable' : orchestrated.source === 'cache' ? 'cache' : 'fallback';
+        return orchestrated.response;
     }
 
-    // For homepage guests, use direct async fetch with OpenFrontier/OpenRouter key.
-    try {
-        const reply = await callOpenFrontierDirect(message, context, lessonContent);
-        lastResponseSource = 'direct';
-        return reply;
-    } catch (error) {
-        console.error('Direct AI Error:', error);
-        lastResponseSource = 'fallback';
-        return getFallbackResponse(message);
-    }
+    lastResponseSource = 'fallback';
+    return getFallbackResponse(message);
 }
 
 async function sendAIMessageLive(message, context = 'General', lessonContent = '') {
