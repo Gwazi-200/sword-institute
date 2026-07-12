@@ -1,5 +1,5 @@
 const THEME_STORAGE_KEY = 'sword-theme';
-const THEME_OPTIONS = ['pearlescent', 'violet', 'gold', 'azure'];
+const THEME_OPTIONS = ['pearlescent', 'violet', 'gold', 'midnight'];
 
 function applyTheme(themeName = getStoredTheme()) {
     const safeTheme = normalizeTheme(themeName);
@@ -28,13 +28,13 @@ function applyTheme(themeName = getStoredTheme()) {
             '--text-primary': '#3d2b00',
             '--text-secondary': '#6b4d00'
         },
-        azure: {
-            '--primary': '#4da3ff',
-            '--accent': '#1e88e5',
-            '--glass': 'rgba(77, 163, 255, 0.18)',
-            '--glass-border': 'rgba(255,255,255,0.34)',
-            '--text-primary': '#08243c',
-            '--text-secondary': '#214a6b'
+        midnight: {
+            '--primary': '#2d1b4e',
+            '--accent': '#8B00FF',
+            '--glass': 'rgba(24, 15, 43, 0.72)',
+            '--glass-border': 'rgba(255,255,255,0.16)',
+            '--text-primary': '#f5e9ff',
+            '--text-secondary': '#d7c7ef'
         }
     };
 
@@ -64,9 +64,9 @@ function getThemeMeta(themeName = getStoredTheme()) {
     const normalized = normalizeTheme(themeName);
     const themeMap = {
         pearlescent: { label: 'Pearlescent White', accent: '#f5f2ff' },
-        violet: { label: 'Violet Intelligence', accent: '#8B00FF' },
+        violet: { label: 'Royal Violet', accent: '#8B00FF' },
         gold: { label: 'Radiant Gold', accent: '#FFD700' },
-        azure: { label: 'Azure Knowledge', accent: '#4da3ff' }
+        midnight: { label: 'Midnight Dark', accent: '#2d1b4e' }
     };
 
     return themeMap[normalized] || themeMap.pearlescent;
@@ -79,7 +79,7 @@ function toggleTheme() {
         : current === 'violet'
             ? 'gold'
             : current === 'gold'
-                ? 'azure'
+                ? 'midnight'
                 : 'pearlescent';
     return applyTheme(next);
 }

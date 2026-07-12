@@ -56,55 +56,6 @@
             gap: 20px;
         }
 
-        .site-nav,
-        .site-footer {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.45);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.55);
-            border-radius: 24px;
-            box-shadow: 0 20px 50px -20px rgba(139, 0, 255, 0.08);
-        }
-
-        .site-nav {
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .site-brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 800;
-        }
-
-        .site-brand i {
-            color: var(--gold-radiant);
-        }
-
-        .site-nav-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            align-items: center;
-        }
-
-        .site-nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .site-nav-links a:hover {
-            color: var(--violet-deep);
-        }
-
         .chat-stage {
             flex: 1;
             display: grid;
@@ -401,15 +352,6 @@
         }
         
         @media (max-width: 480px) {
-            .site-nav {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .site-nav-links {
-                gap: 10px;
-            }
-
             .chat-wrapper {
                 padding: 20px 16px;
                 border-radius: var(--radius-lg);
@@ -443,18 +385,7 @@
 </head>
 <body>
     <div class="page-shell">
-        <nav class="site-nav" aria-label="Primary">
-            <a href="index.html" class="site-brand">
-                <i class="fas fa-shield-halved"></i>
-                Sword<span>Institute</span>
-            </a>
-            <div class="site-nav-links">
-                <a href="index.html">Home</a>
-                <a href="courses.html">Courses</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="ai-message.html">Professor SWORD</a>
-            </div>
-        </nav>
+        <div id="navbarHost"></div>
 
         <main class="chat-stage">
             <div class="chat-wrapper">
@@ -529,10 +460,14 @@
         // IMPORTS
         // =============================================================
         import { getAIRecommendations } from './aiService.js';
+        import { saveConversationTurn } from './js/services/memoryService.js';
+        import { getStudentProfile, updateStudentProfile } from './js/services/studentProfileService.js';
+        import { createNavbar } from './js/components/navbar.js';
         
         // =============================================================
         // DOM References
         // =============================================================
+        const navbarHost = document.getElementById('navbarHost');
         const messagesContainer = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -568,6 +503,12 @@
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     currentUser = user;
+                    await updateStudentProfile(user.uid, {
+                        fullName: user.displayName || user.email || 'Student',
+                        email: user.email || '',
+                        lastLogin: new Date().toISOString(),
+                    }).catch(() => null);
+                    await getStudentProfile(user.uid, { force: true }).catch(() => null);
                     await loadStudentData(user.uid);
                     await addWelcomeMessage();
                 } else {
@@ -690,6 +631,9 @@
             
             // Add user message
             addMessage('user', text);
+            if (currentUser?.uid) {
+                await saveConversationTurn(currentUser.uid, text, 'student');
+            }
             chatInput.value = '';
             
             // Show typing indicator
@@ -732,6 +676,9 @@
                 response = `That's a great question! Let me think about that... 🤔\n\nI'd recommend exploring our courses on community development and social work. You might find "Communication Skills" or "Introduction to Community Health" particularly helpful.\n\nWould you like a specific course recommendation?`;
             }
             
+            if (currentUser?.uid) {
+                await saveConversationTurn(currentUser.uid, response, 'assistant');
+            }
             // Add AI response with typing delay
             await typeResponse(response);
         }
@@ -855,6 +802,9 @@
         // =============================================================
         // Initialize
         // =============================================================
+        if (navbarHost) {
+            createNavbar(navbarHost, { activePage: 'ai' });
+        }
         initChat();
         console.log('🤖 Professor SWORD chat initialized successfully');
     </script>

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knowledge Hub - Sword Institute</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/premium-nav.css" />
 
     <script type="importmap">
     {
@@ -394,6 +396,8 @@
 </head>
 
 <body>
+    <div id="navbarHost"></div>
+
     <!-- Header -->
     <header>
         <div class="header-container">
@@ -474,6 +478,8 @@
         // Import services
         import { loadResources, searchResources } from "./js/services/resourceService.js";
         import { startReading } from "./js/services/readingProgressService.js";
+        import { getStudentProfile, updateStudentProfile } from "./js/services/studentProfileService.js";
+        import { createNavbar } from "./js/components/navbar.js";
 
         // Import components
         import "./js/components/SearchBar.js";
@@ -490,10 +496,11 @@
         const pageInfo = document.querySelector("#page-info");
         const resetBtn = document.querySelector("#reset-btn");
         const exportBtn = document.querySelector("#export-btn");
+        const navbarHost = document.getElementById("navbarHost");
 
         // State
         let allResources = [];
-        const studentId = "student_demo";
+        let studentId = null;
 
         // ========================================
         // Initialization
@@ -502,6 +509,17 @@
         async function initializePage() {
             try {
                 showLoading(true);
+
+                const auth = firebase.auth();
+                const user = auth.currentUser;
+                studentId = user?.uid || "student_demo";
+
+                if (user) {
+                    const profile = await getStudentProfile(user.uid, { force: true });
+                    if (profile) {
+                        await updateStudentProfile(user.uid, { knowledgeHubHistory: [...(profile.knowledgeHubHistory || []), { type: 'visited', updatedAt: new Date().toISOString() }] });
+                    }
+                }
 
                 // Load all resources
                 allResources = await loadResources();
@@ -568,6 +586,12 @@
             try {
                 // Track that user started reading
                 await startReading(studentId, resourceId);
+                if (studentId && studentId !== 'student_demo') {
+                    const profile = await getStudentProfile(studentId, { force: true });
+                    await updateStudentProfile(studentId, {
+                        knowledgeHubHistory: [...(profile?.knowledgeHubHistory || []), { resourceId, title: resource.title, viewedAt: new Date().toISOString() }].slice(-8),
+                    });
+                }
 
                 // In a real app, navigate to detail page
                 // window.location.href = `/knowledge-hub/resource/${resourceId}`;
@@ -683,6 +707,10 @@
         // ========================================
         // Initialize on load
         // ========================================
+
+        if (navbarHost) {
+            createNavbar(navbarHost, { activePage: "knowledge-hub" });
+        }
 
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", initializePage);

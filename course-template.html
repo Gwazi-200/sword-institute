@@ -739,6 +739,26 @@
                 padding: 16px;
             }
         }
+
+        /* ========== COURSE RESOURCES STYLING (Knowledge Hub Integration) ========== */
+        .course-resources-section {
+            margin-top: 40px;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .section-header { margin-bottom: 24px; }
+        .section-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--violet-deep); margin-bottom: 8px; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+        .resource-card { background: rgba(139, 0, 255, 0.04); border: 1px solid rgba(139, 0, 255, 0.1); border-radius: var(--radius-md); padding: 16px; transition: all 0.3s ease; }
+        .resource-card:hover { border-color: rgba(139, 0, 255, 0.3); box-shadow: 0 8px 16px rgba(139, 0, 255, 0.1); transform: translateY(-2px); }
+
+        @media (max-width: 768px) {
+            .resource-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -875,6 +895,11 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ============================================================
+            COURSE RESOURCES SECTION (Knowledge Hub Integration)
+            ============================================================ -->
+            <div id="course-resources" style="margin-top: 40px;"></div>
         </div>
 
         <!-- ============================================================
@@ -1136,6 +1161,50 @@
         }
 
         console.log('📖 Lesson page initialized successfully');
+    </script>
+
+    <!-- ============================================================
+    COURSE INTEGRATION - KNOWLEDGE HUB RESOURCES
+    ============================================================ -->
+    <script type="module">
+        import { CourseIntegration } from './js/integrations/courseIntegration.js';
+
+        // Wait for page to be ready
+        async function initCourseResources() {
+            try {
+                // Get course data from page
+                const courseTitle = document.querySelector('.breadcrumb a:nth-child(2)')?.textContent || 'Course';
+                const courseId = '[[COURSE_ID]]';
+                
+                const courseData = {
+                    id: courseId,
+                    title: courseTitle,
+                    description: document.querySelector('.subtitle')?.textContent || '',
+                    difficulty: 'beginner',
+                    academy: 'AI Masters',
+                    skills: []
+                };
+
+                const courseIntegration = new CourseIntegration(courseData, {
+                    showResourcesByType: true,
+                    relatedResourcesLimit: 12,
+                    maxTypes: 3
+                });
+
+                // Inject resources
+                await courseIntegration.injectIntoPage("#course-resources");
+                console.log("[Course] Knowledge Hub resources loaded");
+            } catch (error) {
+                console.error("[Course] Error loading Knowledge Hub resources:", error);
+            }
+        }
+
+        // Initialize when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCourseResources);
+        } else {
+            initCourseResources();
+        }
     </script>
 </body>
 </html>

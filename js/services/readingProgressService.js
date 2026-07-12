@@ -255,7 +255,7 @@ async function getContinueReading(studentId, limit = 5) {
             progressRef(studentId),
             where("status", "==", "in-progress"),
             orderBy("lastAccessedAt", "desc"),
-            limit: limit
+            limit(limit)
         );
 
         const snapshot = await getDocs(q);

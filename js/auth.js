@@ -45,6 +45,7 @@ import {
 } from 'firebase/firestore';
 
 import { auth, db } from './firebase-config.js';
+import { ensureStudentProfile, updateStudentProfile } from './services/studentProfileService.js';
 
 // ============================================================
 // STATE
@@ -151,32 +152,49 @@ export async function registerUser(userData, options = { sendVerification: true 
 
             fullName,
 
+            studentName: fullName,
+
             email,
 
             phone: phone || "",
 
             country: country || "",
-
+            academy: 'General',
             role: "student",
-
             status: "active",
-
             createdAt: serverTimestamp(),
-
             lastLogin: serverTimestamp(),
-
             learningStreak: 0,
-
             progress: 0,
-
             coursesCompleted: 0,
-
             currentCourse: "",
-
             certificateCount: 0,
-
             photoURL: "",
-
+            xp: 0,
+            level: 1,
+            achievements: [],
+            bookmarks: [],
+            knowledgeHubHistory: [],
+            recentlyViewedCourses: [],
+            certificates: [],
+            badges: [],
+            learningStyle: 'balanced',
+            preferredTheme: 'glass',
+            studyTime: '30 min',
+            learningGoals: ['Complete your first course'],
+            interests: ['Leadership', 'Learning'],
+            careerGoal: 'Grow into a confident professional',
+            readingTime: 0,
+            averageQuizScore: 0,
+            currentStreak: 0,
+            professorMemory: {
+                conversations: [],
+                favouriteSubjects: [],
+                weakTopics: [],
+                strongTopics: [],
+                studySchedule: [],
+                personalGoals: []
+            },
             preferences: {
                 dailyStudyGoal: 30,
                 preferredTime: "",
@@ -273,7 +291,16 @@ export async function loginUser(email, password) {
         }
 
         // Fetch user profile
-        const profile = await getUserProfile(user.uid);
+        const profile = await ensureStudentProfile(user.uid, {
+            uid: user.uid,
+            email: user.email,
+            fullName: user.displayName || user.email?.split('@')[0] || 'Student'
+        });
+        await updateStudentProfile(user.uid, {
+            lastLogin: serverTimestamp(),
+            email: user.email,
+            fullName: profile.fullName || user.displayName || user.email?.split('@')[0] || 'Student'
+        });
         currentUser = {
             uid: user.uid,
             email: user.email,

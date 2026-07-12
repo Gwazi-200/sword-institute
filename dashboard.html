@@ -14,8 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="css/shared-components.css" />
     <link rel="stylesheet" href="css/shared-navigation-buttons.css" />
+    <link rel="stylesheet" href="css/premium-nav.css" />
     <link rel="stylesheet" href="css/shared-utilities.css" />
     <link rel="stylesheet" href="css/dashboard-glass-cards.css" />
+    <link rel="stylesheet" href="css/knowledge-hub.css" />
+
+    <!-- Web Components -->
+    <script type="module" src="./js/components/ContinueReading.js"></script>
 
     <style>
 
@@ -348,6 +353,169 @@
             flex-direction: column;
             gap: 10px;
         }
+
+        /* ========== KNOWLEDGE HUB WIDGETS STYLING ========== */
+        .dashboard-widget {
+            background: rgba(255, 255, 255, 0.4);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-widget:hover {
+            border-color: rgba(139, 0, 255, 0.2);
+            box-shadow: 0 20px 40px -12px rgba(139, 0, 255, 0.12);
+        }
+
+        .dashboard-widget.widget-full {
+            grid-column: 1 / -1;
+        }
+
+        .dashboard-widget.widget-half {
+            grid-column: span 1;
+        }
+
+        .widget-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--violet-deep);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--violet-deep);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .resource-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .resource-card-minimal {
+            background: rgba(139, 0, 255, 0.04);
+            border: 1px solid rgba(139, 0, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .resource-card-minimal:hover {
+            border-color: rgba(139, 0, 255, 0.3);
+            box-shadow: 0 8px 16px rgba(139, 0, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .card-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .badge {
+            background: rgba(139, 0, 255, 0.2);
+            color: var(--violet-deep);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .card-button {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(139, 0, 255, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-widget.widget-half {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .resource-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-widget {
+                padding: 16px;
+            }
+        }
+
+        }
         .ai-quick-actions .btn {
             width: 100%;
             justify-content: center;
@@ -535,27 +703,9 @@
         <div class="orb orb-2"></div>
 
         <!-- ============================================================
-        NAVIGATION
+        PREMIUM NAVIGATION
         ============================================================ -->
-        <nav>
-            <div class="container nav-container">
-                <a href="index.html" class="logo" data-route="home">
-                    <i class="fas fa-shield-halved"></i>
-                    Sword<span>Institute</span>
-                </a>
-                <ul class="nav-links">
-                    <li><a href="index.html" data-route="home">Home</a></li>
-                    <li><a href="courses.html" data-route="courses">Courses</a></li>
-                    <li><a href="dashboard.html" class="active" data-route="dashboard">Dashboard</a></li>
-                    <li><a href="ai-message.html" target="_blank">Professor SWORD</a></li>
-                </ul>
-                <div class="nav-actions" id="navActions">
-<button type="button" class="btn btn-outline-violet" id="logoutBtn" title="Logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
-            </div>
-        </nav>
+        <div id="navbarHost"></div>
 
         <!-- ============================================================
         DASHBOARD CONTENT
@@ -579,6 +729,8 @@
                 </a>
             </div>
 
+            <div id="studentIntelligenceHost"></div>
+
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-item">
@@ -598,6 +750,11 @@
                     <div class="stat-label"><i class="fas fa-fire"></i>Learning Streak</div>
                 </div>
             </div>
+
+            <!-- ============================================================
+            KNOWLEDGE HUB WIDGETS SECTION
+            ============================================================ -->
+            <div id="knowledge-hub-widgets" style="margin-top: 40px;"></div>
 
             <!-- Main Grid -->
             <div class="dashboard-grid">
@@ -692,15 +849,60 @@
 
     <script type="module">
         import { fetchDashboardData } from './js/services/dashboardService.js';
+        import { getStudentIntelligenceSnapshot } from './js/services/studentProfileService.js';
+        import { getAnalyticsSnapshot } from './js/services/analyticsService.js';
+        import { getCareerRecommendations } from './js/services/careerService.js';
+        import { renderStudentIntelligenceCard } from './js/components/studentIntelligenceCard.js';
         window.dashboardService = { fetchDashboardData };
-    </script>
-
+        window.studentIntelligence = { getStudentIntelligenceSnapshot, getAnalyticsSnapshot, getCareerRecommendations, renderStudentIntelligenceCard };
     <!-- ========================================================== -->
     <!-- ========================================================== -->
     <!-- AI SERVICE (ES MODULE)                                   -->
     <!-- ========================================================== -->
     <script type="module" src="./ai-service.js"></script>
+    <script type="module">
+        import { createNavbar } from './js/components/navbar.js';
+        import { DashboardIntegration } from './js/integrations/dashboardIntegration.js';
+        
+        const navbarHost = document.getElementById('navbarHost');
+        if (navbarHost) createNavbar(navbarHost, { activePage: 'dashboard' });
 
+        // Initialize Knowledge Hub widgets
+        async function initKnowledgeHubWidgets() {
+            try {
+                // Get current student ID from Firebase Auth
+                const auth = firebase.auth();
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        const studentId = user.uid;
+                        const dashboard = new DashboardIntegration(studentId, {
+                            showContinueReading: true,
+                            showRecommendations: true,
+                            showStats: true,
+                            showTrending: true,
+                        });
+
+                        try {
+                            await dashboard.init();
+                            dashboard.renderAll("knowledge-hub-widgets");
+                            console.log("[Dashboard] Knowledge Hub widgets initialized");
+                        } catch (error) {
+                            console.error("[Dashboard] Error initializing Knowledge Hub:", error);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("[Dashboard] Error in widget initialization:", error);
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initKnowledgeHubWidgets);
+        } else {
+            initKnowledgeHubWidgets();
+        }
+    </script>
 
     <script>
 
@@ -813,8 +1015,11 @@
 
                 const name = await resolveUserName(user);
                 userName.textContent = name;
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) welcomeMessage.textContent = `Welcome back ${name.split(' ')[0] || 'learner'}`;
 
                 await loadUserDashboard(user.uid);
+                await loadStudentIntelligence(user.uid);
                 await loadAIRecommendations(user.uid);
             } catch (e) {
                 console.warn('Dashboard eligibility check failed:', e);
@@ -906,6 +1111,29 @@
         // =============================================================
         // 4. LOAD USER DASHBOARD
         // =============================================================
+        async function loadStudentIntelligence(uid) {
+            try {
+                const snapshot = await window.studentIntelligence.getStudentIntelligenceSnapshot(uid);
+                const analytics = await window.studentIntelligence.getAnalyticsSnapshot(uid);
+                const recommendations = await window.studentIntelligence.getCareerRecommendations(uid);
+                const host = document.getElementById('studentIntelligenceHost');
+                if (!host) return;
+                const cards = [
+                    { label: 'Today', value: snapshot.todayGoal || 'Complete one focused study block' },
+                    { label: 'Weekly Progress', value: `${analytics.weeklyProgress}%` },
+                    { label: 'Current Streak', value: `${analytics.currentStreak} days` },
+                    { label: 'Career Focus', value: recommendations[0]?.title || 'Growing your path' },
+                ];
+                host.innerHTML = window.studentIntelligence.renderStudentIntelligenceCard({
+                    title: snapshot.welcomeLabel || 'Welcome back',
+                    subtitle: 'Your learning path is now connected across courses, knowledge, and Professor SWORD.',
+                    items: cards,
+                });
+            } catch (error) {
+                console.warn('Could not load student intelligence card:', error);
+            }
+        }
+
         async function loadUserDashboard(uid) {
             try {
                 const dashboardData = await window.dashboardService.fetchDashboardData(uid);
