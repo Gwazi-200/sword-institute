@@ -946,9 +946,8 @@
                     <li><a href="ai-message.html">Professor SWORD</a></li>
                 </ul>
                 <div class="nav-actions" id="navActions">
-<a href="login.html" class="btn btn-outline-violet" id="loginLink">Login</a>
-<a href="register.html" class="btn btn-primary" id="registerLink">Register</a>
-<a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardLink" style="display:none;">
+                    <div id="identityHubHost" aria-label="Identity hub"></div>
+                    <a href="dashboard.html" class="btn btn-gold hidden-dashboard-btn" id="dashboardLink" style="display:none;">
                         <i class="fas fa-shield-halved"></i> Dashboard
                     </a>
                 </div>
@@ -983,6 +982,7 @@
                 PROFESSOR SWORD (Homepage Concierge - Lightweight AI)
                 ========================================================== -->
                 <div class="ai-mentor-card ai-concierge" id="aiMentorCard" aria-label="Professor SWORD homepage concierge">
+                    <div id="professorSwordWidgetHost"></div>
                     <header class="ai-concierge-header" aria-label="Professor SWORD header">
                         <h3 class="ai-concierge-title">
                             <span class="professor-emoji" role="img" aria-label="Smiling professor">👨‍🏫</span>
@@ -1271,6 +1271,23 @@
     <script type="module" src="ai-service.js"></script>
     <script src="js/enrollment-ui.js"></script>
     <script type="module" src="js/ai/professorSword.js"></script>
+    <script type="module">
+        import { applyTheme } from './js/services/themeService.js';
+        import { createIdentityHub } from './js/components/identityHub.js';
+        import { createProfessorSwordWidget } from './js/components/professorSwordWidget.js';
+
+        applyTheme();
+
+        const identityHost = document.getElementById('identityHubHost');
+        if (identityHost) {
+            createIdentityHub(identityHost);
+        }
+
+        const swordHost = document.getElementById('professorSwordWidgetHost');
+        if (swordHost) {
+            createProfessorSwordWidget(swordHost);
+        }
+    </script>
 
     <script type="importmap">
         {
