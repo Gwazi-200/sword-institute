@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seed Sword Institute Database</title>
 
     <script type="importmap">
@@ -13,13 +14,502 @@
       }
     }
     </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section h2 .emoji {
+            font-size: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-section {
+            display: none;
+        }
+
+        .progress-section.active {
+            display: block;
+        }
+
+        .progress-bar-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .status.uploading {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .console {
+            background: #1e1e1e;
+            color: #00ff00;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: "Monaco", "Menlo", monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .console-line {
+            margin-bottom: 4px;
+        }
+
+        .console-line.success {
+            color: #00ff00;
+        }
+
+        .console-line.error {
+            color: #ff4444;
+        }
+
+        .console-line.info {
+            color: #00aaff;
+        }
+
+        .resource-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .resource-count .number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .resource-count .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Seed Sword Institute Database</h1>
+            <p>Set up sample data for testing and development</p>
+        </div>
 
-<h2>Seeding Sword Institute Database...</h2>
+        <!-- Knowledge Hub Resources Seeding -->
+        <div class="section">
+            <h2><span class="emoji">📚</span> Knowledge Hub Resources</h2>
 
-<script type="module" src="./js/seedCourses.js"></script>
+            <div class="resource-count" id="resource-count">
+                <div class="number">50+</div>
+                <div class="label">Sample Resources Ready</div>
+            </div>
 
+            <p class="info-box">
+                Seed 50+ sample resources including books, videos, research papers, podcasts, and articles
+                across AI Masters, Data Science Hub, Business Academy, and Leadership Institute.
+            </p>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="seed-resources-btn">
+                    <span>🚀</span>
+                    <span>Seed Knowledge Hub</span>
+                </button>
+                <button class="btn btn-secondary" id="clear-resources-btn">
+                    <span>🗑️</span>
+                    <span>Clear All Resources</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progress-section">
+            <div class="section">
+                <h2><span class="emoji">⏳</span> Upload Progress</h2>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="seed-progress-bar"></div>
+                </div>
+
+                <div class="progress-text" id="seed-progress-text">0%</div>
+
+                <div class="status uploading" id="seed-status">
+                    Initializing seeding process...
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-uploaded">0</div>
+                        <div class="stat-label">Uploaded</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-remaining">50</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                </div>
+
+                <div class="console" id="console">
+                    <div class="console-line info">Connecting to Firestore...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Seeding (existing) -->
+        <div class="section">
+            <h2><span class="emoji">🎓</span> Courses</h2>
+            <p class="info-box">
+                Seed or update course data using the existing seeding logic.
+            </p>
+            <div class="button-group">
+                <button class="btn btn-secondary" id="seed-courses-btn">
+                    <span>📖</span>
+                    <span>Seed Courses (Legacy)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Verification -->
+        <div class="section">
+            <h2><span class="emoji">✅</span> Verification</h2>
+            <p class="info-box">
+                After seeding, verify data in <a href="https://console.firebase.google.com" target="_blank"
+                    style="color: #667eea">Firebase Console</a>
+                or test services in browser console.
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { seedResources, SAMPLE_RESOURCES } from "./js/seed/resourceSeeder.js";
+        import { 
+            updateProgressUI, 
+            displayCompletionMessage,
+            clearCollection 
+        } from "./js/seed/seedHelper.js";
+
+        const seedResourcesBtn = document.getElementById("seed-resources-btn");
+        const clearResourcesBtn = document.getElementById("clear-resources-btn");
+        const seedCoursesBtn = document.getElementById("seed-courses-btn");
+        const progressSection = document.getElementById("progress-section");
+        const console_ = document.getElementById("console");
+
+        // Update resource count
+        document.getElementById("resource-count").querySelector(".number").textContent =
+            `${SAMPLE_RESOURCES.length}+`;
+
+        // Utility to log to console display
+        function logToConsole(message, type = "info") {
+            const line = document.createElement("div");
+            line.className = `console-line ${type}`;
+            line.textContent = `> ${message}`;
+            console_.appendChild(line);
+            console_.scrollTop = console_.scrollHeight;
+        }
+
+        // Intercept console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        console.log = function (...args) {
+            originalLog.apply(console, args);
+            logToConsole(args.join(" "), "info");
+        };
+
+        console.error = function (...args) {
+            originalError.apply(console, args);
+            logToConsole(args.join(" "), "error");
+        };
+
+        console.warn = function (...args) {
+            originalWarn.apply(console, args);
+            logToConsole(args.join(" "), "error");
+        };
+
+        // Seed resources
+        seedResourcesBtn.addEventListener("click", async () => {
+            progressSection.classList.add("active");
+            seedResourcesBtn.disabled = true;
+            clearResourcesBtn.disabled = true;
+            seedCoursesBtn.disabled = true;
+            console_.innerHTML = "";
+
+            logToConsole("Starting Knowledge Hub resource seeding...", "info");
+            logToConsole(`Total resources: ${SAMPLE_RESOURCES.length}`, "info");
+
+            try {
+                const uploaded = await seedResources();
+
+                // Update stats
+                document.getElementById("stat-uploaded").textContent = uploaded;
+                document.getElementById("stat-remaining").textContent = "0";
+
+                updateProgressUI({
+                    percentage: 100,
+                    message: `✅ Successfully uploaded ${uploaded} resources!`,
+                    status: "success",
+                });
+
+                logToConsole(
+                    `✅ Seeding complete! ${uploaded} resources uploaded.`,
+                    "success"
+                );
+
+                setTimeout(() => {
+                    alert(
+                        `🎉 Success!\n\n${uploaded} resources have been seeded to Firestore.\n\nYou can now:\n1. Check Firebase Console\n2. Test the resourceService\n3. Build the UI components`
+                    );
+                }, 500);
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`, "error");
+                updateProgressUI({
+                    percentage: 0,
+                    message: `❌ Seeding failed: ${error.message}`,
+                    status: "error",
+                });
+
+                alert(`❌ Seeding failed:\n\n${error.message}`);
+            } finally {
+                seedResourcesBtn.disabled = false;
+                clearResourcesBtn.disabled = false;
+                seedCoursesBtn.disabled = false;
+            }
+        });
+
+        // Clear resources
+        clearResourcesBtn.addEventListener("click", async () => {
+            if (
+                !confirm(
+                    "⚠️  This will delete ALL resources from the knowledge_resources collection.\n\nAre you sure?"
+                )
+            ) {
+                return;
+            }
+
+            progressSection.classList.add("active");
+            seedResourcesBtn.disabled = true;
+            clearResourcesBtn.disabled = true;
+            seedCoursesBtn.disabled = true;
+            console_.innerHTML = "";
+
+            logToConsole("Clearing knowledge_resources collection...", "info");
+
+            try {
+                const deleted = await clearCollection("knowledge_resources", 1000);
+                logToConsole(`✅ Deleted ${deleted} resources.`, "success");
+
+                updateProgressUI({
+                    percentage: 100,
+                    message: `Cleared ${deleted} resources.`,
+                    status: "success",
+                });
+
+                alert(`✅ Cleared ${deleted} resources from Firestore.`);
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`, "error");
+                alert(`❌ Error clearing resources:\n\n${error.message}`);
+            } finally {
+                seedResourcesBtn.disabled = false;
+                clearResourcesBtn.disabled = false;
+                seedCoursesBtn.disabled = false;
+                progressSection.classList.remove("active");
+            }
+        });
+
+        // Legacy courses seeding
+        seedCoursesBtn.addEventListener("click", () => {
+            alert(
+                "The legacy course seeding uses seedCourses.js.\n\nFor Knowledge Hub resources, use the 'Seed Knowledge Hub' button above."
+            );
+            // Could import and run seedCourses.js if needed
+        });
+    </script>
+
+    <!-- Legacy courses seeding script (uncomment if needed) -->
+    <!-- <script type="module" src="./js/seedCourses.js"></script> -->
 </body>
 </html>
