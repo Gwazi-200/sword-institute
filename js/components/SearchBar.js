@@ -30,6 +30,9 @@
  * ============================================================
  */
 
+import { search, registerGlobalSearch } from '../services/searchService.js';
+import { handleError } from '../services/errorService.js';
+
 class SearchBar extends HTMLElement {
     constructor() {
         super();
@@ -37,6 +40,8 @@ class SearchBar extends HTMLElement {
         this.debounceTimer = null;
         this.debounceDelay = 300; // ms
         this.query = "";
+        this.results = [];
+        this.cleanup = null;
     }
 
     connectedCallback() {
@@ -122,6 +127,50 @@ class SearchBar extends HTMLElement {
                 padding: 0 12px;
             }
 
+            .search-results {
+                position: absolute;
+                top: calc(100% + 6px);
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+                z-index: 1000;
+                display: none;
+            }
+
+            .search-results.is-open {
+                display: block;
+            }
+
+            .search-results ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .search-results li + li {
+                border-top: 1px solid #f1f3f5;
+            }
+
+            .search-results a {
+                display: block;
+                padding: 10px 12px;
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .search-results a:hover {
+                background: var(--hover);
+            }
+
+            .search-results p {
+                margin: 2px 0 0;
+                font-size: 12px;
+                color: #6c757d;
+            }
+
             @media (max-width: 600px) {
                 .search-input {
                     font-size: 16px;
@@ -133,8 +182,14 @@ class SearchBar extends HTMLElement {
 
     render() {
         const placeholder = this.getAttribute("placeholder") || "Search resources...";
+        const style = this.shadowRoot.querySelector("style");
 
-        this.shadowRoot.innerHTML += `
+        this.shadowRoot.innerHTML = "";
+        if (style) {
+            this.shadowRoot.appendChild(style);
+        }
+
+        this.shadowRoot.insertAdjacentHTML("beforeend", `
             <div class="search-container">
                 <div class="search-wrapper">
                     <span class="search-icon">🔍</span>
@@ -146,22 +201,22 @@ class SearchBar extends HTMLElement {
                     />
                     <button class="clear-btn" title="Clear search" aria-label="Clear">✕</button>
                 </div>
+                <div class="search-results" role="listbox"></div>
                 <div class="search-hint">Press Enter to search • Cmd/Ctrl+K to focus</div>
             </div>
-        `;
+        `);
     }
 
     attachEventListeners() {
         const input = this.shadowRoot.querySelector(".search-input");
         const clearBtn = this.shadowRoot.querySelector(".clear-btn");
+        const resultPanel = this.shadowRoot.querySelector(".search-results");
 
-        // Input event with debounce
         input.addEventListener("input", e => {
             this.query = e.target.value.trim();
             this.debounceSearch();
         });
 
-        // Enter key
         input.addEventListener("keydown", e => {
             if (e.key === "Enter") {
                 e.preventDefault();
@@ -169,16 +224,21 @@ class SearchBar extends HTMLElement {
             }
         });
 
-        // Clear button
         clearBtn.addEventListener("click", () => {
             this.clear();
         });
 
-        // Keyboard shortcut (Cmd/Ctrl + K)
+        this.cleanup = registerGlobalSearch();
         document.addEventListener("keydown", e => {
             if ((e.ctrlKey || e.metaKey) && e.key === "k") {
                 e.preventDefault();
                 input.focus();
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!this.shadowRoot.contains(event.target)) {
+                resultPanel.classList.remove("is-open");
             }
         });
     }
@@ -190,19 +250,41 @@ class SearchBar extends HTMLElement {
         }, this.debounceDelay);
     }
 
-    doSearch() {
+    async doSearch() {
         this.dispatchEvent(
             new CustomEvent("search", {
                 detail: { query: this.query },
                 bubbles: true,
             })
         );
+
+        const resultPanel = this.shadowRoot.querySelector(".search-results");
+        if (!this.query) {
+            resultPanel.classList.remove("is-open");
+            resultPanel.innerHTML = "";
+            return;
+        }
+
+        try {
+            this.results = await search(this.query, { limit: 6 });
+            resultPanel.innerHTML = this.results.length
+                ? `<ul>${this.results.map((item) => `<li><a href="${item.url}">${item.title}</a><p>${item.description}</p></li>`).join("")}</ul>`
+                : '<p style="padding: 10px 12px; margin: 0;">No results found.</p>';
+            resultPanel.classList.add("is-open");
+        } catch (error) {
+            handleError(error, 'search');
+            resultPanel.innerHTML = '<p style="padding: 10px 12px; margin: 0;">Search is temporarily unavailable.</p>';
+            resultPanel.classList.add("is-open");
+        }
     }
 
     clear() {
         this.query = "";
         const input = this.shadowRoot.querySelector(".search-input");
+        const resultPanel = this.shadowRoot.querySelector(".search-results");
         input.value = "";
+        resultPanel.classList.remove("is-open");
+        resultPanel.innerHTML = "";
         this.doSearch();
     }
 
@@ -223,9 +305,15 @@ class SearchBar extends HTMLElement {
     setDebounceDelay(delay) {
         this.debounceDelay = delay;
     }
+
+    disconnectedCallback() {
+        if (this.cleanup) {
+            this.cleanup();
+        }
+        clearTimeout(this.debounceTimer);
+    }
 }
 
-// Register custom element
 customElements.define("search-bar", SearchBar);
 
 export { SearchBar };

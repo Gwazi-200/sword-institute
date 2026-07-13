@@ -8,6 +8,13 @@
 
 import "./index.js";
 import "./homeCourses.js";
+import { applySettings } from './services/settingsService.js';
+import { registerGlobalSearch } from './services/searchService.js';
+import './services/index.js';
+import './components/SearchBar.js';
+
+applySettings();
+registerGlobalSearch();
 
 console.log("🚀 Sword Institute LMS Started");
 

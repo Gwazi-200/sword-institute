@@ -1,4 +1,5 @@
 import { auth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from '../firebase.js';
+import { trackEvent } from './loggingService.js';
 
 function subscribeToAuth(listener) {
     return onAuthStateChanged(auth, listener);
@@ -6,10 +7,13 @@ function subscribeToAuth(listener) {
 
 async function signOutUser() {
     await signOut(auth);
+    trackEvent('logout');
 }
 
 async function signIn(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    trackEvent('login', { uid: result?.user?.uid });
+    return result;
 }
 
 async function register(email, password, displayName) {
@@ -17,6 +21,7 @@ async function register(email, password, displayName) {
     if (displayName) {
         await updateProfile(result.user, { displayName });
     }
+    trackEvent('register', { uid: result?.user?.uid, displayName });
     return result;
 }
 
