@@ -21,6 +21,7 @@ import {
     onDOMReady
 } from './core/safe-dom.js';
 import { info, warn, error, timer } from './core/logger.js';
+import { pickFeaturedCourses } from './utils/courseNormalizer.js';
 
 const MODULE = 'HomeCourses';
 const MAX_RETRIES = 3;
@@ -142,7 +143,8 @@ async function fetchCoursesWithRetry(maxCount = 4, retries = 0) {
     try {
         info(MODULE, `Fetching featured courses (attempt ${retries + 1}/${MAX_RETRIES})`);
         const courses = await getFeaturedCourses(maxCount);
-        return { success: true, courses, error: null };
+        const featured = pickFeaturedCourses(courses, maxCount);
+        return { success: true, courses: featured, error: null };
     } catch (err) {
         error(MODULE, `Failed to fetch courses (attempt ${retries + 1})`, err);
 

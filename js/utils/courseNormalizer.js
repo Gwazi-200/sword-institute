@@ -217,6 +217,17 @@ export function normalizeCourses(courses = []) {
 
 }
 
+export function pickFeaturedCourses(courses = [], max = 4) {
+    const normalized = normalizeCourses(courses);
+    const featured = normalized.filter((course) => Boolean(course.featured || course.popular));
+
+    if (featured.length > 0) {
+        return featured.slice(0, max);
+    }
+
+    return normalized.slice(0, max);
+}
+
 /**
  * Version log
  */
