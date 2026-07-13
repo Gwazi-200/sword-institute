@@ -44,7 +44,7 @@ import {
     getDocs
 } from 'firebase/firestore';
 
-import { auth, db } from './firebase-config.js';
+import { auth, db } from './firebase.js';
 import { ensureStudentProfile, updateStudentProfile } from './services/studentProfileService.js';
 
 // ============================================================

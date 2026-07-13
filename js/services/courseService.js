@@ -94,10 +94,11 @@ async function loadCourses(forceRefresh = false) {
     try {
         info(MODULE, 'Fetching courses from Firestore...');
 
+        // Firestore requires a composite index for equality filters combined with orderBy on another field.
+        // We fetch the published courses and sort them locally by title to avoid requiring an index.
         const q = query(
             coursesRef(),
-            where('published', '==', true),
-            orderBy('title')
+            where('published', '==', true)
         );
 
         const snapshot = await getDocs(q);
@@ -110,6 +111,7 @@ async function loadCourses(forceRefresh = false) {
             });
         });
 
+        courses.sort((a, b) => String(a.title || '').localeCompare(String(b.title || '')));
         updateCache(courses);
         info(MODULE, `✔ ${courseCache.length} published courses loaded`);
         return courseCache;
@@ -169,54 +171,6 @@ export async function getCoursesByCategory(category) {
     return courses.filter(
         (course) => course.category === category
     );
-}
-
-/* ============================================================
-   FEATURED COURSES
-============================================================ */
-
-export async function getFeaturedCourses(max = 8) {
-
-    const courses = await loadCourses();
-
-    return courses
-
-        .filter(course => course.featured)
-
-        .slice(0, max);
-
-}
-
-/* ============================================================
-   POPULAR COURSES
-============================================================ */
-
-export async function getPopularCourses(max = 8) {
-
-    const courses = await loadCourses();
-
-    return courses
-
-        .filter(course => course.popular)
-
-        .slice(0, max);
-
-}
-
-/* ============================================================
-   CATEGORY
-============================================================ */
-
-export async function getCoursesByCategory(category) {
-
-    const courses = await loadCourses();
-
-    return courses.filter(
-
-        course => course.category === category
-
-    );
-
 }
 
 /* ============================================================

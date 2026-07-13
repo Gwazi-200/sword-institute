@@ -2158,8 +2158,8 @@
 
         // Initialize AI Service
         function initAI() {
-            if (typeof AIService !== 'undefined') {
-                AIService.initAIService(window.SWORD_AI_CONFIG || {});
+            if (typeof window.AIService !== 'undefined') {
+                window.AIService.initAIService(window.SWORD_AI_CONFIG || {});
                 console.log('🤖 AI Service initialized');
                 return true;
             } else {
@@ -2192,8 +2192,8 @@
 
             try {
                 let reply = getLocalResponse(message);
-                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
-                    reply = await AIService.sendAIMessage(message, 'dashboard', {
+                if (typeof window.AIService !== 'undefined' && window.AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    reply = await window.AIService.sendAIMessage(message, 'dashboard', {
                         studentData
                     });
                 }
@@ -2256,8 +2256,8 @@
                 }
 
                 let result;
-                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
-                    result = await AIService.getLearningRecommendations(studentData || {});
+                if (typeof window.AIService !== 'undefined' && window.AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    result = await window.AIService.getLearningRecommendations(studentData || {});
                 } else {
                     result = await getSmartRecommendations(studentData);
                 }
@@ -2409,12 +2409,12 @@
                 'Teach one concept to someone else to reinforce understanding.'
             ];
 
-            if (typeof AIService === 'undefined' || !AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+            if (typeof window.AIService === 'undefined' || !window.AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
                 appendTip(fallbackTips[Math.floor(Math.random() * fallbackTips.length)]);
                 return;
             }
 
-            AIService.sendAIMessage('Give me one practical study tip for today.', 'dashboard', {
+            window.AIService.sendAIMessage('Give me one practical study tip for today.', 'dashboard', {
                 studentData,
                 intent: 'study_tip'
             }).then((tip) => {
@@ -2431,8 +2431,8 @@
         async function loadAIRecommendations(uid) {
             try {
                 let result;
-                if (typeof AIService !== 'undefined' && AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
-                    result = await AIService.getLearningRecommendations(studentData || {});
+                if (typeof window.AIService !== 'undefined' && window.AIService.initAIService(window.SWORD_AI_CONFIG || {})) {
+                    result = await window.AIService.getLearningRecommendations(studentData || {});
                 } else {
                     result = await getSmartRecommendations(studentData);
                 }
