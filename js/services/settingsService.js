@@ -1,4 +1,4 @@
-import { applyTheme } from './themeService.js';
+import { applyTheme, normalizeTheme } from './themeService.js';
 import { read, write } from './storageService.js';
 
 const SETTINGS_STORAGE_KEY = 'settings';
@@ -35,9 +35,12 @@ const DEFAULT_SETTINGS = {
 };
 
 function normalizeSettings(settings = {}) {
+    const sanitizedTheme = normalizeTheme(settings.theme);
+
     return {
         ...DEFAULT_SETTINGS,
         ...settings,
+        theme: sanitizedTheme,
         accessibility: { ...DEFAULT_SETTINGS.accessibility, ...(settings.accessibility || {}) },
         notificationPreferences: { ...DEFAULT_SETTINGS.notificationPreferences, ...(settings.notificationPreferences || {}) },
         learningPreferences: { ...DEFAULT_SETTINGS.learningPreferences, ...(settings.learningPreferences || {}) },
