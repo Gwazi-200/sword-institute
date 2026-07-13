@@ -1,5 +1,5 @@
 const THEME_STORAGE_KEY = 'sword-theme';
-const THEME_OPTIONS = ['pearlescent', 'violet', 'gold', 'midnight'];
+const THEME_OPTIONS = ['pearlescent', 'violet', 'gold', 'midnight', 'ocean', 'forest'];
 
 function applyTheme(themeName = getStoredTheme()) {
     const safeTheme = normalizeTheme(themeName);
@@ -35,16 +35,39 @@ function applyTheme(themeName = getStoredTheme()) {
             '--glass-border': 'rgba(255,255,255,0.16)',
             '--text-primary': '#f5e9ff',
             '--text-secondary': '#d7c7ef'
+        },
+        ocean: {
+            '--primary': '#0F766E',
+            '--accent': '#38BDF8',
+            '--glass': 'rgba(15, 118, 110, 0.18)',
+            '--glass-border': 'rgba(255,255,255,0.24)',
+            '--text-primary': '#082f49',
+            '--text-secondary': '#0f172a'
+        },
+        forest: {
+            '--primary': '#166534',
+            '--accent': '#4ADE80',
+            '--glass': 'rgba(22, 101, 52, 0.16)',
+            '--glass-border': 'rgba(255,255,255,0.28)',
+            '--text-primary': '#052e16',
+            '--text-secondary': '#14532d'
         }
     };
 
-    document.documentElement.setAttribute('data-theme', safeTheme);
-    document.body?.setAttribute('data-theme', safeTheme);
-    const rootStyle = document.documentElement.style;
-    Object.entries(themeMap[safeTheme] || themeMap.pearlescent).forEach(([key, value]) => {
-        rootStyle.setProperty(key, value);
-    });
-    localStorage.setItem(THEME_STORAGE_KEY, safeTheme);
+    if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', safeTheme);
+        document.body?.setAttribute('data-theme', safeTheme);
+        const rootStyle = document.documentElement.style;
+        Object.entries(themeMap[safeTheme] || themeMap.pearlescent).forEach(([key, value]) => {
+            rootStyle.setProperty(key, value);
+        });
+    }
+
+    try {
+        localStorage.setItem(THEME_STORAGE_KEY, safeTheme);
+    } catch (error) {
+        console.warn('Theme storage unavailable', error);
+    }
     return safeTheme;
 }
 
@@ -66,7 +89,9 @@ function getThemeMeta(themeName = getStoredTheme()) {
         pearlescent: { label: 'Pearlescent White', accent: '#f5f2ff' },
         violet: { label: 'Royal Violet', accent: '#8B00FF' },
         gold: { label: 'Radiant Gold', accent: '#FFD700' },
-        midnight: { label: 'Midnight Dark', accent: '#2d1b4e' }
+        midnight: { label: 'Midnight Dark', accent: '#2d1b4e' },
+        ocean: { label: 'Ocean Blue', accent: '#0F766E' },
+        forest: { label: 'Forest Emerald', accent: '#166534' }
     };
 
     return themeMap[normalized] || themeMap.pearlescent;
@@ -80,7 +105,11 @@ function toggleTheme() {
             ? 'gold'
             : current === 'gold'
                 ? 'midnight'
-                : 'pearlescent';
+                : current === 'midnight'
+                    ? 'ocean'
+                    : current === 'ocean'
+                        ? 'forest'
+                        : 'pearlescent';
     return applyTheme(next);
 }
 

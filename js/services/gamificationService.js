@@ -1,4 +1,8 @@
 import { getStudentProfile, updateStudentProfile } from './studentProfileService.js';
+import { read, write } from './storageService.js';
+import { trackEvent } from './loggingService.js';
+
+const GAMIFICATION_STORAGE_KEY = 'gamification';
 
 export async function getGamificationState(uid) {
     const profile = await getStudentProfile(uid, { force: true });
@@ -27,7 +31,14 @@ export async function awardXp(uid, points, reason = 'Progress') {
         level: Math.max(1, Math.floor(nextXp / 400) + 1),
         achievements: Array.isArray(profile?.achievements) ? profile.achievements : [],
     });
+    const state = read(GAMIFICATION_STORAGE_KEY, { xp: 0, streak: 0, badges: [] });
+    write(GAMIFICATION_STORAGE_KEY, { ...state, xp: (state.xp || 0) + points });
+    trackEvent('award_xp', { uid, points, reason });
     return nextXp;
 }
 
-export default { getGamificationState, awardXp };
+export function getStoredGamificationState() {
+    return read(GAMIFICATION_STORAGE_KEY, { xp: 0, streak: 0, badges: [] });
+}
+
+export default { getGamificationState, awardXp, getStoredGamificationState };
