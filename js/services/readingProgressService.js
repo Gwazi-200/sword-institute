@@ -304,7 +304,7 @@ async function getReadingHistory(studentId, limit = 20) {
         const q = query(
             progressRef(studentId),
             orderBy("lastAccessedAt", "desc"),
-            limit: limit
+            limit(limit)
         );
 
         const snapshot = await getDocs(q);

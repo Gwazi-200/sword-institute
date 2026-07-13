@@ -42,5 +42,19 @@ function buildProfileCenterData(profile = {}, user = {}) {
     };
 }
 
-export { getInitials, getAvatarDisplay, buildProfileCenterData };
+function buildProfileUpdatePayload(values = {}) {
+    const normalized = {
+        fullName: String(values?.fullName || '').trim(),
+        phone: String(values?.phone || '').trim(),
+        country: String(values?.country || '').trim(),
+        profession: String(values?.profession || '').trim(),
+        organization: String(values?.organization || '').trim(),
+        bio: String(values?.bio || '').trim(),
+        photoURL: String(values?.photoURL || '').trim(),
+    };
+
+    return normalized;
+}
+
+export { getInitials, getAvatarDisplay, buildProfileCenterData, buildProfileUpdatePayload };
 export default { getInitials, getAvatarDisplay, buildProfileCenterData };

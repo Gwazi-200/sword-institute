@@ -1265,28 +1265,22 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- FIREBASE CDN (LEFT AS-IS; dashboard still uses compat)   -->
+    <!-- FIREBASE BOOTSTRAP -->
     <!-- ========================================================== -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    <script type="module">
+        import { initializeDashboardApp } from './js/dashboard/initializationManager.js';
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeDashboardApp().catch((error) => {
+                console.error('[DashboardInit] Failed to initialize dashboard services:', error);
+            });
+        });
     </script>
     <script src="js/sharedRoutes.js"></script>
     <script src="js/enrollment-ui.js"></script>
 
     <script type="module">
-        import { fetchDashboardData } from './js/services/dashboardService.js';
-        import { getStudentIntelligenceSnapshot } from './js/services/studentProfileService.js';
-        import { getAnalyticsSnapshot } from './js/services/analyticsService.js';
-        import { getCareerRecommendations } from './js/services/careerService.js';
-        import { renderStudentIntelligenceCard } from './js/components/studentIntelligenceCard.js';
-        import { createDashboardHero } from './js/components/dashboardHero.js';
-        import { createMissionCard, createRecommendationCard } from './js/components/dashboardModules.js';
-        window.dashboardService = { fetchDashboardData };
-        window.studentIntelligence = { getStudentIntelligenceSnapshot, getAnalyticsSnapshot, getCareerRecommendations, renderStudentIntelligenceCard };
-        window.dashboardComponents = { createDashboardHero, createMissionCard, createRecommendationCard };
+        import { initializeDashboardApp } from './js/dashboard/initializationManager.js';
+        window.dashboardReady = initializeDashboardApp();
     </script>
 
     <!-- ========================================================== -->
@@ -1294,8 +1288,10 @@
     <!-- ========================================================== -->
     <script type="module" src="./ai-service.js"></script>
     <script type="module">
+        import { auth as firebaseAuth } from './firebase.js';
         import { createNavbar } from './js/components/navbar.js';
         import { DashboardIntegration } from './js/integrations/dashboardIntegration.js';
+        import { initializeDashboardApp } from './js/dashboard/initializationManager.js';
         
         const navbarHost = document.getElementById('navbarHost');
         if (navbarHost) createNavbar(navbarHost, { activePage: 'dashboard' });
@@ -1304,8 +1300,7 @@
         async function initKnowledgeHubWidgets() {
             try {
                 // Get current student ID from Firebase Auth
-                const auth = firebase.auth();
-                auth.onAuthStateChanged(async (user) => {
+                firebaseAuth.onAuthStateChanged(async (user) => {
                     if (user) {
                         const studentId = user.uid;
                         const dashboard = new DashboardIntegration(studentId, {
@@ -1337,26 +1332,11 @@
         }
     </script>
 
-    <script>
+    <script type="module">
+        import { auth, db } from './firebase.js';
+        import { initializeDashboardApp } from './js/dashboard/initializationManager.js';
 
-        // =============================================================
-        // FIREBASE CONFIG
-        // =============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
-            authDomain: "sword-institute-lms.firebaseapp.com",
-            projectId: "sword-institute-lms",
-            storageBucket: "sword-institute-lms.firebasestorage.app",
-            messagingSenderId: "478896038426",
-            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
-        };
-
-        // Initialize Firebase (idempotent)
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        await initializeDashboardApp();
 
         // =============================================================
         // DOM References
@@ -1924,9 +1904,14 @@
         // =============================================================
         async function loadStudentIntelligence(uid) {
             try {
-                const snapshot = await window.studentIntelligence.getStudentIntelligenceSnapshot(uid);
-                const analytics = await window.studentIntelligence.getAnalyticsSnapshot(uid);
-                const recommendations = await window.studentIntelligence.getCareerRecommendations(uid);
+                const services = window.studentIntelligence;
+                if (!services || typeof services.getStudentIntelligenceSnapshot !== 'function') {
+                    return;
+                }
+
+                const snapshot = await services.getStudentIntelligenceSnapshot(uid);
+                const analytics = await services.getAnalyticsSnapshot(uid);
+                const recommendations = await services.getCareerRecommendations(uid);
                 const host = document.getElementById('studentIntelligenceHost');
                 if (!host) return;
                 const cards = [
@@ -1935,7 +1920,7 @@
                     { label: 'Current Streak', value: `${analytics.currentStreak} days` },
                     { label: 'Career Focus', value: recommendations[0]?.title || 'Growing your path' },
                 ];
-                host.innerHTML = window.studentIntelligence.renderStudentIntelligenceCard({
+                host.innerHTML = services.renderStudentIntelligenceCard({
                     title: snapshot.welcomeLabel || 'Welcome back',
                     subtitle: 'Your learning path is now connected across courses, knowledge, and Professor SWORD.',
                     items: cards,
@@ -1947,7 +1932,12 @@
 
         async function loadUserDashboard(uid) {
             try {
-                const dashboardData = await window.dashboardService.fetchDashboardData(uid);
+                const services = window.dashboardService;
+                if (!services || typeof services.fetchDashboardData !== 'function') {
+                    throw new Error('Dashboard service unavailable');
+                }
+
+                const dashboardData = await services.fetchDashboardData(uid);
                 const enrollments = dashboardData?.enrollments || [];
                 const courseDetails = (dashboardData?.courses || []).map((course) => {
                     const enrollment = enrollments.find((item) => item.courseId === course.id) || {};
@@ -2045,6 +2035,10 @@
         // =============================================================
         async function getUserEnrollments(uid) {
             try {
+                if (!db || typeof db.collection !== 'function') {
+                    return [];
+                }
+
                 const snapshot = await db.collection('enrollments')
                     .where('userId', '==', uid)
                     .where('status', '==', 'active')

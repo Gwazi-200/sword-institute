@@ -2,7 +2,7 @@ import { subscribeToAuth, getCurrentUser, signOutUser, getDisplayName, getUserIn
 import { applyTheme, getStoredTheme, getThemeMeta, toggleTheme } from '../services/themeService.js';
 import { getNotifications, markAllRead } from '../services/notificationService.js';
 import { getUserProfileView } from './userProfile.js';
-import { buildProfileCenterData } from '../utils/profileCenterUtils.js';
+import { buildProfileCenterData, buildProfileUpdatePayload } from '../utils/profileCenterUtils.js';
 import { getProfileCenterRecord, updateProfileCenter, uploadProfilePhoto, removeProfilePhoto } from '../services/profileCenterService.js';
 import { showToast } from '../ui.js';
 
@@ -333,25 +333,37 @@ export async function createNavbar(container, options = {}) {
             const organizationInput = container.querySelector('input[name="profileOrganization"]');
             const bioInput = container.querySelector('textarea[name="profileBio"]');
 
-            const nextProfile = {
-                fullName: nameInput?.value?.trim() || '',
-                phone: phoneInput?.value?.trim() || '',
-                country: countryInput?.value?.trim() || '',
-                profession: professionInput?.value?.trim() || '',
-                organization: organizationInput?.value?.trim() || '',
-                bio: bioInput?.value?.trim() || '',
-            };
+            const nextProfile = buildProfileUpdatePayload({
+                fullName: nameInput?.value || '',
+                phone: phoneInput?.value || '',
+                country: countryInput?.value || '',
+                profession: professionInput?.value || '',
+                organization: organizationInput?.value || '',
+                bio: bioInput?.value || '',
+                photoURL: state.profileModal.previewUrl || '',
+            });
 
-            if (state.profileModal.file) {
-                await uploadProfilePhoto(state.user.uid, state.profileModal.file);
+            try {
+                saveProfileEditorButton.disabled = true;
+                saveProfileEditorButton.textContent = 'Saving...';
+
+                if (state.profileModal.file) {
+                    await uploadProfilePhoto(state.user.uid, state.profileModal.file);
+                }
+
+                await updateProfileCenter(state.user.uid, nextProfile);
+                state.profileModal.isOpen = false;
+                state.profileModal.file = null;
+                state.profileModal.previewUrl = '';
+                await render();
+                showToast('Profile updated successfully.', 'success');
+            } catch (error) {
+                console.error('Failed to save profile', error);
+                showToast('We could not save your profile. Please try again.', 'error');
+            } finally {
+                saveProfileEditorButton.disabled = false;
+                saveProfileEditorButton.textContent = 'Save changes';
             }
-
-            await updateProfileCenter(state.user.uid, nextProfile);
-            state.profileModal.isOpen = false;
-            state.profileModal.file = null;
-            state.profileModal.previewUrl = '';
-            await render();
-            showToast('Profile updated successfully.', 'success');
         });
 
         markReadButton?.addEventListener('click', () => {
