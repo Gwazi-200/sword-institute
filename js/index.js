@@ -2,342 +2,266 @@
  * ==========================================================
  * Sword Institute LMS
  * Homepage Controller
- * Version 1.0
+ * Version: 2.0.0 (Production)
+ * ==========================================================
+ *
+ * Safe DOM manipulation with null checks
+ * Deferred execution until DOMContentLoaded
+ * No initialization of services (handled by manager)
  * ==========================================================
  */
 
-console.clear();
-
-console.log(`
-==========================================
-⚔ Sword Institute Homepage
-Version 1.0
-==========================================
-`);
-
-/* ==========================================================
-   ELEMENTS
-========================================================== */
-
-const dashboardButton = document.getElementById("dashboardButton");
-const dashboardLink = document.getElementById("dashboardLink") || document.getElementById("dashboardBtn");
-
-
-const counters = document.querySelectorAll(".counter");
-
-const mentorCard = document.querySelector(".mentor-card");
-
-/* ==========================================================
-   AUTH PLACEHOLDER
-========================================================== */
-
-function checkAuthentication() {
-
-    /*
-     This will later use Firebase Authentication.
-
-     if(user){
-
-        dashboardButton.style.display="inline-flex";
-
-     }else{
-
-        dashboardButton.style.display="none";
-
-     }
-
-    */
-
-    // Some pages (like homepage) may not include the expected dashboard element id.
-    // Guard to avoid runtime crashes.
-    if (dashboardButton) {
-        dashboardButton.style.display = "none";
-    }
-    if (dashboardLink) {
-        dashboardLink.style.display = "none";
-    }
-}
-
-checkAuthentication();
-
-
-/* ==========================================================
-   HERO BUTTONS
-========================================================== */
-
-document.querySelectorAll(".btn").forEach(button => {
-
-    button.addEventListener("mouseenter", () => {
-
-        button.style.transform = "translateY(-3px)";
-
-    });
-
-    button.addEventListener("mouseleave", () => {
-
-        button.style.transform = "";
-
-    });
-
-});
-
-/* ==========================================================
-   MENTOR FLOATING EFFECT
-========================================================== */
-
-if (mentorCard) {
-
-    let direction = 1;
-
-    setInterval(() => {
-
-        mentorCard.style.transform =
-            `translateY(${direction * 8}px)`;
-
-        direction *= -1;
-
-    }, 2000);
-
-}
-
-/* ==========================================================
-   COUNTER ANIMATION
-========================================================== */
-
-function animateCounter(counter) {
-
-    const target = Number(counter.dataset.target);
-
-    let current = 0;
-
-    const speed = target / 120;
-
-    function update() {
-
-        current += speed;
-
-        if (current < target) {
-
-            counter.innerText = Math.floor(current);
-
-            requestAnimationFrame(update);
-
-        } else {
-
-            counter.innerText = target.toLocaleString();
-
-        }
-
-    }
-
-    update();
-
-}
-
-/* ==========================================================
-   OBSERVER
-========================================================== */
-
-const observer = new IntersectionObserver(entries => {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            if (entry.target.classList.contains("counter")) {
-
-                animateCounter(entry.target);
-
-            }
-
-            entry.target.classList.add("visible");
-
-        }
-
-    });
-
-}, {
-
-    threshold: .25
-
-});
-
-document.querySelectorAll(".animate").forEach(element => {
-
-    observer.observe(element);
-
-});
-
-document.querySelectorAll(".counter").forEach(counter => {
-
-    observer.observe(counter);
-
-});
-
-/* ==========================================================
-   SMOOTH SCROLL
-========================================================== */
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-
-    anchor.addEventListener("click", e => {
-
-        e.preventDefault();
-
-        const target = document.querySelector(anchor.getAttribute("href"));
-
-        if (!target) return;
-
-        target.scrollIntoView({
-
-            behavior: "smooth"
-
+import {
+    safeQuery,
+    safeQueryAll,
+    safeSetStyle,
+    safeAddListener,
+    safeSetText,
+    safeAddClass,
+    onDOMReady
+} from './core/safe-dom.js';
+
+import { debug, info, warn, section } from './core/logger.js';
+
+const MODULE = 'HomePage';
+
+// ========================================================
+// DEFERRED INITIALIZATION (executes after DOM ready)
+// ========================================================
+
+async function initializeHomepage() {
+    section('Homepage Initialization');
+
+    // ========================================================
+    // HERO BUTTON EFFECTS
+    // ========================================================
+
+    function initHeroButtons() {
+        const buttons = safeQueryAll('.btn');
+        buttons.forEach(button => {
+            safeAddListener(button, 'mouseenter', () => {
+                safeSetStyle(button, 'transform', 'translateY(-3px)');
+            });
+
+            safeAddListener(button, 'mouseleave', () => {
+                safeSetStyle(button, 'transform', '');
+            });
         });
 
-    });
-
-});
-
-/* ==========================================================
-    Professor SWORD Rotation
-========================================================== */
-
-const mentorMessages = [
-
-    {
-
-        title: "Communication Skills",
-
-        text: "Every great leader begins by listening."
-
-    },
-
-    {
-
-        title: "Leadership",
-
-        text: "Lead with integrity and inspire others."
-
-    },
-
-    {
-
-        title: "AI Basic Education",
-
-        text: "AI is your assistant—not your replacement."
-
-    },
-
-    {
-
-        title: "Entrepreneurship",
-
-        text: "Every successful business starts with one idea."
-
-    },
-
-    {
-
-        title: "Community Development",
-
-        text: "Communities grow when knowledge is shared."
-
+        if (buttons.length > 0) {
+            info(MODULE, `✔ Hero buttons initialized (${buttons.length} buttons)`);
+        }
     }
 
-];
+    // ========================================================
+    // MENTOR FLOATING EFFECT
+    // ========================================================
 
-const mentorTitle = document.querySelector(".mentor-message h2");
+    function initMentorCard() {
+        const mentorCard = safeQuery('.mentor-card');
+        if (!mentorCard) {
+            debug(MODULE, 'Mentor card not found (may not be on this page)');
+            return;
+        }
 
-const mentorTip = document.querySelector(".mentor-tip");
+        let direction = 1;
+        const animationInterval = setInterval(() => {
+            safeSetStyle(mentorCard, 'transform', `translateY(${direction * 8}px)`);
+            direction *= -1;
+        }, 2000);
 
-let current = 0;
-
-function rotateMentorMessage() {
-
-    if (!mentorTitle || !mentorTip) return;
-
-    current++;
-
-    if (current >= mentorMessages.length)
-
-        current = 0;
-
-    mentorTitle.textContent = mentorMessages[current].title;
-
-    mentorTip.textContent = "💡 " + mentorMessages[current].text;
-
-}
-
-setInterval(rotateMentorMessage, 7000);
-
-/* ==========================================================
-   SCROLL INDICATOR
-========================================================== */
-
-const indicator = document.querySelector(".scroll-indicator");
-
-window.addEventListener("scroll", () => {
-
-    if (window.scrollY > 150) {
-
-        indicator.style.opacity = "0";
-
+        // Store interval ID for cleanup if needed
+        window.__mentorAnimationInterval = animationInterval;
+        info(MODULE, '✔ Mentor card floating effect initialized');
     }
 
-    else {
+    // ========================================================
+    // COUNTER ANIMATION
+    // ========================================================
 
-        indicator.style.opacity = "1";
+    function animateCounter(counter) {
+        const target = Number(counter.dataset.target || 0);
+        if (target === 0) return;
 
+        let current = 0;
+        const speed = target / 120;
+
+        function update() {
+            current += speed;
+            if (current < target) {
+                safeSetText(counter, Math.floor(current).toString());
+                requestAnimationFrame(update);
+            } else {
+                safeSetText(counter, target.toLocaleString());
+            }
+        }
+
+        update();
     }
 
-});
+    // ========================================================
+    // INTERSECTION OBSERVER FOR ANIMATIONS
+    // ========================================================
 
-/* ==========================================================
-   PRELOADER PLACEHOLDER
-========================================================== */
+    function initObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    // Animate counters
+                    if (entry.target.classList.contains('counter')) {
+                        animateCounter(entry.target);
+                    }
 
-window.addEventListener("load", () => {
+                    // Add visible class
+                    safeAddClass(entry.target, 'visible');
+                }
+            });
+        }, { threshold: 0.25 });
 
-    document.body.classList.add("loaded");
+        // Observe all animated elements
+        const animates = safeQueryAll('.animate');
+        const counters = safeQueryAll('.counter');
 
-});
+        animates.forEach(el => observer.observe(el));
+        counters.forEach(el => observer.observe(el));
 
-/* ==========================================================
-   FIREBASE PLACEHOLDER
-========================================================== */
+        info(MODULE, `✔ Intersection Observer initialized (${animates.length + counters.length} elements)`);
+    }
 
-/*
+    // ========================================================
+    // SMOOTH SCROLL NAVIGATION
+    // ========================================================
 
-NEXT VERSION
+    function initSmoothScroll() {
+        const anchors = safeQueryAll('a[href^="#"]');
 
-import {
+        anchors.forEach((anchor) => {
+            safeAddListener(anchor, 'click', (e) => {
+                const href = anchor.getAttribute('href');
+                if (!href) return;
 
-auth,
+                const target = safeQuery(href);
+                if (!target) return;
 
-onAuthStateChanged
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
 
+        if (anchors.length > 0) {
+            info(MODULE, `✔ Smooth scroll navigation initialized (${anchors.length} anchors)`);
+        }
+    }
+
+    // ========================================================
+    // PROFESSOR SWORD MESSAGE ROTATION
+    // ========================================================
+
+    function initMentorRotation() {
+        const mentorTitle = safeQuery('.mentor-message h2');
+        const mentorTip = safeQuery('.mentor-tip');
+
+        if (!mentorTitle || !mentorTip) {
+            debug(MODULE, 'Mentor message elements not found (may not be on this page)');
+            return;
+        }
+
+        const mentorMessages = [
+            {
+                title: 'Communication Skills',
+                text: 'Every great leader begins by listening.'
+            },
+            {
+                title: 'Leadership',
+                text: 'Lead with integrity and inspire others.'
+            },
+            {
+                title: 'AI Basic Education',
+                text: 'AI is your assistant—not your replacement.'
+            },
+            {
+                title: 'Entrepreneurship',
+                text: 'Every successful business starts with one idea.'
+            },
+            {
+                title: 'Community Development',
+                text: 'Communities grow when knowledge is shared.'
+            }
+        ];
+
+        let current = 0;
+
+        function rotateMentorMessage() {
+            current++;
+            if (current >= mentorMessages.length) current = 0;
+
+            const msg = mentorMessages[current];
+            safeSetText(mentorTitle, msg.title);
+            safeSetText(mentorTip, `💡 ${msg.text}`);
+        }
+
+        // Start rotation after showing first message
+        const rotationInterval = setInterval(rotateMentorMessage, 7000);
+        window.__mentorRotationInterval = rotationInterval;
+
+        info(MODULE, '✔ Professor SWORD message rotation initialized');
+    }
+
+    // ========================================================
+    // SCROLL INDICATOR
+    // ========================================================
+
+    function initScrollIndicator() {
+        const indicator = safeQuery('.scroll-indicator');
+        if (!indicator) {
+            debug(MODULE, 'Scroll indicator not found (may not be on this page)');
+            return;
+        }
+
+        safeAddListener(window, 'scroll', () => {
+            const opacity = window.scrollY > 150 ? '0' : '1';
+            safeSetStyle(indicator, 'opacity', opacity);
+        });
+
+        info(MODULE, '✔ Scroll indicator initialized');
+    }
+
+    // ========================================================
+    // PAGE LOAD COMPLETE
+    // ========================================================
+
+    function initPageLoad() {
+        safeAddListener(window, 'load', () => {
+            safeAddClass(document.body, 'loaded');
+        });
+
+        info(MODULE, '✔ Page load handler initialized');
+    }
+
+    // ========================================================
+    // RUN ALL INITIALIZATIONS
+    // ========================================================
+
+    try {
+        initHeroButtons();
+        initMentorCard();
+        initObserver();
+        initSmoothScroll();
+        initMentorRotation();
+        initScrollIndicator();
+        initPageLoad();
+
+        info(MODULE, '✅ Homepage initialization complete');
+    } catch (err) {
+        warn(MODULE, 'Homepage initialization error', err);
+    }
 }
 
-from "./firebase.js";
+// ========================================================
+// START INITIALIZATION
+// ========================================================
 
-onAuthStateChanged(auth,(user)=>{
+await onDOMReady();
+await initializeHomepage();
 
-if(user){
-
-dashboardButton.style.display="inline-flex";
-
-}else{
-
-dashboardButton.style.display="none";
-
-}
-
-});
-
-*/
-
-/* ==========================================================
-   END
-========================================================== */
-
-console.log("✅ Homepage Ready");
+info(MODULE, '✅ Homepage ready');

@@ -1572,19 +1572,25 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- FIREBASE CDN                                              -->
+    <!-- FIREBASE INITIALIZATION                                  -->
     <!-- ========================================================== -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous" referrerpolicy="no-referrer">
-    </script>
+    <!-- 
+        NOTE: Firebase compat SDK loaded for legacy compatibility only.
+        Modern ES6 modules use Firebase SDK 10.x via importmap below.
+        Actual initialization is done by firebase-config.js module.
+        
+        DO NOT call firebase.initializeApp() here - it causes duplicate
+        initialization and race conditions.
+    -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <!-- ========================================================== -->
+    <!-- APPLICATION MODULES (in dependency order)                -->
+    <!-- ========================================================== -->
     <script type="module" src="ai-service.js"></script>
     <script src="js/enrollment-ui.js"></script>
     <script type="module" src="js/ai/professorSword.js"></script>
@@ -1617,24 +1623,17 @@
         }
     </script>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6lVyvaA7uhcX3qvxvOp3dqiGxb8Td4xs",
-            authDomain: "sword-institute-lms.firebaseapp.com",
-            projectId: "sword-institute-lms",
-            storageBucket: "sword-institute-lms.firebasestorage.app",
-            messagingSenderId: "478896038426",
-            appId: "1:478896038426:web:c24c6373edc1cba14a67a3"
-        };
+    <!-- ========================================================== -->
+    <!-- HOMEPAGE INITIALIZATION SCRIPT                           -->
+    <!-- ========================================================== -->
+    <script type="module">
+        import { auth as fbAuth, onAuthStateChanged } from './firebase.js';
 
+        // Note: Firebase is initialized by firebase-config.js module
+        // DO NOT call firebase.initializeApp() here
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        const auth = firebase.auth();
-const loginBtn = document.getElementById('loginLink') || document.getElementById('loginBtn');
-const registerBtn = document.getElementById('registerLink') || document.getElementById('registerBtn');
+        const loginBtn = document.getElementById('loginLink') || document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerLink') || document.getElementById('registerBtn');
         const dashboardBtn = document.getElementById('dashboardBtn');
         const aiMessages = document.getElementById('aiMessages');
         const aiInput = document.getElementById('aiInput');
@@ -1773,16 +1772,16 @@ const registerBtn = document.getElementById('registerLink') || document.getEleme
 
         // Dashboard visibility depends on active enrollment, not just auth.
         // Uses js/enrollment-ui.js (window.EnrollmentUI).
-        auth.onAuthStateChanged(async (user) => {
+        onAuthStateChanged(fbAuth, async (user) => {
             currentUser = user || null;
 
             // Basic auth actions
             if (user) {
-                loginBtn.style.display = 'none';
-                registerBtn.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (registerBtn) registerBtn.style.display = 'none';
             } else {
-                loginBtn.style.display = 'inline-flex';
-                registerBtn.style.display = 'inline-flex';
+                if (loginBtn) loginBtn.style.display = 'inline-flex';
+                if (registerBtn) registerBtn.style.display = 'inline-flex';
             }
 
             // Enrollment-gated dashboard

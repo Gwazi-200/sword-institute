@@ -1,7 +1,25 @@
 /**
- * ai-service.js
- * Sword Institute - Professor SWORD Service
- * Communicates with Firebase Cloud Functions
+ * ============================================================
+ * Sword Institute LMS
+ * Professor SWORD AI Service
+ * Version: 2.0.0 (Production)
+ * ============================================================
+ *
+ * Central AI service for Professor SWORD mentor interactions.
+ *
+ * Features:
+ * - Firebase Cloud Functions integration
+ * - OpenFrontier API fallback
+ * - Graceful degradation on network errors
+ * - Student token management
+ * - Response caching
+ *
+ * Used by:
+ * - Homepage mentor chat
+ * - Dashboard AI recommendations
+ * - Lesson player mentor
+ * - Course guidance
+ * ============================================================
  */
 
 import {
@@ -10,7 +28,8 @@ import {
     storage as fbStorage,
     functions as fbFunctions,
     app as fbApp,
-    httpsCallable
+    httpsCallable,
+    onAuthStateChanged
 } from './firebase.js';
 import { askProfessorSWORD } from './js/ai/aiOrchestrator.js';
 
@@ -21,9 +40,13 @@ import { askProfessorSWORD } from './js/ai/aiOrchestrator.js';
 let isInitialized = false;
 let currentUser = null;
 let lastResponseSource = 'fallback';
+
 const OPENFRONTIER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENFRONTIER_MODEL = 'openai/gpt-3.5-turbo';
 
+// =============================================================
+// CONFIGURATION HELPERS
+// =============================================================
 
 function resolveOpenFrontierApiKey() {
     const windowKey = typeof window !== 'undefined'
@@ -38,9 +61,10 @@ function resolveOpenFrontierApiKey() {
 }
 
 function hasLiveProvider() {
+    // Check if we have either an OpenFrontier API key or Firebase functions
     const hasClientKey = Boolean(resolveOpenFrontierApiKey());
-    const hasCallable = typeof firebase !== 'undefined' && !!firebase.functions;
-    return hasClientKey || hasCallable;
+    const hasFirebaseFunctions = Boolean(fbFunctions);
+    return hasClientKey || hasFirebaseFunctions;
 }
 
 // =============================================================
@@ -50,23 +74,27 @@ function hasLiveProvider() {
 function initAIService() {
     if (isInitialized) return true;
 
-    if (typeof firebase === 'undefined') {
-        console.warn('Firebase not loaded. AI service will use fallback responses.');
+    try {
+        // Use imported auth from firebase.js
+        if (fbAuth && fbAuth.currentUser) {
+            currentUser = fbAuth.currentUser;
+        }
+
+        // Listen for auth changes
+        if (fbAuth && onAuthStateChanged) {
+            onAuthStateChanged(fbAuth, (user) => {
+                currentUser = user;
+            });
+        }
+
+        isInitialized = true;
+        console.log('✔ AI Service initialized');
+        return true;
+    } catch (error) {
+        console.warn('AI service initialization encountered an issue:', error);
+        isInitialized = true; // Still mark as initialized, will use fallback
         return false;
     }
-
-    const auth = firebase.auth();
-    if (auth.currentUser) {
-        currentUser = auth.currentUser;
-    }
-
-    auth.onAuthStateChanged((user) => {
-        currentUser = user;
-    });
-
-    isInitialized = true;
-    console.log('AI Service initialized with OpenFrontier AI');
-    return true;
 }
 
 // =============================================================
@@ -74,20 +102,20 @@ function initAIService() {
 // =============================================================
 
 async function getUserToken(forceRefresh = false) {
-    if (typeof firebase === 'undefined' || !firebase.auth) {
+    if (!fbAuth) {
         return null;
     }
 
     if (!currentUser) {
         try {
-            currentUser = firebase.auth().currentUser || null;
+            currentUser = fbAuth.currentUser || null;
         } catch (error) {
             console.warn('Firebase auth is not ready yet. Falling back to guest AI mode.');
             return null;
         }
     }
 
-    if (!currentUser || !currentUser.getIdToken) {
+    if (!currentUser || typeof currentUser.getIdToken !== 'function') {
         return null;
     }
 
@@ -128,41 +156,29 @@ async function sendAIMessageCore(message, context = 'General', lessonContent = '
                 userName: currentUser?.displayName || currentUser?.email || 'Warrior'
             },
             getCallable: async (payload) => {
-                if (!currentUser || !userToken || typeof firebase === 'undefined' || !firebase.functions) {
-                    throw new Error('Callable AI is unavailable');
-                }
+                    if (!currentUser || !userToken || !fbFunctions) {
+                        throw new Error('Callable AI is unavailable');
+                    }
 
-                const functions = firebase.functions();
-                const getAIResponse = functions.httpsCallable('getAIResponse');
-                const result = await getAIResponse({
-                    message: payload.message,
-                    context: payload.context,
-                    lessonContent: payload.lessonContent,
-                    userToken,
-                    type: payload.type
-                });
+                    try {
+                        const getAIResponse = httpsCallable(fbFunctions, 'getAIResponse');
+                        const result = await getAIResponse({
+                            message: payload.message,
+                            context: payload.context,
+                            lessonContent: payload.lessonContent,
+                            userToken,
+                            type: payload.type
+                        });
 
-                if (result?.data?.success) {
-                    return result.data;
-                }
+                        if (result?.data?.success) {
+                            return result.data;
+                        }
 
-                throw new Error('AI service returned an error');
-            }
-        }
-    );
-
-    if (orchestrated?.response) {
-        lastResponseSource = orchestrated.source === 'cloud-function' ? 'callable' : orchestrated.source === 'cache' ? 'cache' : 'fallback';
-        return orchestrated.response;
-    }
-
-    lastResponseSource = 'fallback';
-    return getFallbackResponse(message);
-}
-
-async function sendAIMessageLive(message, context = 'General', lessonContent = '') {
-    const reply = await sendAIMessageCore(message, context, lessonContent);
-    return {
+                        throw new Error('AI service returned an error');
+                    } catch (err) {
+                        console.error('Cloud function error:', err);
+                        throw err;
+                    }
         reply,
         live: isLastResponseLive(),
         source: getLastResponseSource()
@@ -256,9 +272,11 @@ async function getRecommendation() {
     }
 
     try {
+        if (!fbFunctions) {
+            throw new Error('Firebase Functions not available');
+        }
+
         const getAIRecommendation = httpsCallable(fbFunctions, 'getAIRecommendation');
-
-
         const result = await getAIRecommendation({ userToken: userToken });
 
         if (result.data && result.data.success) {
