@@ -1,7 +1,6 @@
 ﻿// dashboard.js – Sword Institute LMS
-// ES Module – imports auth from firebase.js
-import { auth } from './firebase-config.js';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+// ES Module – imports from unified firebase.js
+import { auth, onAuthStateChanged, signOut } from './firebase.js';
 
 // Wait for DOM
 document.addEventListener('DOMContentLoaded', () => {

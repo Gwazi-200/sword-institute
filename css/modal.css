@@ -1,0 +1,299 @@
+/**
+ * ============================================================
+ * Sword Institute LMS - Modal Styles
+ * Version: 1.0.0
+ * ============================================================
+ *
+ * Professional modal dialog styling with:
+ * - Apple-inspired glass design
+ * - Smooth animations
+ * - Responsive layout
+ * - Accessibility support
+ *
+ * ============================================================
+ */
+
+/* Modal Container */
+.sword-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+/* Modal Backdrop */
+.sword-modal__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sword-modal.is-open .sword-modal__backdrop {
+    opacity: 1;
+}
+
+/* Modal Panel (Main Content) */
+.sword-modal__panel {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sword-modal.is-open .sword-modal__panel {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Modal Size Variations */
+.sword-modal--small .sword-modal__panel {
+    width: 100%;
+    max-width: 400px;
+}
+
+.sword-modal--medium .sword-modal__panel {
+    width: 100%;
+    max-width: 600px;
+}
+
+.sword-modal--large .sword-modal__panel {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Modal Header */
+.sword-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+}
+
+.sword-modal__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+}
+
+/* Modal Close Button */
+.sword-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    color: #666;
+    font-size: 18px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.sword-modal__close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #1a1a1a;
+}
+
+.sword-modal__close:active {
+    transform: scale(0.95);
+}
+
+/* Modal Body */
+.sword-modal__body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.sword-modal__body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sword-modal__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sword-modal__body::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.sword-modal__body::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* Modal Footer */
+.sword-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.02);
+    flex-shrink: 0;
+}
+
+/* Modal Buttons */
+.sword-modal__button {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+/* Secondary Button (Cancel) */
+.sword-modal__button--secondary {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a1a;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.sword-modal__button--secondary:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+.sword-modal__button--secondary:active {
+    transform: scale(0.98);
+}
+
+/* Primary Button (Save/Confirm) */
+.sword-modal__button--primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.sword-modal__button--primary:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+}
+
+.sword-modal__button--primary:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sword-modal {
+        padding: 16px;
+    }
+
+    .sword-modal--small .sword-modal__panel,
+    .sword-modal--medium .sword-modal__panel,
+    .sword-modal--large .sword-modal__panel {
+        max-width: 100%;
+        max-height: 95vh;
+    }
+
+    .sword-modal__header {
+        padding: 16px;
+    }
+
+    .sword-modal__body {
+        padding: 16px;
+    }
+
+    .sword-modal__footer {
+        padding: 16px;
+        flex-direction: column-reverse;
+    }
+
+    .sword-modal__footer .sword-modal__button {
+        width: 100%;
+    }
+
+    .sword-modal__title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sword-modal {
+        padding: 12px;
+    }
+
+    .sword-modal__panel {
+        border-radius: 16px;
+    }
+
+    .sword-modal__header {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .sword-modal__body {
+        padding: 12px;
+    }
+
+    .sword-modal__footer {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .sword-modal__title {
+        font-size: 18px;
+    }
+
+    .sword-modal__close {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+}
+
+/* Accessibility */
+.sword-modal__button:focus-visible,
+.sword-modal__close:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .sword-modal,
+    .sword-modal__backdrop,
+    .sword-modal__panel,
+    .sword-modal__button,
+    .sword-modal__close {
+        transition: none;
+    }
+}

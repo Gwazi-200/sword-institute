@@ -1,9 +1,94 @@
+/**
+ * ============================================================
+ * Sword Institute LMS - Unified Auth Service
+ * Version: 1.1.0
+ * ============================================================
+ *
+ * Centralized authentication with single listener pattern
+ * Prevents duplicate auth state changes from firing
+ *
+ * ============================================================
+ */
+
 import { auth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from '../firebase.js';
 import { trackEvent } from './loggingService.js';
 import { handleError } from './errorService.js';
+import { debug, error as logError } from '../core/logger.js';
 
+const MODULE = 'AuthService';
+
+/**
+ * Central auth state management (single listener pattern)
+ */
+let currentUser = auth.currentUser || null;
+let authListeners = new Set();
+let centralUnsubscribe = null;
+let isInitialized = false;
+
+/**
+ * Initialize centralized auth listener (prevents duplicates)
+ * @private
+ */
+function initializeCentralAuthListener() {
+    if (isInitialized) return;
+
+    debug(MODULE, 'Initializing centralized auth listener');
+
+    centralUnsubscribe = onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+
+        if (user) {
+            debug(MODULE, `Auth state changed: User signed in (${user.uid})`);
+        } else {
+            debug(MODULE, 'Auth state changed: User signed out');
+        }
+
+        // Notify all registered listeners
+        authListeners.forEach((listener) => {
+            try {
+                listener(user);
+            } catch (err) {
+                logError(MODULE, 'Error in auth listener', err);
+            }
+        });
+    });
+
+    isInitialized = true;
+}
+
+/**
+ * Subscribe to auth state changes (centralized listener)
+ * @param {Function} listener - Callback(user)
+ * @returns {Function} Unsubscribe function
+ */
 function subscribeToAuth(listener) {
-    return onAuthStateChanged(auth, listener);
+    // Ensure central listener is initialized
+    if (!isInitialized) {
+        initializeCentralAuthListener();
+    }
+
+    if (typeof listener !== 'function') {
+        console.warn('subscribeToAuth: listener must be a function');
+        return () => {};
+    }
+
+    authListeners.add(listener);
+
+    // Call immediately with current user
+    listener(currentUser);
+
+    // Return unsubscribe function
+    return () => {
+        authListeners.delete(listener);
+    };
+}
+
+/**
+ * Get all subscribed auth listeners (debugging)
+ * @returns {number}
+ */
+function getAuthListenerCount() {
+    return authListeners.size;
 }
 
 async function signOutUser() {
@@ -58,5 +143,5 @@ function getUserInitials(user = getCurrentUser()) {
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
 }
 
-export { subscribeToAuth, signOutUser, signIn, register, getCurrentUser, getDisplayName, getUserInitials };
-export default { subscribeToAuth, signOutUser, signIn, register, getCurrentUser, getDisplayName, getUserInitials };
+export { subscribeToAuth, signOutUser, signIn, register, getCurrentUser, getDisplayName, getUserInitials, getAuthListenerCount };
+export default { subscribeToAuth, signOutUser, signIn, register, getCurrentUser, getDisplayName, getUserInitials, getAuthListenerCount };

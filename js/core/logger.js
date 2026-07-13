@@ -13,7 +13,10 @@
  * ============================================================
  */
 
-const DEVELOPMENT_MODE = !('production' in import.meta.env ? import.meta.env.production : false);
+import { isDevelopment } from './environmentService.js';
+
+// Safe environment detection using EnvironmentService
+const DEVELOPMENT_MODE = isDevelopment();
 
 const LOG_LEVEL = {
     TRACE: 0,

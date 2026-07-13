@@ -139,27 +139,23 @@ async function sendAIMessageCore(message, context = 'General', lessonContent = '
     }
 
     const userToken = await getUserToken();
+    const studentData = {
+        userName: currentUser?.displayName || currentUser?.email || 'Warrior'
+    };
 
     const orchestrated = await askProfessorSWORD(
         {
             message,
             context,
             lessonContent,
-            studentData: {
-                userName: currentUser?.displayName || currentUser?.email || 'Warrior'
-            }
+            studentData
         },
         {
             intent: 'chat',
             context,
-            studentData: {
-                userName: currentUser?.displayName || currentUser?.email || 'Warrior'
-            },
+            studentData,
             getCallable: async (payload) => {
-                    if (!currentUser || !userToken || !fbFunctions) {
-                        throw new Error('Callable AI is unavailable');
-                    }
-
+                if (fbFunctions && userToken && currentUser) {
                     try {
                         const getAIResponse = httpsCallable(fbFunctions, 'getAIResponse');
                         const result = await getAIResponse({
@@ -171,14 +167,57 @@ async function sendAIMessageCore(message, context = 'General', lessonContent = '
                         });
 
                         if (result?.data?.success) {
+                            lastResponseSource = 'callable';
                             return result.data;
                         }
 
                         throw new Error('AI service returned an error');
                     } catch (err) {
                         console.error('Cloud function error:', err);
-                        throw err;
+                        // Fall through to direct provider fallback if available
                     }
+                }
+
+                const directKey = resolveOpenFrontierApiKey();
+                if (directKey) {
+                    try {
+                        const reply = await callOpenFrontierDirect(payload.message, payload.context, payload.lessonContent);
+                        lastResponseSource = 'direct';
+                        return { success: true, reply };
+                    } catch (directError) {
+                        console.error('Direct AI provider error:', directError);
+                    }
+                }
+
+                throw new Error('AI service is unavailable');
+            }
+        }
+    );
+
+    lastResponseSource = orchestrated?.source || lastResponseSource || 'fallback';
+
+    if (orchestrated?.ok) {
+        return orchestrated.response;
+    }
+
+    return orchestrated?.response || getFallbackResponse(message);
+}
+
+async function sendAIMessageLive(message, context = 'General', lessonContent = '') {
+    if (!message) {
+        return {
+            reply: 'Please ask a question.',
+            live: false,
+            source: 'fallback'
+        };
+    }
+
+    if (!isInitialized) {
+        initAIService();
+    }
+
+    const reply = await sendAIMessageCore(message, context, lessonContent);
+    return {
         reply,
         live: isLastResponseLive(),
         source: getLastResponseSource()
@@ -374,3 +413,15 @@ if (typeof window !== 'undefined') {
     };
     console.log('AI Service loaded for global use');
 }
+
+export default {
+    initAIService,
+    hasLiveProvider,
+    getLastResponseSource,
+    isLastResponseLive,
+    sendAIMessageLive,
+    sendAIMessage: sendAIMessageCore,
+    getRecommendation,
+    getLearningRecommendations,
+    getUserToken
+};

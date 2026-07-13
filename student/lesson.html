@@ -705,7 +705,7 @@
     <script src="../js/sharedRoutes.js"></script>
     <script src="../js/localAuthGuard.js"></script>
 
-    <script src="../ai-service.js"></script>
+    <script type="module" src="../ai-service.js"></script>
 
     <script>
         // =============================================================
@@ -1121,9 +1121,9 @@
             const lessonSummary = (lessonContent.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 800);
 
             try {
-                if (typeof AIService !== 'undefined') {
-                    AIService.initAIService(window.SWORD_AI_CONFIG || {});
-                    const reply = await AIService.sendAIMessage(question, 'lesson', {
+                if (typeof window.AIService !== 'undefined') {
+                    window.AIService.initAIService(window.SWORD_AI_CONFIG || {});
+                    const reply = await window.AIService.sendAIMessage(question, 'lesson', {
                         lessonContext: {
                             courseName: courseName.textContent,
                             lessonTitle: lessonHeading.textContent,

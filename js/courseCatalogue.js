@@ -1,7 +1,6 @@
 // js/courseCatalogue.js – Main controller
-import { auth } from './firebase-config.js';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { courseService } from './services/courseService.js';
+import { auth, onAuthStateChanged, signOut } from './firebase.js';
+import { getAllCourses } from './services/courseService.js';
 import { courseCard } from './components/courseCard.js';
 
 // State

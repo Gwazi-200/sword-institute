@@ -2156,18 +2156,18 @@
             const openLogin = () => openModal('loginModal');
             const openRegister = () => openModal('registerModal');
 
-            loginBtn.addEventListener('click', openLogin);
-            registerBtn.addEventListener('click', openRegister);
-            document.getElementById('heroLoginBtn').addEventListener('click', openLogin);
-            document.getElementById('heroRegisterBtn').addEventListener('click', openRegister);
-            document.getElementById('wallLoginBtn').addEventListener('click', openLogin);
-            document.getElementById('wallRegisterBtn').addEventListener('click', openRegister);
+            if (loginBtn) loginBtn.addEventListener('click', openLogin);
+            if (registerBtn) registerBtn.addEventListener('click', openRegister);
+            document.getElementById('heroLoginBtn')?.addEventListener('click', openLogin);
+            document.getElementById('heroRegisterBtn')?.addEventListener('click', openRegister);
+            document.getElementById('wallLoginBtn')?.addEventListener('click', openLogin);
+            document.getElementById('wallRegisterBtn')?.addEventListener('click', openRegister);
 
             document.querySelectorAll('[data-close-modal]').forEach((button) => {
                 button.addEventListener('click', () => closeModal(button.getAttribute('data-close-modal')));
             });
 
-            document.getElementById('guestModeBtn').addEventListener('click', () => {
+            document.getElementById('guestModeBtn')?.addEventListener('click', () => {
                 localStorage.setItem(STORAGE_KEYS.guest, 'true');
                 showToast('Guest mode enabled. Course descriptions unlocked.');
                 renderCourses(getVisibleCourses());
