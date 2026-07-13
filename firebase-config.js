@@ -15,7 +15,7 @@
  * ============================================================
  */
 
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 
 /* ============================================================
    AUTHENTICATION
@@ -30,7 +30,7 @@ import {
     sendPasswordResetEmail,
     updateProfile,
     onAuthStateChanged
-} from "firebase/auth";
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 /* ============================================================
    FIRESTORE
@@ -59,7 +59,7 @@ import {
     increment,
     arrayUnion,
     arrayRemove
-} from "firebase/firestore";
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 /* ============================================================
    STORAGE
@@ -72,7 +72,7 @@ import {
     uploadBytesResumable,
     getDownloadURL,
     deleteObject
-} from "firebase/storage";
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
 /* ============================================================
    CLOUD FUNCTIONS
@@ -81,7 +81,7 @@ import {
 import {
     getFunctions,
     httpsCallable
-} from "firebase/functions";
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
 
 /* ============================================================
    FIREBASE CONFIG

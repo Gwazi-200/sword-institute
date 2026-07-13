@@ -285,11 +285,13 @@ function getCurrentLevel(academy) {
         console.warn('Unable to read academy level preference', error);
     }
 
-    if (typeof firebase !== 'undefined' && firebase.auth) {
-        const currentUser = firebase.auth().currentUser;
+    try {
+        const currentUser = auth?.currentUser;
         if (currentUser) {
             return 'Professional';
         }
+    } catch (error) {
+        console.warn('Unable to read auth current user', error);
     }
 
     return academy.level;
@@ -324,32 +326,6 @@ function getContinueLearning(academy) {
         console.warn('Unable to read continue learning state', error);
         return null;
     }
-}
-
-function getCurrentLevel(academy) {
-    if (typeof window === 'undefined') {
-        return academy.level;
-    }
-
-    try {
-        const storedLevel = window.localStorage.getItem('sword_academy_level');
-        if (storedLevel) {
-            return storedLevel;
-        }
-    } catch (error) {
-        console.warn('Unable to read academy level preference', error);
-    }
-
-    try {
-        const currentUser = auth?.currentUser;
-        if (currentUser) {
-            return 'Professional';
-        }
-    } catch (error) {
-        console.warn('Unable to read auth current user', error);
-    }
-
-    return academy.level;
 }
 
 function createAcademyCard(academy) {

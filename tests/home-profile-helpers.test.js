@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 (async () => {
-  const { pickFeaturedCourses } = await import('../js/utils/courseNormalizer.js');
+  const { pickFeaturedCourses, getFallbackCourses } = await import('../js/utils/courseNormalizer.js');
   const { buildProfileUpdatePayload } = await import('../js/utils/profileCenterUtils.js');
 
   test('pickFeaturedCourses falls back to the first courses when no explicit featured flags exist', () => {
@@ -38,5 +38,14 @@ const assert = require('node:assert/strict');
       bio: 'Ready to learn',
       photoURL: '',
     });
+  });
+
+  test('getFallbackCourses returns curated featured course data', () => {
+    const fallback = getFallbackCourses();
+
+    assert.ok(Array.isArray(fallback));
+    assert.ok(fallback.length > 0);
+    assert.ok(fallback.some((course) => course.featured || course.popular));
+    assert.ok(fallback[0].title);
   });
 })();

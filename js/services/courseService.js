@@ -34,7 +34,8 @@ import {
 
 import {
     normalizeCourse,
-    normalizeCourses
+    normalizeCourses,
+    getFallbackCourses
 } from '../utils/courseNormalizer.js';
 
 import { info, warn, error, debug, timer } from '../core/logger.js';
@@ -54,6 +55,11 @@ const CACHE_TIME = 1000 * 60 * 5; // 5 minutes
 
 let courseCache = [];
 let lastLoaded = null;
+const FALLBACK_COURSES = getFallbackCourses();
+
+function getFallbackCourseSet() {
+    return normalizeCourses(FALLBACK_COURSES);
+}
 
 /* ============================================================
    COLLECTION REFERENCE
@@ -111,6 +117,13 @@ async function loadCourses(forceRefresh = false) {
             });
         });
 
+        if (!courses.length) {
+            warn(MODULE, 'No published courses found. Using curated fallback catalog.');
+            const fallbackCourses = getFallbackCourseSet();
+            updateCache(fallbackCourses);
+            return courseCache;
+        }
+
         courses.sort((a, b) => String(a.title || '').localeCompare(String(b.title || '')));
         updateCache(courses);
         info(MODULE, `✔ ${courseCache.length} published courses loaded`);
@@ -130,7 +143,10 @@ async function loadCourses(forceRefresh = false) {
             return courseCache;
         }
 
-        return [];
+        const fallbackCourses = getFallbackCourseSet();
+        updateCache(fallbackCourses);
+        warn(MODULE, 'Using fallback course catalog after Firestore error');
+        return courseCache;
     } finally {
         perf.stop();
     }

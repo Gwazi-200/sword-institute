@@ -1366,12 +1366,6 @@
                             <button type="button" class="ai-chip" data-chip="Certificates">📜 Certificates</button>
                         </div>
 
-                        <div style="margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
-                            <button id="aiSmokeTestBtn" type="button" style="align-self: flex-start; border: 0; border-radius: 999px; padding: 0.45rem 0.8rem; background: #0f766e; color: white; cursor: pointer; font-size: 0.9rem;">
-                                Run smoke test
-                            </button>
-                            <div id="aiSmokeTestResult" aria-live="polite" style="font-size: 0.92rem; color: #4b5563; min-height: 1.3rem;"></div>
-                        </div>
                     </footer>
                 </div>
             </div>
@@ -1834,35 +1828,6 @@
                         ext: '.svg'
                     });
                 });
-            }
-
-            const smokeTestBtn = document.getElementById('aiSmokeTestBtn');
-            const smokeTestResult = document.getElementById('aiSmokeTestResult');
-
-            if (smokeTestBtn && smokeTestBtn.dataset.bound !== 'true') {
-                smokeTestBtn.addEventListener('click', async () => {
-                    if (!window.runBrowserSmokeTest) {
-                        smokeTestResult.textContent = 'Smoke test runner is unavailable.';
-                        return;
-                    }
-
-                    smokeTestBtn.disabled = true;
-                    smokeTestBtn.textContent = 'Running…';
-                    smokeTestResult.textContent = 'Running browser smoke test…';
-
-                    try {
-                        await window.runBrowserSmokeTest({
-                            target: window,
-                            resultContainer: smokeTestResult
-                        });
-                    } catch (error) {
-                        smokeTestResult.innerHTML = `<span style="color:#b91c1c;">Smoke test failed: ${error.message}</span>`;
-                    } finally {
-                        smokeTestBtn.disabled = false;
-                        smokeTestBtn.textContent = 'Run smoke test';
-                    }
-                });
-                smokeTestBtn.dataset.bound = 'true';
             }
 
             if (typeof window.AIService !== 'undefined') {
