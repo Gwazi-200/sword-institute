@@ -4,6 +4,7 @@ import { getNotifications, markAllRead } from '../services/notificationService.j
 import { getUserProfileView } from './userProfile.js';
 import { buildProfileCenterData, buildProfileUpdatePayload } from '../utils/profileCenterUtils.js';
 import { getProfileCenterRecord, updateProfileCenter, uploadProfilePhoto, removeProfilePhoto } from '../services/profileCenterService.js';
+import { loadProfileState, mergeProfileState, saveProfileState } from '../utils/profilePageState.js';
 import { showToast } from '../ui.js';
 
 const NAV_ITEMS = [
@@ -50,12 +51,11 @@ export async function createNavbar(container, options = {}) {
 
     const render = async () => {
         state.user = getCurrentUser();
-        state.profile = state.user ? await getUserProfileView(state.user) : null;
         state.notifications = getNotifications();
+        const localProfile = loadProfileState();
+        const profileView = state.user ? await getUserProfileView(state.user) : null;
         const profileRecord = state.user ? await getProfileCenterRecord(state.user.uid) : null;
-        if (profileRecord && state.profile) {
-            state.profile = { ...state.profile, ...profileRecord };
-        }
+        state.profile = state.user ? mergeProfileState(localProfile, { ...(profileView || {}), ...(profileRecord || {}) }) : null;
         const unreadCount = state.notifications.filter((item) => item.unread).length;
         const activePage = options.activePage || getCurrentPageKey();
         const themeMeta = getThemeMeta(state.theme);
@@ -352,6 +352,11 @@ export async function createNavbar(container, options = {}) {
                 }
 
                 await updateProfileCenter(state.user.uid, nextProfile);
+                saveProfileState(mergeProfileState(loadProfileState(), {
+                    ...nextProfile,
+                    fullName: nameInput?.value || '',
+                    email: state.user.email || '',
+                }));
                 state.profileModal.isOpen = false;
                 state.profileModal.file = null;
                 state.profileModal.previewUrl = '';
