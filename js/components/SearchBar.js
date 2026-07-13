@@ -171,6 +171,11 @@ class SearchBar extends HTMLElement {
                 color: #6c757d;
             }
 
+            .search-results .empty-state {
+                padding: 10px 12px;
+                margin: 0;
+            }
+
             @media (max-width: 600px) {
                 .search-input {
                     font-size: 16px;
@@ -269,11 +274,11 @@ class SearchBar extends HTMLElement {
             this.results = await search(this.query, { limit: 6 });
             resultPanel.innerHTML = this.results.length
                 ? `<ul>${this.results.map((item) => `<li><a href="${item.url}">${item.title}</a><p>${item.description}</p></li>`).join("")}</ul>`
-                : '<p style="padding: 10px 12px; margin: 0;">No results found.</p>';
+                : '<p class="empty-state">No results found.</p>';
             resultPanel.classList.add("is-open");
         } catch (error) {
             handleError(error, 'search');
-            resultPanel.innerHTML = '<p style="padding: 10px 12px; margin: 0;">Search is temporarily unavailable.</p>';
+            resultPanel.innerHTML = '<p class="empty-state">Search is temporarily unavailable.</p>';
             resultPanel.classList.add("is-open");
         }
     }

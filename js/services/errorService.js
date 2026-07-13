@@ -1,5 +1,18 @@
+function sanitizeMessage(message) {
+    if (!message) {
+        return 'Something went wrong. Please try again.';
+    }
+
+    const text = String(message).replace(/\s+/g, ' ').trim();
+    if (text.length > 180) {
+        return `${text.slice(0, 177)}...`;
+    }
+
+    return text;
+}
+
 function handleError(error, context = 'application') {
-    const friendlyMessage = error?.message || 'Something went wrong. Please try again.';
+    const friendlyMessage = sanitizeMessage(error?.message || 'Something went wrong. Please try again.');
     if (typeof window !== 'undefined' && window.dispatchEvent) {
         window.dispatchEvent(new CustomEvent('sword:error', { detail: { context, message: friendlyMessage } }));
     }
@@ -8,5 +21,5 @@ function handleError(error, context = 'application') {
     return friendlyMessage;
 }
 
-export { handleError };
-export default { handleError };
+export { handleError, sanitizeMessage };
+export default { handleError, sanitizeMessage };

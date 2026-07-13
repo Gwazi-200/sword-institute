@@ -1,28 +1,45 @@
 import { auth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from '../firebase.js';
 import { trackEvent } from './loggingService.js';
+import { handleError } from './errorService.js';
 
 function subscribeToAuth(listener) {
     return onAuthStateChanged(auth, listener);
 }
 
 async function signOutUser() {
-    await signOut(auth);
-    trackEvent('logout');
+    try {
+        await signOut(auth);
+        trackEvent('logout');
+        return true;
+    } catch (error) {
+        handleError(error, 'auth');
+        return false;
+    }
 }
 
 async function signIn(email, password) {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    trackEvent('login', { uid: result?.user?.uid });
-    return result;
+    try {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        trackEvent('login', { uid: result?.user?.uid });
+        return result;
+    } catch (error) {
+        handleError(error, 'auth');
+        throw error;
+    }
 }
 
 async function register(email, password, displayName) {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    if (displayName) {
-        await updateProfile(result.user, { displayName });
+    try {
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        if (displayName) {
+            await updateProfile(result.user, { displayName });
+        }
+        trackEvent('register', { uid: result?.user?.uid, displayName });
+        return result;
+    } catch (error) {
+        handleError(error, 'auth');
+        throw error;
     }
-    trackEvent('register', { uid: result?.user?.uid, displayName });
-    return result;
 }
 
 function getCurrentUser() {
