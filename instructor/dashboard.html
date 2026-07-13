@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instructor Studio | Sword Institute</title>
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <style>
+        body { margin: 0; font-family: Inter, system-ui, sans-serif; background: linear-gradient(135deg, #f8f4ff, #fff9e6); color: #2f1d43; }
+        .glass-card { background: rgba(255,255,255,0.72); border: 1px solid rgba(139,0,255,0.16); border-radius: 24px; box-shadow: 0 18px 40px rgba(49,24,83,0.12); backdrop-filter: blur(20px); padding: 20px; margin-bottom: 16px; }
+        .studio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .studio-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .studio-stats article { padding: 12px; border-radius: 16px; background: rgba(255,255,255,0.72); }
+        .studio-stats strong { display: block; font-size: 1.25rem; }
+        .studio-stats span { color: #5c5273; font-size: 0.95rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 8px; border-bottom: 1px solid rgba(139,0,255,0.12); text-align: left; }
+        input, textarea, select, button { width: 100%; border-radius: 12px; border: 1px solid rgba(139,0,255,0.16); padding: 10px 12px; margin-top: 8px; font: inherit; }
+        button { cursor: pointer; background: linear-gradient(135deg, #8b00ff, #ffd700); color: #1f1032; font-weight: 600; }
+        @media (max-width: 768px) { .studio-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <main id="studio-root"></main>
+    <script type="module">
+        import { initInstructorStudio } from '../js/instructorStudio.js';
+        import { subscribeToAuth } from '../js/services/authService.js';
+
+        const root = document.getElementById('studio-root');
+        subscribeToAuth((user) => {
+            if (!user) {
+                root.innerHTML = '<section class="glass-card"><h1>Instructor access required</h1><p>Please sign in to use the studio.</p></section>';
+                return;
+            }
+            initInstructorStudio(root);
+        });
+    </script>
+</body>
+</html>

@@ -113,5 +113,5 @@ function toggleTheme() {
     return applyTheme(next);
 }
 
-export { applyTheme, getStoredTheme, getThemeMeta, toggleTheme, THEME_STORAGE_KEY, THEME_OPTIONS };
-export default { applyTheme, getStoredTheme, getThemeMeta, toggleTheme, THEME_STORAGE_KEY, THEME_OPTIONS };
+export { applyTheme, normalizeTheme, getStoredTheme, getThemeMeta, toggleTheme, THEME_STORAGE_KEY, THEME_OPTIONS };
+export default { applyTheme, normalizeTheme, getStoredTheme, getThemeMeta, toggleTheme, THEME_STORAGE_KEY, THEME_OPTIONS };

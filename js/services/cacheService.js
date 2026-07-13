@@ -8,17 +8,21 @@ function getCacheKey(namespace) {
 }
 
 function getCachedValue(namespace, fallback = null) {
-    const entry = read(getCacheKey(namespace), null);
-    if (!entry) {
+    try {
+        const entry = read(getCacheKey(namespace), null);
+        if (!entry) {
+            return fallback;
+        }
+
+        if (entry.expiresAt && entry.expiresAt <= Date.now()) {
+            remove(getCacheKey(namespace));
+            return fallback;
+        }
+
+        return entry.value;
+    } catch (error) {
         return fallback;
     }
-
-    if (entry.expiresAt && entry.expiresAt <= Date.now()) {
-        remove(getCacheKey(namespace));
-        return fallback;
-    }
-
-    return entry.value;
 }
 
 function setCachedValue(namespace, value, options = {}) {

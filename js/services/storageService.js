@@ -21,7 +21,6 @@ function read(key, fallback = null) {
         const raw = storage.getItem(getStorageKey(key));
         return raw === null ? fallback : JSON.parse(raw);
     } catch (error) {
-        console.warn(`Unable to read storage key ${key}`, error);
         return fallback;
     }
 }
