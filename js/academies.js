@@ -1,4 +1,28 @@
+/**
+ * ============================================================
+ * Sword Institute LMS
+ * Academies Module
+ * Version: 2.0.0 (Production)
+ * ============================================================
+ *
+ * Features:
+ * - Safe DOM access
+ * - Error handling with fallback UI
+ * - Course count enrichment
+ * - AI-powered academy guidance
+ * ============================================================
+ */
+
 import { getAllCourses } from './services/courseService.js';
+import {
+    safeQuery,
+    safeSetHTML,
+    safeSetText,
+    onDOMReady
+} from './core/safe-dom.js';
+import { info, warn, error, debug } from './core/logger.js';
+
+const MODULE = 'Academies';
 
 const ACADEMY_DATA = [
     {
@@ -440,12 +464,15 @@ function createAcademyDetailPage(academy, continueLearning = null) {
 function renderAcademyCards(container) {
     if (!container) return;
     const visibleAcademies = ACADEMY_DATA.slice(0, 10);
-    container.innerHTML = visibleAcademies.map(createAcademyCard).join('');
+    safeSetHTML(container, visibleAcademies.map(createAcademyCard).join(''));
 }
 
 function renderSkeleton(container) {
     if (!container) return;
-    container.innerHTML = '<div class="academy-skeleton">' + Array.from({ length: 6 }, () => '<div class="academy-skeleton__card"></div>').join('') + '</div>';
+    const skeleton = '<div class="academy-skeleton">' +
+        Array.from({ length: 6 }, () => '<div class="academy-skeleton__card"></div>').join('') +
+        '</div>';
+    safeSetHTML(container, skeleton);
 }
 
 async function renderAcademyPage(container) {
@@ -456,12 +483,12 @@ async function renderAcademyPage(container) {
     const academy = academyLookup.get(slug) || ACADEMY_DATA[0];
     const continueLearning = getContinueLearning(academy);
 
-    container.innerHTML = createAcademyDetailPage(academy, continueLearning);
+    safeSetHTML(container, createAcademyDetailPage(academy, continueLearning));
 
-    const guidance = document.getElementById(`academy-guidance-${academy.slug}`);
+    const guidance = safeQuery(`#academy-guidance-${academy.slug}`);
     if (guidance) {
         const message = await getAcademyGuidance(academy);
-        guidance.textContent = message;
+        safeSetText(guidance, message);
     }
 }
 
@@ -479,33 +506,64 @@ async function getAcademyGuidance(academy) {
 }
 
 export async function initAcademies() {
-    const academyGrid = document.getElementById('academiesContainer');
-    const academyPage = document.getElementById('academyPage');
+    const academyGrid = safeQuery('#academiesContainer');
+    const academyPage = safeQuery('#academyPage');
 
-    if (!academyGrid && !academyPage) return;
-
-    if (academyGrid) {
-        renderSkeleton(academyGrid);
-        const [courses] = await Promise.all([getAllCourses()]);
-        if (courses?.length) {
-            const featuredCourses = courses.filter((course) => course.featured || course.popular || course.category);
-            const courseCountByAcademy = new Map();
-            ACADEMY_DATA.forEach((academy) => {
-                const keyword = academy.title.split(' ')[1]?.toLowerCase() || academy.slug.toLowerCase();
-                const count = featuredCourses.filter((course) => String(course.category || '').toLowerCase().includes(keyword)).length;
-                courseCountByAcademy.set(academy.slug, Math.max(academy.coursesCount, count || academy.coursesCount));
-            });
-
-            const enriched = ACADEMY_DATA.map((academy) => ({ ...academy, coursesCount: courseCountByAcademy.get(academy.slug) || academy.coursesCount }));
-            const visibleAcademies = enriched.slice(0, 10);
-            academyGrid.innerHTML = visibleAcademies.map(createAcademyCard).join('');
-        } else {
-            renderAcademyCards(academyGrid);
-        }
+    if (!academyGrid && !academyPage) {
+        debug(MODULE, 'Academy containers not found (not on academies page)');
+        return;
     }
 
-    if (academyPage) {
-        await renderAcademyPage(academyPage);
+    try {
+        if (academyGrid) {
+            renderSkeleton(academyGrid);
+
+            try {
+                const courses = await getAllCourses();
+
+                if (courses && courses.length > 0) {
+                    const featuredCourses = courses.filter(
+                        (course) => course.featured || course.popular || course.category
+                    );
+
+                    const courseCountByAcademy = new Map();
+
+                    ACADEMY_DATA.forEach((academy) => {
+                        const keyword = academy.title.split(' ')[1]?.toLowerCase() || academy.slug.toLowerCase();
+                        const count = featuredCourses.filter((course) =>
+                            String(course.category || '').toLowerCase().includes(keyword)
+                        ).length;
+                        courseCountByAcademy.set(
+                            academy.slug,
+                            Math.max(academy.coursesCount, count || academy.coursesCount)
+                        );
+                    });
+
+                    const enriched = ACADEMY_DATA.map((academy) => ({
+                        ...academy,
+                        coursesCount: courseCountByAcademy.get(academy.slug) || academy.coursesCount
+                    }));
+
+                    const visibleAcademies = enriched.slice(0, 10);
+                    safeSetHTML(academyGrid, visibleAcademies.map(createAcademyCard).join(''));
+
+                    info(MODULE, `✔ Rendered ${visibleAcademies.length} academies`);
+                } else {
+                    renderAcademyCards(academyGrid);
+                }
+            } catch (err) {
+                warn(MODULE, 'Failed to fetch courses, using static data', err);
+                renderAcademyCards(academyGrid);
+            }
+        }
+
+        if (academyPage) {
+            await renderAcademyPage(academyPage);
+        }
+
+        info(MODULE, '✅ Academies initialized');
+    } catch (err) {
+        error(MODULE, 'Failed to initialize academies', err);
     }
 }
 
@@ -513,16 +571,17 @@ export function getAcademyData() {
     return ACADEMY_DATA;
 }
 
+// Export globally for access if needed
 if (typeof window !== 'undefined') {
     window.SwordAcademies = { initAcademies, getAcademyData };
 }
 
-if (typeof document !== 'undefined') {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initAcademies();
-        });
-    } else {
-        initAcademies();
-    }
+// Initialize when DOM is ready
+async function bootstrapAcademies() {
+    await onDOMReady();
+    await initAcademies();
 }
+
+bootstrapAcademies().catch(err => {
+    error(MODULE, 'Failed to bootstrap academies', err);
+});

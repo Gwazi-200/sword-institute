@@ -1,12 +1,111 @@
 /**
- * Compatibility re-export module.
+ * ============================================================
+ * Sword Institute LMS
+ * Firebase Unified Export Module
+ * Version: 1.0.0
+ * ============================================================
  *
- * Some parts of the codebase import from "./firebase.js" or "../firebase.js".
- * The project's canonical Firebase module is "./firebase-config.js".
+ * Central Firebase export module.
  *
- * This file ensures those legacy imports continue to work without runtime
- * "Failed to resolve module specifier …" errors.
+ * CANONICAL IMPORTS:
+ * - All files MUST import from "./firebase.js"
+ * - Never import directly from Firebase SDK modules
+ * - Never import from "firebase-config.js" directly
+ *
+ * This ensures single source of truth for Firebase setup.
+ * ============================================================
  */
 
-export * from './firebase-config.js';
-export { default } from './firebase-config.js';
+import {
+    app,
+    auth,
+    db,
+    storage,
+    functions,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    sendEmailVerification,
+    sendPasswordResetEmail,
+    updateProfile,
+    onAuthStateChanged,
+    collection,
+    collectionGroup,
+    doc,
+    addDoc,
+    setDoc,
+    getDoc,
+    getDocs,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+    orderBy,
+    limit,
+    startAfter,
+    writeBatch,
+    runTransaction,
+    serverTimestamp,
+    Timestamp,
+    increment,
+    arrayUnion,
+    arrayRemove,
+    ref,
+    uploadBytes,
+    uploadBytesResumable,
+    getDownloadURL,
+    deleteObject,
+    httpsCallable
+} from './firebase-config.js';
+
+/**
+ * Export all Firebase services and utilities
+ */
+export {
+    // App
+    app,
+    // Authentication
+    auth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    sendEmailVerification,
+    sendPasswordResetEmail,
+    updateProfile,
+    onAuthStateChanged,
+    // Firestore
+    db,
+    collection,
+    collectionGroup,
+    doc,
+    addDoc,
+    setDoc,
+    getDoc,
+    getDocs,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+    orderBy,
+    limit,
+    startAfter,
+    writeBatch,
+    runTransaction,
+    serverTimestamp,
+    Timestamp,
+    increment,
+    arrayUnion,
+    arrayRemove,
+    // Storage
+    storage,
+    ref,
+    uploadBytes,
+    uploadBytesResumable,
+    getDownloadURL,
+    deleteObject,
+    // Functions
+    functions,
+    httpsCallable
+};
+
+export default app;
