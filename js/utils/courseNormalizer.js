@@ -228,6 +228,47 @@ export function pickFeaturedCourses(courses = [], max = 4) {
     return normalized.slice(0, max);
 }
 
+export function getFallbackCourses() {
+    return [
+        {
+            title: 'AI Foundations',
+            slug: 'ai-foundations',
+            shortDescription: 'Build practical AI fluency with hands-on lessons and responsible usage patterns.',
+            description: 'Learn the essentials of modern AI tools, prompt design, and everyday automation.',
+            category: 'AI',
+            level: 'Beginner',
+            duration: '4 weeks',
+            featured: true,
+            popular: true,
+            thumbnail: 'images/courses/default-course.jpg'
+        },
+        {
+            title: 'Community Leadership Essentials',
+            slug: 'community-leadership-essentials',
+            shortDescription: 'Strengthen planning, coordination, and community-centered delivery.',
+            description: 'Learn how to lead constructive change in teams, communities, and organizations.',
+            category: 'Leadership',
+            level: 'Beginner',
+            duration: '3 weeks',
+            featured: true,
+            popular: false,
+            thumbnail: 'images/courses/default-course.jpg'
+        },
+        {
+            title: 'Digital Productivity Skills',
+            slug: 'digital-productivity-skills',
+            shortDescription: 'Use essential digital tools to work faster and with more confidence.',
+            description: 'Develop practical digital habits for collaboration, organization, and everyday productivity.',
+            category: 'Digital Skills',
+            level: 'Beginner',
+            duration: '2 weeks',
+            featured: true,
+            popular: false,
+            thumbnail: 'images/courses/default-course.jpg'
+        }
+    ];
+}
+
 /**
  * Version log
  */
