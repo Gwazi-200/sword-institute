@@ -490,6 +490,427 @@
             box-shadow: 0 4px 12px rgba(139, 0, 255, 0.3);
         }
 
+        .dashboard-command-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            margin: 24px 0 28px;
+        }
+
+        .sword-dashboard-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 28px;
+        }
+
+        .sword-dashboard-hero__content h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 6px 0 8px;
+        }
+
+        .sword-dashboard-hero__eyebrow,
+        .dashboard-module__eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--violet-deep);
+        }
+
+        .sword-dashboard-hero__meta {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .sword-dashboard-hero blockquote {
+            color: var(--text-secondary);
+            font-style: italic;
+            border-left: 3px solid rgba(139, 0, 255, 0.25);
+            padding-left: 12px;
+        }
+
+        .sword-dashboard-hero__actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 220px;
+        }
+
+        .sword-dashboard-hero__button,
+        .dashboard-module__action {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .sword-dashboard-hero__button:hover,
+        .dashboard-module__action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(139, 0, 255, 0.2);
+        }
+
+        .sword-dashboard-hero__button--ghost {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--violet-deep);
+            border: 1px solid rgba(139, 0, 255, 0.16);
+        }
+
+        .dashboard-module {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dashboard-module__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .dashboard-module__pill {
+            background: rgba(139, 0, 255, 0.12);
+            color: var(--violet-deep);
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .dashboard-module__body {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .dashboard-module__list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dashboard-module__row {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(139, 0, 255, 0.04);
+        }
+
+        .dashboard-module__row strong {
+            color: var(--text-primary);
+        }
+
+        .dashboard-module__row p {
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-size: 0.9rem;
+        }
+
+        .dashboard-module__stat {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--violet-deep);
+        }
+
+        .dashboard-module--achievements {
+            margin-bottom: 24px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .calendar-day {
+            padding: 10px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(139, 0, 255, 0.08);
+            min-height: 92px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(139, 0, 255, 0.12);
+        }
+
+        .calendar-day.is-today {
+            border-color: rgba(255, 215, 0, 0.45);
+            box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.2);
+        }
+
+        .calendar-day.is-selected {
+            border-color: var(--violet-deep);
+            box-shadow: 0 0 0 2px rgba(139, 0, 255, 0.16);
+        }
+
+        .calendar-day__label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .calendar-day__date {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+        .calendar-day__task {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--violet-deep);
+            background: rgba(139, 0, 255, 0.08);
+            padding: 4px 6px;
+            border-radius: 8px;
+            line-height: 1.3;
+        }
+
+        .calendar-day.is-complete {
+            opacity: 0.8;
+        }
+
+        .calendar-day.is-complete .calendar-day__task {
+            text-decoration: line-through;
+            color: #6b7280;
+            background: rgba(107, 114, 128, 0.12);
+        }
+
+        .calendar-summary {
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .calendar-progress {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .calendar-progress__bar {
+            flex: 1;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(139, 0, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .calendar-progress__fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--violet-deep), var(--gold-radiant));
+            border-radius: inherit;
+        }
+
+        .calendar-editor {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .calendar-editor input {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(139, 0, 255, 0.16);
+            outline: none;
+            font: inherit;
+            color: var(--text-primary);
+        }
+
+        .calendar-editor button {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .calendar-editor .calendar-toggle {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--violet-deep);
+            border: 1px solid rgba(139, 0, 255, 0.16);
+        }
+
+        .calendar-editor .calendar-clear {
+            background: rgba(220, 38, 38, 0.12);
+            color: #b91c1c;
+            border: 1px solid rgba(220, 38, 38, 0.16);
+        }
+
+        .planner-shell {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(139, 0, 255, 0.1);
+        }
+
+        .planner-shell__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .planner-shell__header strong {
+            color: var(--text-primary);
+        }
+
+        .planner-shell__header span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .planner-task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .planner-task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(139, 0, 255, 0.04);
+        }
+
+        .planner-task-item.is-complete {
+            opacity: 0.75;
+        }
+
+        .planner-task__toggle {
+            border: 1px solid rgba(139, 0, 255, 0.16);
+            background: white;
+            color: var(--violet-deep);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .planner-task-item.is-complete .planner-task__toggle {
+            background: rgba(255, 215, 0, 0.25);
+            border-color: rgba(255, 215, 0, 0.35);
+        }
+
+        .planner-task__content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .planner-task__title {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .planner-task-item.is-complete .planner-task__title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .planner-task__meta {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .planner-task__chip {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-left: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            background: rgba(139, 0, 255, 0.12);
+            color: var(--violet-deep);
+        }
+
+        .planner-task__delete {
+            border: none;
+            background: transparent;
+            color: #b91c1c;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .planner-task__empty {
+            padding: 10px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .planner-task-form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .planner-task-form input,
+        .planner-task-form select {
+            border: 1px solid rgba(139, 0, 255, 0.16);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font: inherit;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .planner-task-form input {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .planner-task-form select {
+            background: white;
+        }
+
+        .planner-task-form button {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, var(--violet-deep), var(--violet-soft));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         @media (max-width: 1024px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -731,6 +1152,12 @@
 
             <div id="studentIntelligenceHost"></div>
 
+            <div id="dashboardHeroHost"></div>
+            <div class="dashboard-command-grid">
+                <div id="dashboardMissionHost"></div>
+                <div id="dashboardRecommendationHost"></div>
+            </div>
+
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-item">
@@ -750,6 +1177,8 @@
                     <div class="stat-label"><i class="fas fa-fire"></i>Learning Streak</div>
                 </div>
             </div>
+
+            <div id="dashboardAchievementsHost"></div>
 
             <!-- ============================================================
             KNOWLEDGE HUB WIDGETS SECTION
@@ -853,9 +1282,13 @@
         import { getAnalyticsSnapshot } from './js/services/analyticsService.js';
         import { getCareerRecommendations } from './js/services/careerService.js';
         import { renderStudentIntelligenceCard } from './js/components/studentIntelligenceCard.js';
+        import { createDashboardHero } from './js/components/dashboardHero.js';
+        import { createMissionCard, createRecommendationCard } from './js/components/dashboardModules.js';
         window.dashboardService = { fetchDashboardData };
         window.studentIntelligence = { getStudentIntelligenceSnapshot, getAnalyticsSnapshot, getCareerRecommendations, renderStudentIntelligenceCard };
-    <!-- ========================================================== -->
+        window.dashboardComponents = { createDashboardHero, createMissionCard, createRecommendationCard };
+    </script>
+
     <!-- ========================================================== -->
     <!-- AI SERVICE (ES MODULE)                                   -->
     <!-- ========================================================== -->
@@ -1090,6 +1523,384 @@
                     <div class="tip loading-line loading-line-short"></div>
                     <div class="motivation loading-line loading-line-short"></div>
                 `;
+
+            renderDashboardCommandCenterSkeleton();
+        }
+
+        function renderDashboardCommandCenterSkeleton() {
+            const heroHost = document.getElementById('dashboardHeroHost');
+            if (heroHost) {
+                heroHost.innerHTML = `
+                    <section class="sword-dashboard-hero glass-card" aria-label="Loading dashboard overview">
+                        <div class="sword-dashboard-hero__content">
+                            <p class="sword-dashboard-hero__eyebrow">Loading</p>
+                            <h2>Preparing your learning command center…</h2>
+                            <p class="sword-dashboard-hero__meta">Your personalized plan is being assembled.</p>
+                        </div>
+                    </section>
+                `;
+            }
+
+            const missionHost = document.getElementById('dashboardMissionHost');
+            if (missionHost) {
+                missionHost.innerHTML = '<section class="dashboard-module glass-card"><p class="dashboard-module__eyebrow">Daily focus</p><h3>Building your next milestone…</h3></section>';
+            }
+
+            const recommendationHost = document.getElementById('dashboardRecommendationHost');
+            if (recommendationHost) {
+                recommendationHost.innerHTML = '<section class="dashboard-module glass-card"><p class="dashboard-module__eyebrow">Professor SWORD</p><h3>Curating your next best step…</h3></section>';
+            }
+        }
+
+        function renderDashboardCommandCenter({ name = 'Learner', missionTitle, missionBody, recommendationTitle, recommendationBody, activityItems = [] }) {
+            const heroHost = document.getElementById('dashboardHeroHost');
+            const missionHost = document.getElementById('dashboardMissionHost');
+            const recommendationHost = document.getElementById('dashboardRecommendationHost');
+
+            if (heroHost && window.dashboardComponents?.createDashboardHero) {
+                window.dashboardComponents.createDashboardHero(heroHost, { name });
+            }
+
+            if (missionHost && window.dashboardComponents?.createMissionCard) {
+                missionHost.innerHTML = window.dashboardComponents.createMissionCard({
+                    title: missionTitle || 'Today’s mission',
+                    body: missionBody || 'Complete one focused study block and keep your momentum moving.',
+                    cta: 'Open next lesson',
+                });
+            }
+
+            if (recommendationHost && window.dashboardComponents?.createRecommendationCard) {
+                recommendationHost.innerHTML = window.dashboardComponents.createRecommendationCard({
+                    title: recommendationTitle || 'Next best step',
+                    body: recommendationBody || 'Your next best step is to continue with the course that matches your current momentum.',
+                });
+            }
+
+            if (activityItems.length) {
+                const activityListHost = activityListPrimary || activityList;
+                if (activityListHost) {
+                    activityListHost.innerHTML = activityItems.slice(0, 4).map((item, index) => `
+                        <li class="activity-item">
+                            <div class="icon"><i class="fas ${item.completed ? 'fa-check-circle' : 'fa-play'}"></i></div>
+                            <div class="content">
+                                <a href="${routePath('courseView', { id: item.courseId })}">
+                                    <h4>${item.completed ? 'Completed:' : 'Learning:'} ${item.title}</h4>
+                                    <p>${item.subtitle}</p>
+                                </a>
+                            </div>
+                            <span class="time">${index === 0 ? 'Just now' : index === 1 ? 'Yesterday' : `${index + 1} days ago`}</span>
+                        </li>
+                    `).join('');
+                }
+            }
+        }
+
+        function renderAchievementsPanel({ stats = {}, courseDetails = [] }) {
+            const host = document.getElementById('dashboardAchievementsHost');
+            if (!host) return;
+
+            const today = new Date();
+            const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const storageKey = 'sword-dashboard-planner';
+            const escapeHtml = (value) => String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+
+            let planner = {};
+            try {
+                const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+                    planner = stored;
+                }
+            } catch (error) {
+                console.warn('Planner storage is unreadable:', error);
+            }
+
+            const normalizeEntry = (entry, fallbackTask = '') => {
+                if (typeof entry === 'string') {
+                    return { task: entry, completed: false, tasks: [], priority: 'medium' };
+                }
+
+                if (!entry || typeof entry !== 'object') {
+                    return { task: fallbackTask, completed: false, tasks: [], priority: 'medium' };
+                }
+
+                const tasks = Array.isArray(entry.tasks)
+                    ? entry.tasks.map((task) => {
+                        if (typeof task === 'string') {
+                            return { title: task, completed: false, priority: 'medium' };
+                        }
+                        return {
+                            title: task?.title || '',
+                            completed: Boolean(task?.completed),
+                            priority: task?.priority || 'medium'
+                        };
+                    })
+                    : [];
+
+                return {
+                    task: entry.task || fallbackTask,
+                    completed: Boolean(entry.completed),
+                    tasks,
+                    priority: entry.priority || 'medium'
+                };
+            };
+
+            planner = Object.fromEntries(
+                Object.entries(planner).map(([key, value]) => [key, normalizeEntry(value, '')])
+            );
+
+            let selectedDay = null;
+
+            const calendarHtml = weekDays.map((day, index) => {
+                const date = new Date(today);
+                date.setDate(today.getDate() - today.getDay() + index);
+                const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                const label = index === today.getDay() ? 'Today' : day;
+                const entry = planner[key] || { task: '', completed: false, tasks: [] };
+                const task = entry.task || (index === 0
+                    ? 'Rest & review'
+                    : index === 1
+                        ? 'Study sprint'
+                        : index === 2
+                            ? 'Lesson recap'
+                            : index === 3
+                                ? 'Practice task'
+                                : index === 4
+                                    ? 'Knowledge hub'
+                                    : index === 5
+                                        ? 'Project work'
+                                        : 'Reflection');
+                const completed = Boolean(entry.completed);
+
+                return `
+                    <button class="calendar-day ${index === today.getDay() ? 'is-today' : ''} ${completed ? 'is-complete' : ''}" data-day-key="${key}" type="button">
+                        <div class="calendar-day__label">${label}</div>
+                        <div class="calendar-day__date">${date.getDate()}</div>
+                        <span class="calendar-day__task">${escapeHtml(task)}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const summary = courseDetails.length
+                ? `You have ${courseDetails.length} active learning path${courseDetails.length > 1 ? 's' : ''} this week. Keep your next session focused on ${courseDetails[0].course?.title || 'your current course'}.`
+                : 'Start a course to unlock your weekly learning plan.';
+
+            const totalDayEntries = Object.keys(planner).length || 7;
+            const completedDayEntries = Object.values(planner).filter((entry) => entry?.completed).length;
+            const progressPercent = Math.round((completedDayEntries / totalDayEntries) * 100);
+            const progressLabel = `${completedDayEntries}/${totalDayEntries} days complete`;
+
+            host.innerHTML = `
+                <section class="dashboard-module dashboard-module--achievements glass-card">
+                    <div class="dashboard-module__header">
+                        <div>
+                            <p class="dashboard-module__eyebrow">Weekly planner</p>
+                            <h3>Calendar of momentum</h3>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">${calendarHtml}</div>
+                    <div class="calendar-editor">
+                        <input id="plannerInput" type="text" placeholder="Set today's focus..." />
+                        <button id="plannerToggleBtn" class="calendar-toggle" type="button">Mark day done</button>
+                        <button id="plannerSaveBtn" type="button">Save focus</button>
+                        <button id="plannerClearBtn" class="calendar-clear" type="button">Clear completed</button>
+                    </div>
+                    <div class="calendar-progress">
+                        <span>${progressLabel}</span>
+                        <div class="calendar-progress__bar" aria-hidden="true">
+                            <div class="calendar-progress__fill" style="width: ${progressPercent}%"></div>
+                        </div>
+                    </div>
+                    <div class="planner-shell">
+                        <div class="planner-shell__header">
+                            <strong id="plannerDayLabel">Today</strong>
+                            <span id="plannerDaySummary">Add tasks for this day</span>
+                        </div>
+                        <div id="plannerTaskList" class="planner-task-list"></div>
+                        <div class="planner-task-form">
+                            <input id="plannerTaskInput" type="text" placeholder="Add a study task..." />
+                            <select id="plannerPrioritySelect">
+                                <option value="high">High</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                            <button id="plannerAddTaskBtn" type="button">Add task</button>
+                        </div>
+                    </div>
+                    <p class="calendar-summary">${summary}</p>
+                </section>
+            `;
+
+            const input = document.getElementById('plannerInput');
+            const saveBtn = document.getElementById('plannerSaveBtn');
+            const toggleBtn = document.getElementById('plannerToggleBtn');
+            const clearBtn = document.getElementById('plannerClearBtn');
+            const taskInput = document.getElementById('plannerTaskInput');
+            const prioritySelect = document.getElementById('plannerPrioritySelect');
+            const addTaskBtn = document.getElementById('plannerAddTaskBtn');
+            const dayLabel = document.getElementById('plannerDayLabel');
+            const daySummary = document.getElementById('plannerDaySummary');
+            const taskList = document.getElementById('plannerTaskList');
+            const dayButtons = host.querySelectorAll('.calendar-day');
+
+            const updateSelection = (key) => {
+                selectedDay = key;
+                dayButtons.forEach((button) => {
+                    button.classList.toggle('is-selected', button.getAttribute('data-day-key') === key);
+                });
+
+                const entry = planner[key] || { task: '', completed: false, tasks: [] };
+                input.value = entry.task || '';
+                taskInput.value = '';
+                prioritySelect.value = 'medium';
+                toggleBtn.textContent = entry.completed ? 'Mark day pending' : 'Mark day done';
+
+                const dateLabel = new Date(key);
+                dayLabel.textContent = dateLabel.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                daySummary.textContent = entry.completed ? 'This day is complete' : 'Add tasks for this day';
+                renderTasks();
+            };
+
+            const renderTasks = () => {
+                if (!selectedDay) return;
+                const entry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                const tasks = Array.isArray(entry.tasks) ? entry.tasks : [];
+
+                if (!tasks.length) {
+                    taskList.innerHTML = '<div class="planner-task__empty">No tasks yet for this day.</div>';
+                    return;
+                }
+
+                taskList.innerHTML = tasks.map((task, index) => `
+                    <div class="planner-task-item ${task.completed ? 'is-complete' : ''}">
+                        <button class="planner-task__toggle" data-task-index="${index}" type="button">${task.completed ? '✓' : ''}</button>
+                        <div class="planner-task__content">
+                            <span class="planner-task__title">${escapeHtml(task.title)}</span>
+                            <span class="planner-task__meta">${escapeHtml(task.priority || 'medium')} priority</span>
+                        </div>
+                        <button class="planner-task__delete" data-task-delete-index="${index}" type="button" aria-label="Delete task">×</button>
+                    </div>
+                `).join('');
+
+                taskList.querySelectorAll('.planner-task__toggle').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        const index = Number(button.getAttribute('data-task-index'));
+                        const currentEntry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                        const nextTasks = [...(currentEntry.tasks || [])];
+                        nextTasks[index] = {
+                            ...nextTasks[index],
+                            completed: !Boolean(nextTasks[index]?.completed)
+                        };
+                        planner[selectedDay] = { ...currentEntry, tasks: nextTasks };
+                        localStorage.setItem(storageKey, JSON.stringify(planner));
+                        renderTasks();
+                    });
+                });
+
+                taskList.querySelectorAll('.planner-task__delete').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        const index = Number(button.getAttribute('data-task-delete-index'));
+                        const currentEntry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                        const nextTasks = [...(currentEntry.tasks || [])];
+                        nextTasks.splice(index, 1);
+                        planner[selectedDay] = { ...currentEntry, tasks: nextTasks };
+                        localStorage.setItem(storageKey, JSON.stringify(planner));
+                        renderTasks();
+                    });
+                });
+            };
+
+            dayButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const key = button.getAttribute('data-day-key');
+                    updateSelection(key);
+                });
+            });
+
+            toggleBtn.addEventListener('click', () => {
+                if (!selectedDay) {
+                    selectedDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+                }
+                const currentEntry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                const nextCompleted = !Boolean(currentEntry.completed);
+                planner[selectedDay] = {
+                    ...currentEntry,
+                    task: input.value.trim() || currentEntry.task || '',
+                    completed: nextCompleted
+                };
+                localStorage.setItem(storageKey, JSON.stringify(planner));
+                renderAchievementsPanel({ stats, courseDetails });
+            });
+
+            saveBtn.addEventListener('click', () => {
+                if (!selectedDay) {
+                    selectedDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+                }
+                const value = input.value.trim();
+                if (!value) {
+                    const currentEntry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                    planner[selectedDay] = {
+                        ...currentEntry,
+                        task: '',
+                        completed: Boolean(currentEntry.completed)
+                    };
+                } else {
+                    const currentEntry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                    planner[selectedDay] = {
+                        ...currentEntry,
+                        task: value,
+                        completed: Boolean(currentEntry.completed)
+                    };
+                }
+                localStorage.setItem(storageKey, JSON.stringify(planner));
+                renderAchievementsPanel({ stats, courseDetails });
+            });
+
+            addTaskBtn.addEventListener('click', () => {
+                if (!selectedDay) {
+                    selectedDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+                }
+                const title = taskInput.value.trim();
+                if (!title) return;
+
+                const currentEntry = planner[selectedDay] || { task: '', completed: false, tasks: [] };
+                planner[selectedDay] = {
+                    ...currentEntry,
+                    task: currentEntry.task || title,
+                    tasks: [
+                        ...(currentEntry.tasks || []),
+                        {
+                            title,
+                            completed: false,
+                            priority: prioritySelect.value || 'medium'
+                        }
+                    ]
+                };
+                localStorage.setItem(storageKey, JSON.stringify(planner));
+                renderAchievementsPanel({ stats, courseDetails });
+            });
+
+            clearBtn.addEventListener('click', () => {
+                Object.keys(planner).forEach((key) => {
+                    const entry = planner[key];
+                    if (!entry) return;
+                    const nextTasks = (entry.tasks || []).filter((task) => !task.completed);
+                    if (nextTasks.length || entry.task) {
+                        planner[key] = { ...entry, tasks: nextTasks };
+                    } else {
+                        delete planner[key];
+                    }
+                });
+                localStorage.setItem(storageKey, JSON.stringify(planner));
+                renderAchievementsPanel({ stats, courseDetails });
+            });
+
+            const initialKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            updateSelection(selectedDay || initialKey);
         }
 
         async function resolveUserName(user) {
@@ -1158,6 +1969,32 @@
                 streakDaysEl.innerHTML = `${streakValue} <span class="gold">🔥</span>`;
 
                 updateActivityList(courseDetails);
+                renderDashboardCommandCenter({
+                    name: userName.textContent || dashboardData?.welcome?.name || 'Learner',
+                    missionTitle: 'Today’s mission',
+                    missionBody: courseDetails.length
+                        ? `Keep momentum on ${courseDetails[0].course?.title || 'your active course'} and complete your next lesson.`
+                        : 'Start a course to build a strong learning streak.',
+                    recommendationTitle: 'Professor SWORD recommendation',
+                    recommendationBody: courseDetails.length
+                        ? `Continue ${courseDetails[0].course?.title || 'your active course'} to build on your current progress.`
+                        : 'Choose a guided pathway and let your next lesson open the door to mastery.',
+                    activityItems: courseDetails.slice(0, 4).map((item) => ({
+                        courseId: item.courseId,
+                        title: item.course?.title || 'Untitled course',
+                        subtitle: item.completed ? 'Completed' : `${item.progress || 0}% in progress`,
+                        completed: Boolean(item.completed)
+                    }))
+                });
+                renderAchievementsPanel({
+                    stats: {
+                        activeCourses: enrolledCount,
+                        completedCourses: completedCount,
+                        totalXp,
+                        streak: streakValue
+                    },
+                    courseDetails
+                });
 
                 if (courseInfo) {
                     const items = courseDetails || [];
