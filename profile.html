@@ -37,16 +37,6 @@
         .detail-item { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid rgba(139,0,255,.08); }
         .detail-item:last-child { border-bottom:none; }
         .detail-item span { color:var(--text-secondary); }
-        .modal { position:fixed; inset:0; background:rgba(17,24,39,.45); display:none; place-items:center; padding:20px; z-index:1000; }
-        .modal.is-open { display:grid; }
-        .modal-card { width:min(560px, 100%); background:#fff; border-radius:24px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
-        .modal-card h2 { margin:0 0 12px; }
-        .modal-card p { margin:0 0 18px; color:var(--text-secondary); }
-        .field { display:grid; gap:6px; margin-bottom:12px; }
-        .field label { font-weight:700; color:var(--text-secondary); font-size:.9rem; }
-        .field input, .field textarea { width:100%; border:1px solid rgba(139,0,255,.15); border-radius:12px; padding:10px 12px; font:inherit; color:var(--text-primary); }
-        .field textarea { min-height:90px; resize:vertical; }
-        .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:8px; }
         @media (max-width: 760px) { .profile-hero, .detail-grid, .summary-grid { grid-template-columns:1fr; } }
     </style>
 </head>
@@ -103,56 +93,11 @@
         </section>
     </div>
 
-    <div class="modal" id="editModal" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-            <h2 id="editModalTitle">Edit Profile</h2>
-            <p>Update your profile card and keep your information aligned with your learning journey.</p>
-            <form id="profileForm">
-                <div class="field">
-                    <label for="fullName">Full name</label>
-                    <input id="fullName" name="fullName" type="text" />
-                </div>
-                <div class="field">
-                    <label for="email">Email</label>
-                    <input id="email" name="email" type="email" />
-                </div>
-                <div class="field">
-                    <label for="phone">Phone</label>
-                    <input id="phone" name="phone" type="text" />
-                </div>
-                <div class="field">
-                    <label for="country">Country</label>
-                    <input id="country" name="country" type="text" />
-                </div>
-                <div class="field">
-                    <label for="profession">Profession</label>
-                    <input id="profession" name="profession" type="text" />
-                </div>
-                <div class="field">
-                    <label for="organization">Organization</label>
-                    <input id="organization" name="organization" type="text" />
-                </div>
-                <div class="field">
-                    <label for="bio">Bio</label>
-                    <textarea id="bio" name="bio"></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn secondary" type="button" id="cancelEditBtn">Cancel</button>
-                    <button class="btn primary" type="submit">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script type="module">
         import { getCurrentUser } from './js/services/authService.js';
-        import { getProfileCenterRecord, updateProfileCenter } from './js/services/profileCenterService.js';
+        import { getProfileCenterRecord } from './js/services/profileCenterService.js';
         import { loadProfileState, saveProfileState, mergeProfileState } from './js/utils/profilePageState.js';
 
-        const modal = document.getElementById('editModal');
-        const editProfileBtn = document.getElementById('editProfileBtn');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-        const form = document.getElementById('profileForm');
         const profileAvatar = document.getElementById('profileAvatar');
         const profileName = document.getElementById('profileName');
         const profileBio = document.getElementById('profileBio');
@@ -218,64 +163,6 @@
             detailOrganization.textContent = profile.organization || 'Bright Path Initiative';
             detailUpdated.textContent = formatUpdatedAt(profile.updatedAt);
         }
-
-        function openModal() {
-            form.fullName.value = profile.fullName || '';
-            form.email.value = profile.email || '';
-            form.phone.value = profile.phone || '';
-            form.country.value = profile.country || '';
-            form.profession.value = profile.profession || '';
-            form.organization.value = profile.organization || '';
-            form.bio.value = profile.bio || '';
-            modal.classList.add('is-open');
-            modal.setAttribute('aria-hidden', 'false');
-        }
-
-        function closeModal() {
-            modal.classList.remove('is-open');
-            modal.setAttribute('aria-hidden', 'true');
-        }
-
-        editProfileBtn.addEventListener('click', openModal);
-        cancelEditBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) closeModal();
-        });
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const nextProfile = {
-                ...profile,
-                fullName: form.fullName.value,
-                email: form.email.value,
-                phone: form.phone.value,
-                country: form.country.value,
-                profession: form.profession.value,
-                organization: form.organization.value,
-                bio: form.bio.value,
-            };
-
-            profile = saveProfileState(nextProfile);
-            renderProfile();
-            closeModal();
-
-            const user = getCurrentUser();
-            if (user?.uid) {
-                try {
-                    await updateProfileCenter(user.uid, {
-                        fullName: nextProfile.fullName,
-                        email: nextProfile.email,
-                        phone: nextProfile.phone,
-                        country: nextProfile.country,
-                        profession: nextProfile.profession,
-                        organization: nextProfile.organization,
-                        bio: nextProfile.bio,
-                    });
-                } catch (error) {
-                    console.warn('Unable to save profile changes to Firestore', error);
-                }
-            }
-        });
 
         hydrateProfile();
     </script>

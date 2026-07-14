@@ -6,6 +6,7 @@ import { buildProfileCenterData, buildProfileUpdatePayload } from '../utils/prof
 import { getProfileCenterRecord, updateProfileCenter, uploadProfilePhoto, removeProfilePhoto } from '../services/profileCenterService.js';
 import { loadProfileState, mergeProfileState, saveProfileState } from '../utils/profilePageState.js';
 import { showToast } from '../ui.js';
+import { getProfileModalController } from './profileModalController.js';
 
 const NAV_ITEMS = [
     { label: 'Home', href: 'index.html', page: 'home' },
@@ -36,6 +37,14 @@ function getCurrentPageKey() {
 export async function createNavbar(container, options = {}) {
     if (!container) return null;
 
+    const profileModalController = getProfileModalController();
+    let modalEventsBound = false;
+    let eventsAttached = false;
+    let handleContainerClick = null;
+    let handleDocumentKeydown = null;
+    let handleProfileModalAction = null;
+    let handleProfileModalChange = null;
+
     const state = {
         user: null,
         profile: null,
@@ -47,6 +56,66 @@ export async function createNavbar(container, options = {}) {
             previewUrl: '',
             file: null,
         },
+    };
+
+    const closeProfileEditor = async (shouldRender = true) => {
+        state.profileModal.isOpen = false;
+        state.profileModal.file = null;
+        state.profileModal.previewUrl = '';
+        profileModalController.close();
+        if (shouldRender) {
+            await render();
+        }
+    };
+
+    const openProfileEditor = async () => {
+        if (!state.user) return;
+        state.profileModal.isOpen = true;
+        state.profileModal.previewUrl = '';
+        state.profileModal.file = null;
+        await render();
+    };
+
+    const renderProfileModalContent = () => {
+        const profileCenter = state.profile ? buildProfileCenterData(state.profile, state.user) : null;
+        const profileModalPreview = state.profileModal.previewUrl || profileCenter?.photoURL || '';
+        const bodyHtml = `
+            <div class="sword-profile-editor__photo">
+                <div class="sword-profile-editor__avatar">
+                    ${profileModalPreview ? `<img src="${profileModalPreview}" alt="${escapeHtml(profileCenter?.displayName || 'Profile preview')}" />` : `<span>${profileCenter?.initials || getUserInitials(state.user)}</span>`}
+                </div>
+                <label class="sword-profile-editor__upload" data-action="select-profile-photo">
+                    <input type="file" accept="image/*" hidden />
+                    <span>${profileCenter?.photoURL || state.profileModal.previewUrl ? 'Change photo' : 'Upload photo'}</span>
+                </label>
+                ${(profileCenter?.photoURL || state.profileModal.previewUrl) ? `<button type="button" class="sword-profile-editor__remove" data-action="remove-profile-photo">Remove photo</button>` : ''}
+                <p class="sword-profile-editor__hint">Preview your image in a circular crop before saving.</p>
+            </div>
+            <div class="sword-profile-editor__fields">
+                <label>Full name<input type="text" name="profileName" value="${escapeHtml(profileCenter?.displayName || '')}" /></label>
+                <label>Phone<input type="text" name="profilePhone" value="${escapeHtml(state.profile?.phone || '')}" /></label>
+                <label>Country<input type="text" name="profileCountry" value="${escapeHtml(state.profile?.country || '')}" /></label>
+                <label>Profession<input type="text" name="profileProfession" value="${escapeHtml(state.profile?.profession || '')}" /></label>
+                <label>Organization<input type="text" name="profileOrganization" value="${escapeHtml(state.profile?.organization || '')}" /></label>
+                <label>Bio<textarea name="profileBio">${escapeHtml(state.profile?.bio || '')}</textarea></label>
+            </div>
+        `;
+        const footerHtml = `
+            <button type="button" class="sword-profile-editor__actions-button sword-profile-editor__actions-button--ghost" data-action="close-profile-editor">Cancel</button>
+            <button type="button" class="sword-profile-editor__actions-button sword-profile-editor__actions-button--primary" data-action="save-profile-editor">Save changes</button>
+        `;
+
+        profileModalController.setContent({
+            title: 'Edit profile',
+            bodyHtml,
+            footerHtml,
+        });
+
+        if (state.profileModal.isOpen) {
+            profileModalController.open();
+        } else {
+            profileModalController.close();
+        }
     };
 
     const render = async () => {
@@ -119,46 +188,10 @@ export async function createNavbar(container, options = {}) {
                                         <a href="ai-message.html" role="menuitem">🤖 Professor SWORD</a>
                                         <a href="settings.html" role="menuitem">🎨 Appearance</a>
                                         <a href="settings.html" role="menuitem">🔔 Notifications</a>
-                                        <button type="button" class="sword-profile-inline-action" data-action="manage-profile" role="menuitem">⚙ Account Settings</button>
+                                        <button type="button" class="sword-profile-inline-action" data-action="manage-profile" role="menuitem">✏ Edit Profile</button>
                                         <a href="help.html" role="menuitem">❓ Help Centre</a>
                                     </div>
                                     <button type="button" data-action="logout" role="menuitem">🚪 Logout</button>
-                                </div>
-                                <div class="sword-profile-editor ${state.profileModal.isOpen ? 'is-open' : ''}" data-profile-editor role="dialog" aria-modal="true" aria-labelledby="profile-editor-title" ${state.profileModal.isOpen ? '' : 'hidden'}>
-                                    <div class="sword-profile-editor__panel">
-                                        <div class="sword-profile-editor__header">
-                                            <div>
-                                                <h3 id="profile-editor-title">Profile center</h3>
-                                                <p>Update your photo and account details</p>
-                                            </div>
-                                            <button type="button" class="sword-profile-editor__close" data-action="close-profile-editor" aria-label="Close profile editor">✕</button>
-                                        </div>
-                                        <div class="sword-profile-editor__body">
-                                            <div class="sword-profile-editor__photo">
-                                                <div class="sword-profile-editor__avatar">
-                                                    ${profileModalPreview ? `<img src="${profileModalPreview}" alt="${escapeHtml(profileCenter?.displayName || 'Profile preview')}" />` : `<span>${profileCenter?.initials || getUserInitials(state.user)}</span>`}
-                                                </div>
-                                                <label class="sword-profile-editor__upload">
-                                                    <input type="file" accept="image/*" data-action="select-profile-photo" hidden />
-                                                    <span>${profileCenter?.photoURL || state.profileModal.previewUrl ? 'Change photo' : 'Upload photo'}</span>
-                                                </label>
-                                                ${(profileCenter?.photoURL || state.profileModal.previewUrl) ? `<button type="button" class="sword-profile-editor__remove" data-action="remove-profile-photo">Remove photo</button>` : ''}
-                                                <p class="sword-profile-editor__hint">Preview your image in a circular crop before saving.</p>
-                                            </div>
-                                            <div class="sword-profile-editor__fields">
-                                                <label>Full name<input type="text" name="profileName" value="${escapeHtml(profileCenter?.displayName || '')}" /></label>
-                                                <label>Phone<input type="text" name="profilePhone" value="${escapeHtml(state.profile?.phone || '')}" /></label>
-                                                <label>Country<input type="text" name="profileCountry" value="${escapeHtml(state.profile?.country || '')}" /></label>
-                                                <label>Profession<input type="text" name="profileProfession" value="${escapeHtml(state.profile?.profession || '')}" /></label>
-                                                <label>Organization<input type="text" name="profileOrganization" value="${escapeHtml(state.profile?.organization || '')}" /></label>
-                                                <label>Bio<textarea name="profileBio">${escapeHtml(state.profile?.bio || '')}</textarea></label>
-                                            </div>
-                                        </div>
-                                        <div class="sword-profile-editor__actions">
-                                            <button type="button" data-action="close-profile-editor">Cancel</button>
-                                            <button type="button" data-action="save-profile-editor">Save changes</button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         ` : `
@@ -201,6 +234,7 @@ export async function createNavbar(container, options = {}) {
             </nav>
         `;
 
+        renderProfileModalContent();
         attachEvents();
         applyTheme(state.theme);
         container.querySelector('[data-nav-links]')?.classList.remove('is-open');
@@ -223,86 +257,88 @@ export async function createNavbar(container, options = {}) {
         profileTrigger?.setAttribute('aria-expanded', String(menuName === 'profile' && isOpen));
     };
 
-    const attachEvents = () => {
-        const mobileToggle = container.querySelector('[data-action="toggle-mobile"]');
-        const notificationsToggle = container.querySelector('[data-action="toggle-notifications"]');
-        const profileToggle = container.querySelector('.sword-profile-trigger');
-        const logoutButtons = container.querySelectorAll('[data-action="logout"]');
-        const manageProfileButton = container.querySelector('[data-action="manage-profile"]');
-        const markReadButton = container.querySelector('[data-action="mark-read"]');
-        const closeProfileEditorButtons = container.querySelectorAll('[data-action="close-profile-editor"]');
-        const saveProfileEditorButton = container.querySelector('[data-action="save-profile-editor"]');
-        const removeProfilePhotoButton = container.querySelector('[data-action="remove-profile-photo"]');
-        const selectProfilePhotoInput = container.querySelector('[data-action="select-profile-photo"]');
+    handleProfileModalAction = async (event) => {
+            const action = event.target.closest('[data-action]')?.getAttribute('data-action');
+            if (!action) return;
 
-        const handleContainerClick = (event) => {
-            if (!container.contains(event.target)) {
+            if (action === 'close-profile-editor') {
+                event.preventDefault();
+                await closeProfileEditor();
                 return;
             }
 
-            const action = event.target.closest('[data-action]')?.getAttribute('data-action');
-            if (!action) {
-                if (!event.target.closest('.sword-profile-menu') && !event.target.closest('.sword-notifications') && !event.target.closest('.sword-nav-icon') && !event.target.closest('.sword-profile-trigger') && !event.target.closest('.sword-nav-toggle')) {
-                    setMenuState(null, false);
+            if (action === 'save-profile-editor') {
+                event.preventDefault();
+                const saveButton = profileModalController.getElement()?.querySelector('[data-action="save-profile-editor"]');
+                if (!saveButton || saveButton.disabled) return;
+
+                if (!state.user) return;
+
+                const nameInput = profileModalController.getElement()?.querySelector('input[name="profileName"]');
+                const phoneInput = profileModalController.getElement()?.querySelector('input[name="profilePhone"]');
+                const countryInput = profileModalController.getElement()?.querySelector('input[name="profileCountry"]');
+                const professionInput = profileModalController.getElement()?.querySelector('input[name="profileProfession"]');
+                const organizationInput = profileModalController.getElement()?.querySelector('input[name="profileOrganization"]');
+                const bioInput = profileModalController.getElement()?.querySelector('textarea[name="profileBio"]');
+
+                const nextProfile = buildProfileUpdatePayload({
+                    fullName: nameInput?.value || '',
+                    phone: phoneInput?.value || '',
+                    country: countryInput?.value || '',
+                    profession: professionInput?.value || '',
+                    organization: organizationInput?.value || '',
+                    bio: bioInput?.value || '',
+                    photoURL: state.profileModal.previewUrl || '',
+                });
+
+                try {
+                    saveButton.disabled = true;
+                    saveButton.textContent = 'Saving...';
+
+                    if (state.profileModal.file) {
+                        await uploadProfilePhoto(state.user.uid, state.profileModal.file);
+                    }
+
+                    await updateProfileCenter(state.user.uid, nextProfile);
+                    saveProfileState(mergeProfileState(loadProfileState(), {
+                        ...nextProfile,
+                        fullName: nameInput?.value || '',
+                        email: state.user.email || '',
+                    }));
+                    await closeProfileEditor();
+                    showToast('Profile updated successfully.', 'success');
+                } catch (error) {
+                    console.error('Failed to save profile', error);
+                    showToast('We could not save your profile. Please try again.', 'error');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.textContent = 'Save changes';
                 }
+                return;
+            }
+
+            if (action === 'select-profile-photo') {
+                const input = event.target.closest('[data-action="select-profile-photo"]')?.querySelector('input[type="file"]');
+                input?.click();
+                return;
+            }
+
+            if (action === 'remove-profile-photo') {
+                if (!state.user) return;
+                state.profileModal.previewUrl = '';
+                state.profileModal.file = null;
+                await removeProfilePhoto(state.user.uid);
+                await render();
+                showToast('Profile photo removed.', 'success');
             }
         };
 
-        const handleDocumentKeydown = (event) => {
-            if (event.key === 'Escape') {
-                state.profileModal.isOpen = false;
-                state.profileModal.file = null;
-                state.profileModal.previewUrl = '';
-                setMenuState(null, false);
-                render();
+    handleProfileModalChange = async (event) => {
+            const input = event.target;
+            if (input?.type !== 'file' || !input.closest('[data-action="select-profile-photo"]')) {
+                return;
             }
-        };
-
-        mobileToggle?.addEventListener('click', () => {
-            const nextState = state.openMenu === 'mobile' ? false : 'mobile';
-            setMenuState(nextState, Boolean(nextState));
-        });
-
-        notificationsToggle?.addEventListener('click', () => {
-            const nextState = state.openMenu === 'notifications' ? false : 'notifications';
-            setMenuState(nextState, Boolean(nextState));
-        });
-
-        profileToggle?.addEventListener('click', () => {
-            const nextState = state.openMenu === 'profile' ? false : 'profile';
-            setMenuState(nextState, Boolean(nextState));
-        });
-
-        logoutButtons.forEach((button) => {
-            button.addEventListener('click', async () => {
-                await signOutUser();
-                setMenuState(null, false);
-                await render();
-                showToast('You have been logged out. Redirecting home.', 'success');
-                window.location.href = 'index.html';
-            });
-        });
-
-        manageProfileButton?.addEventListener('click', async () => {
-            setMenuState(null, false);
-            if (!state.user) return;
-            state.profileModal.isOpen = true;
-            state.profileModal.previewUrl = '';
-            state.profileModal.file = null;
-            await render();
-        });
-
-        closeProfileEditorButtons.forEach((button) => {
-            button.addEventListener('click', async () => {
-                state.profileModal.isOpen = false;
-                state.profileModal.file = null;
-                state.profileModal.previewUrl = '';
-                await render();
-            });
-        });
-
-        selectProfilePhotoInput?.addEventListener('change', async (event) => {
-            const [file] = event.target.files || [];
+            const [file] = input.files || [];
             if (!file) return;
 
             if (state.profileModal.previewUrl.startsWith('blob:')) {
@@ -312,78 +348,102 @@ export async function createNavbar(container, options = {}) {
             state.profileModal.file = file;
             state.profileModal.previewUrl = URL.createObjectURL(file);
             await render();
-        });
+        };
 
-        removeProfilePhotoButton?.addEventListener('click', async () => {
-            if (!state.user) return;
-            state.profileModal.previewUrl = '';
-            state.profileModal.file = null;
-            await removeProfilePhoto(state.user.uid);
-            await render();
-            showToast('Profile photo removed.', 'success');
-        });
-
-        saveProfileEditorButton?.addEventListener('click', async () => {
-            if (!state.user) return;
-
-            const nameInput = container.querySelector('input[name="profileName"]');
-            const phoneInput = container.querySelector('input[name="profilePhone"]');
-            const countryInput = container.querySelector('input[name="profileCountry"]');
-            const professionInput = container.querySelector('input[name="profileProfession"]');
-            const organizationInput = container.querySelector('input[name="profileOrganization"]');
-            const bioInput = container.querySelector('textarea[name="profileBio"]');
-
-            const nextProfile = buildProfileUpdatePayload({
-                fullName: nameInput?.value || '',
-                phone: phoneInput?.value || '',
-                country: countryInput?.value || '',
-                profession: professionInput?.value || '',
-                organization: organizationInput?.value || '',
-                bio: bioInput?.value || '',
-                photoURL: state.profileModal.previewUrl || '',
-            });
-
-            try {
-                saveProfileEditorButton.disabled = true;
-                saveProfileEditorButton.textContent = 'Saving...';
-
-                if (state.profileModal.file) {
-                    await uploadProfilePhoto(state.user.uid, state.profileModal.file);
-                }
-
-                await updateProfileCenter(state.user.uid, nextProfile);
-                saveProfileState(mergeProfileState(loadProfileState(), {
-                    ...nextProfile,
-                    fullName: nameInput?.value || '',
-                    email: state.user.email || '',
-                }));
-                state.profileModal.isOpen = false;
-                state.profileModal.file = null;
-                state.profileModal.previewUrl = '';
-                await render();
-                showToast('Profile updated successfully.', 'success');
-            } catch (error) {
-                console.error('Failed to save profile', error);
-                showToast('We could not save your profile. Please try again.', 'error');
-            } finally {
-                saveProfileEditorButton.disabled = false;
-                saveProfileEditorButton.textContent = 'Save changes';
+    handleContainerClick = async (event) => {
+            if (!container.contains(event.target)) {
+                return;
             }
-        });
 
-        markReadButton?.addEventListener('click', () => {
-            markAllRead();
-            render();
-        });
+            const actionTarget = event.target.closest('[data-action]');
+            const action = actionTarget?.getAttribute('data-action');
 
-        container.removeEventListener('click', handleContainerClick);
-        document.removeEventListener('keydown', handleDocumentKeydown);
+            if (!action) {
+                if (!event.target.closest('.sword-profile-menu') && !event.target.closest('.sword-notifications') && !event.target.closest('.sword-nav-icon') && !event.target.closest('.sword-profile-trigger') && !event.target.closest('.sword-nav-toggle')) {
+                    setMenuState(null, false);
+                }
+                return;
+            }
+
+            if (action === 'toggle-mobile') {
+                event.preventDefault();
+                const nextState = state.openMenu === 'mobile' ? false : 'mobile';
+                setMenuState(nextState, Boolean(nextState));
+                return;
+            }
+
+            if (action === 'toggle-notifications') {
+                event.preventDefault();
+                const nextState = state.openMenu === 'notifications' ? false : 'notifications';
+                setMenuState(nextState, Boolean(nextState));
+                return;
+            }
+
+            if (action === 'toggle-profile') {
+                event.preventDefault();
+                const nextState = state.openMenu === 'profile' ? false : 'profile';
+                setMenuState(nextState, Boolean(nextState));
+                return;
+            }
+
+            if (action === 'logout') {
+                event.preventDefault();
+                await signOutUser();
+                setMenuState(null, false);
+                await render();
+                showToast('You have been logged out. Redirecting home.', 'success');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (action === 'manage-profile') {
+                event.preventDefault();
+                setMenuState(null, false);
+                await openProfileEditor();
+                return;
+            }
+
+            if (action === 'mark-read') {
+                event.preventDefault();
+                markAllRead();
+                await render();
+                return;
+            }
+
+            if (action === 'close-profile-editor' || action === 'save-profile-editor' || action === 'select-profile-photo' || action === 'remove-profile-photo') {
+                await handleProfileModalAction(event);
+            }
+        };
+
+    handleDocumentKeydown = (event) => {
+            if (event.key === 'Escape' && state.profileModal.isOpen) {
+                setMenuState(null, false);
+                closeProfileEditor();
+            }
+        };
+
+    const attachEvents = () => {
+        if (eventsAttached) {
+            return;
+        }
+
+        if (!modalEventsBound) {
+            const modalElement = profileModalController.getElement();
+            modalElement?.addEventListener('click', handleProfileModalAction);
+            modalElement?.addEventListener('change', handleProfileModalChange);
+            modalEventsBound = true;
+        }
+
         container.addEventListener('click', handleContainerClick);
         document.addEventListener('keydown', handleDocumentKeydown);
+        eventsAttached = true;
     };
 
     subscribeToAuth((user) => {
         state.user = user;
+        if (!user) {
+            closeProfileEditor(false);
+        }
         render();
     });
 
