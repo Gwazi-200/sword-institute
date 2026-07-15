@@ -414,6 +414,34 @@
   color: white;
 }
 
+.sword-profile-editor__actions-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.sword-profile-editor__actions-button.is-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sword-profile-editor__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.45);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: swordProfileSpinner 0.75s linear infinite;
+}
+
+@keyframes swordProfileSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .sword-profile-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

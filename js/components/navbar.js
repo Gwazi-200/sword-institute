@@ -80,29 +80,31 @@ export async function createNavbar(container, options = {}) {
         const profileCenter = state.profile ? buildProfileCenterData(state.profile, state.user) : null;
         const profileModalPreview = state.profileModal.previewUrl || profileCenter?.photoURL || '';
         const bodyHtml = `
-            <div class="sword-profile-editor__photo">
-                <div class="sword-profile-editor__avatar">
-                    ${profileModalPreview ? `<img src="${profileModalPreview}" alt="${escapeHtml(profileCenter?.displayName || 'Profile preview')}" />` : `<span>${profileCenter?.initials || getUserInitials(state.user)}</span>`}
+            <form id="profile-edit-form" class="sword-profile-editor__form" novalidate>
+                <div class="sword-profile-editor__photo">
+                    <div class="sword-profile-editor__avatar">
+                        ${profileModalPreview ? `<img src="${profileModalPreview}" alt="${escapeHtml(profileCenter?.displayName || 'Profile preview')}" />` : `<span>${profileCenter?.initials || getUserInitials(state.user)}</span>`}
+                    </div>
+                    <label class="sword-profile-editor__upload" data-action="select-profile-photo">
+                        <input type="file" accept="image/*" hidden />
+                        <span>${profileCenter?.photoURL || state.profileModal.previewUrl ? 'Change photo' : 'Upload photo'}</span>
+                    </label>
+                    ${(profileCenter?.photoURL || state.profileModal.previewUrl) ? `<button type="button" class="sword-profile-editor__remove" data-action="remove-profile-photo">Remove photo</button>` : ''}
+                    <p class="sword-profile-editor__hint">Preview your image in a circular crop before saving.</p>
                 </div>
-                <label class="sword-profile-editor__upload" data-action="select-profile-photo">
-                    <input type="file" accept="image/*" hidden />
-                    <span>${profileCenter?.photoURL || state.profileModal.previewUrl ? 'Change photo' : 'Upload photo'}</span>
-                </label>
-                ${(profileCenter?.photoURL || state.profileModal.previewUrl) ? `<button type="button" class="sword-profile-editor__remove" data-action="remove-profile-photo">Remove photo</button>` : ''}
-                <p class="sword-profile-editor__hint">Preview your image in a circular crop before saving.</p>
-            </div>
-            <div class="sword-profile-editor__fields">
-                <label>Full name<input type="text" name="profileName" value="${escapeHtml(profileCenter?.displayName || '')}" /></label>
-                <label>Phone<input type="text" name="profilePhone" value="${escapeHtml(state.profile?.phone || '')}" /></label>
-                <label>Country<input type="text" name="profileCountry" value="${escapeHtml(state.profile?.country || '')}" /></label>
-                <label>Profession<input type="text" name="profileProfession" value="${escapeHtml(state.profile?.profession || '')}" /></label>
-                <label>Organization<input type="text" name="profileOrganization" value="${escapeHtml(state.profile?.organization || '')}" /></label>
-                <label>Bio<textarea name="profileBio">${escapeHtml(state.profile?.bio || '')}</textarea></label>
-            </div>
+                <div class="sword-profile-editor__fields">
+                    <label>Full name<input id="profileName" type="text" name="profileName" value="${escapeHtml(profileCenter?.displayName || '')}" /></label>
+                    <label>Phone<input id="profilePhone" type="text" name="profilePhone" value="${escapeHtml(state.profile?.phone || '')}" /></label>
+                    <label>Country<input id="profileCountry" type="text" name="profileCountry" value="${escapeHtml(state.profile?.country || '')}" /></label>
+                    <label>Profession<input id="profileProfession" type="text" name="profileProfession" value="${escapeHtml(state.profile?.profession || '')}" /></label>
+                    <label>Organization<input id="profileOrganization" type="text" name="profileOrganization" value="${escapeHtml(state.profile?.organization || '')}" /></label>
+                    <label>Bio<textarea id="profileBio" name="profileBio">${escapeHtml(state.profile?.bio || '')}</textarea></label>
+                </div>
+            </form>
         `;
         const footerHtml = `
             <button type="button" class="sword-profile-editor__actions-button sword-profile-editor__actions-button--ghost" data-action="close-profile-editor">Cancel</button>
-            <button type="button" class="sword-profile-editor__actions-button sword-profile-editor__actions-button--primary" data-action="save-profile-editor">Save changes</button>
+            <button type="submit" form="profile-edit-form" class="sword-profile-editor__actions-button sword-profile-editor__actions-button--primary" data-action="save-profile-editor">Save changes</button>
         `;
 
         profileModalController.setContent({
@@ -257,6 +259,105 @@ export async function createNavbar(container, options = {}) {
         profileTrigger?.setAttribute('aria-expanded', String(menuName === 'profile' && isOpen));
     };
 
+    const saveProfileChanges = async (event) => {
+        if (event?.preventDefault) {
+            event.preventDefault();
+        }
+
+        const modalElement = profileModalController.getElement();
+        const form = modalElement?.querySelector('#profile-edit-form');
+        const saveButton = form?.querySelector('[data-action="save-profile-editor"]');
+
+        if (!form || !saveButton || saveButton.disabled) {
+            return;
+        }
+
+        const nameInput = form.querySelector('input[name="profileName"]');
+        const phoneInput = form.querySelector('input[name="profilePhone"]');
+        const countryInput = form.querySelector('input[name="profileCountry"]');
+        const professionInput = form.querySelector('input[name="profileProfession"]');
+        const organizationInput = form.querySelector('input[name="profileOrganization"]');
+        const bioInput = form.querySelector('textarea[name="profileBio"]');
+
+        const fullName = nameInput?.value?.trim() || '';
+        if (!fullName) {
+            console.warn('[Profile] Validation failed: full name is required');
+            showToast('Please enter your full name before saving.', 'error');
+            nameInput?.focus();
+            return;
+        }
+
+        console.info('[Profile] Save button clicked');
+        console.info('[Profile] Validation passed', { fullName });
+
+        if (!state.user?.uid) {
+            console.error('[Profile] No authenticated user found');
+            showToast('You must be signed in to save your profile.', 'error');
+            return;
+        }
+
+        console.info('[Profile] Authenticated user found', { uid: state.user.uid });
+
+        const nextProfile = buildProfileUpdatePayload({
+            fullName,
+            phone: phoneInput?.value || '',
+            country: countryInput?.value || '',
+            profession: professionInput?.value || '',
+            organization: organizationInput?.value || '',
+            bio: bioInput?.value || '',
+            photoURL: state.profileModal.previewUrl || '',
+        });
+
+        try {
+            saveButton.disabled = true;
+            saveButton.classList.add('is-loading');
+            saveButton.innerHTML = '<span class="sword-profile-editor__spinner" aria-hidden="true"></span><span>Saving...</span>';
+            form.setAttribute('aria-busy', 'true');
+            form.querySelectorAll('input, textarea, button').forEach((element) => {
+                if (element !== saveButton) {
+                    element.disabled = true;
+                }
+            });
+
+            if (state.profileModal.file) {
+                console.info('[Profile] Uploading profile photo...', { uid: state.user.uid });
+                await uploadProfilePhoto(state.user.uid, state.profileModal.file);
+            }
+
+            console.info('[Profile] Writing to Firestore...', { uid: state.user.uid, payload: nextProfile });
+            await updateProfileCenter(state.user.uid, nextProfile);
+            console.info('[Profile] Firestore write successful');
+
+            const persistedProfile = saveProfileState(mergeProfileState(loadProfileState(), {
+                ...nextProfile,
+                fullName,
+                email: state.user.email || '',
+            }));
+            state.profile = persistedProfile;
+            state.profileModal.previewUrl = '';
+            state.profileModal.file = null;
+            console.info('[Profile] UI updated');
+
+            window.dispatchEvent(new CustomEvent('sword:profile-updated', { detail: persistedProfile }));
+            await closeProfileEditor();
+            showToast('Profile updated successfully.', 'success');
+            console.info('[Profile] Profile save completed');
+        } catch (error) {
+            console.error('[Profile] Save failed', error);
+            showToast('We could not save your profile. Please try again.', 'error');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.classList.remove('is-loading');
+            saveButton.innerHTML = 'Save changes';
+            form.removeAttribute('aria-busy');
+            form.querySelectorAll('input, textarea, button').forEach((element) => {
+                if (element !== saveButton) {
+                    element.disabled = false;
+                }
+            });
+        }
+    };
+
     handleProfileModalAction = async (event) => {
             const action = event.target.closest('[data-action]')?.getAttribute('data-action');
             if (!action) return;
@@ -264,56 +365,6 @@ export async function createNavbar(container, options = {}) {
             if (action === 'close-profile-editor') {
                 event.preventDefault();
                 await closeProfileEditor();
-                return;
-            }
-
-            if (action === 'save-profile-editor') {
-                event.preventDefault();
-                const saveButton = profileModalController.getElement()?.querySelector('[data-action="save-profile-editor"]');
-                if (!saveButton || saveButton.disabled) return;
-
-                if (!state.user) return;
-
-                const nameInput = profileModalController.getElement()?.querySelector('input[name="profileName"]');
-                const phoneInput = profileModalController.getElement()?.querySelector('input[name="profilePhone"]');
-                const countryInput = profileModalController.getElement()?.querySelector('input[name="profileCountry"]');
-                const professionInput = profileModalController.getElement()?.querySelector('input[name="profileProfession"]');
-                const organizationInput = profileModalController.getElement()?.querySelector('input[name="profileOrganization"]');
-                const bioInput = profileModalController.getElement()?.querySelector('textarea[name="profileBio"]');
-
-                const nextProfile = buildProfileUpdatePayload({
-                    fullName: nameInput?.value || '',
-                    phone: phoneInput?.value || '',
-                    country: countryInput?.value || '',
-                    profession: professionInput?.value || '',
-                    organization: organizationInput?.value || '',
-                    bio: bioInput?.value || '',
-                    photoURL: state.profileModal.previewUrl || '',
-                });
-
-                try {
-                    saveButton.disabled = true;
-                    saveButton.textContent = 'Saving...';
-
-                    if (state.profileModal.file) {
-                        await uploadProfilePhoto(state.user.uid, state.profileModal.file);
-                    }
-
-                    await updateProfileCenter(state.user.uid, nextProfile);
-                    saveProfileState(mergeProfileState(loadProfileState(), {
-                        ...nextProfile,
-                        fullName: nameInput?.value || '',
-                        email: state.user.email || '',
-                    }));
-                    await closeProfileEditor();
-                    showToast('Profile updated successfully.', 'success');
-                } catch (error) {
-                    console.error('Failed to save profile', error);
-                    showToast('We could not save your profile. Please try again.', 'error');
-                } finally {
-                    saveButton.disabled = false;
-                    saveButton.textContent = 'Save changes';
-                }
                 return;
             }
 
@@ -422,6 +473,13 @@ export async function createNavbar(container, options = {}) {
             }
         };
 
+    handleProfileModalSubmit = async (event) => {
+            if (event.target?.id !== 'profile-edit-form') {
+                return;
+            }
+            await saveProfileChanges(event);
+        };
+
     const attachEvents = () => {
         if (eventsAttached) {
             return;
@@ -431,6 +489,7 @@ export async function createNavbar(container, options = {}) {
             const modalElement = profileModalController.getElement();
             modalElement?.addEventListener('click', handleProfileModalAction);
             modalElement?.addEventListener('change', handleProfileModalChange);
+            modalElement?.addEventListener('submit', handleProfileModalSubmit);
             modalEventsBound = true;
         }
 
