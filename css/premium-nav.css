@@ -240,13 +240,23 @@
 .sword-profile-editor {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   background: rgba(20, 14, 34, 0.42);
   backdrop-filter: blur(10px);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+
+.sword-profile-editor.show {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .sword-profile-editor__panel {
@@ -256,6 +266,12 @@
   border: 1px solid rgba(255,255,255,0.75);
   background: rgba(255,255,255,0.76);
   box-shadow: 0 25px 60px -24px rgba(68,25,108,0.35);
+  transform: translateY(10px);
+  transition: transform 180ms ease;
+}
+
+.sword-profile-editor.show .sword-profile-editor__panel {
+  transform: translateY(0);
 }
 
 .sword-profile-editor__header {
@@ -373,16 +389,57 @@
   resize: vertical;
 }
 
-.sword-profile-editor__actions {
+.sword-profile-editor__footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 16px;
 }
 
-.sword-profile-editor__actions button:last-child {
+.sword-profile-editor__actions-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.sword-profile-editor__actions-button--ghost {
+  background: rgba(139,0,255,0.08);
+  color: var(--violet-deep, #8B00FF);
+}
+
+.sword-profile-editor__actions-button--primary {
   background: var(--violet-deep, #8B00FF);
   color: white;
+}
+
+.sword-profile-editor__actions-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.sword-profile-editor__actions-button.is-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sword-profile-editor__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.45);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: swordProfileSpinner 0.75s linear infinite;
+}
+
+@keyframes swordProfileSpinner {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .sword-profile-stats {

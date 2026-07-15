@@ -11,28 +11,160 @@
     <style>
         :root { --pearl-light:#FCFAF5; --pearl-mid:#F5F2EB; --pearl-shadow:#E8E2D8; --violet-deep:#8B00FF; --violet-soft:#A855F7; --gold-radiant:#FFD700; --text-primary:#1E1029; --text-secondary:#4B3A5C; }
         * { box-sizing:border-box; }
-        body { margin:0; min-height:100vh; font-family:'Inter',sans-serif; background:radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow)); color:var(--text-primary); display:grid; place-items:center; padding:24px; }
-        .card { width:min(640px, 100%); background:rgba(255,255,255,.55); backdrop-filter:blur(28px) saturate(180%); border:1px solid rgba(255,255,255,.65); border-radius:28px; box-shadow:0 25px 60px -15px rgba(139,0,255,.08); padding:36px; }
-        h1 { margin:0 0 12px; font-size:clamp(2rem, 4vw, 3rem); }
-        p { color:var(--text-secondary); line-height:1.7; margin:0 0 16px; }
-        .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
-        a { text-decoration:none; }
-        .btn { display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; font-weight:700; }
+        body { margin:0; min-height:100vh; font-family:'Inter',sans-serif; background:radial-gradient(circle at 0% 20%, var(--pearl-light), var(--pearl-mid) 60%, var(--pearl-shadow)); color:var(--text-primary); padding:24px; }
+        .page-shell { max-width: 980px; margin: 0 auto; display:grid; gap:20px; }
+        .card { background:rgba(255,255,255,.55); backdrop-filter:blur(28px) saturate(180%); border:1px solid rgba(255,255,255,.65); border-radius:28px; box-shadow:0 25px 60px -15px rgba(139,0,255,.08); padding:28px; }
+        .brand { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:16px; }
+        .brand i { color:var(--gold-radiant); }
+        .profile-hero { display:grid; gap:18px; grid-template-columns:minmax(0, 1.2fr) minmax(280px, 0.8fr); align-items:center; }
+        .avatar-panel { display:flex; align-items:center; gap:16px; }
+        .avatar { width:92px; height:92px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg, var(--violet-deep), var(--gold-radiant)); color:#fff; font-size:1.8rem; font-weight:800; box-shadow:0 10px 30px rgba(139,0,255,.15); }
+        .meta h1 { margin:0 0 6px; font-size:clamp(1.5rem, 3vw, 2.2rem); }
+        .meta p { margin:0; color:var(--text-secondary); line-height:1.6; }
+        .pill-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+        .pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(139,0,255,.08); color:var(--violet-deep); font-weight:700; font-size:.9rem; }
+        .summary-grid { display:grid; gap:12px; grid-template-columns:repeat(3, minmax(0,1fr)); }
+        .summary-card { padding:16px; border-radius:18px; background:rgba(255,255,255,.7); border:1px solid rgba(255,255,255,.8); }
+        .summary-card strong { display:block; font-size:1.1rem; margin-bottom:4px; }
+        .summary-card span { color:var(--text-secondary); font-size:.92rem; }
+        .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; }
+        .btn { display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:999px; font-weight:700; border:none; cursor:pointer; text-decoration:none; }
         .primary { background:var(--violet-deep); color:#fff; }
         .secondary { background:rgba(139,0,255,.08); color:var(--violet-deep); }
-        .brand { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:18px; }
-        .brand i { color:var(--gold-radiant); }
+        .detail-grid { display:grid; gap:16px; grid-template-columns:repeat(2, minmax(0,1fr)); }
+        .detail-card { padding:18px; border-radius:20px; background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.82); }
+        .detail-card h3 { margin:0 0 10px; font-size:1rem; }
+        .detail-item { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid rgba(139,0,255,.08); }
+        .detail-item:last-child { border-bottom:none; }
+        .detail-item span { color:var(--text-secondary); }
+        @media (max-width: 760px) { .profile-hero, .detail-grid, .summary-grid { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
-    <main class="card">
-        <div class="brand"><i class="fas fa-shield-halved"></i> Sword Institute</div>
-        <h1>Profile</h1>
-        <p>The profile management page is coming soon. Your current dashboard and course progress remain available from the main app.</p>
-        <div class="actions">
-            <a class="btn primary" href="dashboard.html"><i class="fas fa-gauge-high"></i> Open Dashboard</a>
-            <a class="btn secondary" href="courses.html"><i class="fas fa-book-open"></i> Browse Courses</a>
-        </div>
-    </main>
+    <div class="page-shell">
+        <main class="card">
+            <div class="brand"><i class="fas fa-shield-halved"></i> Sword Institute</div>
+            <div class="profile-hero">
+                <div class="avatar-panel">
+                    <div class="avatar" id="profileAvatar">AM</div>
+                    <div class="meta">
+                        <h1 id="profileName">Aisha Morgan</h1>
+                        <p id="profileBio">Learning with purpose, building practical skills for impact.</p>
+                        <div class="pill-row">
+                            <span class="pill"><i class="fas fa-circle" style="font-size:.65rem"></i> <span id="profileStatus">Online</span></span>
+                            <span class="pill"><i class="fas fa-graduation-cap"></i> <span id="profileRole">Student • Leadership</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-grid" aria-label="Profile summary">
+                    <div class="summary-card">
+                        <strong id="summaryStreak">0</strong>
+                        <span>Current streak</span>
+                    </div>
+                    <div class="summary-card">
+                        <strong id="summaryXp">0</strong>
+                        <span>XP earned</span>
+                    </div>
+                    <div class="summary-card">
+                        <strong id="summaryCourses">1</strong>
+                        <span>Active courses</span>
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn primary" id="editProfileBtn" type="button"><i class="fas fa-pen"></i> Edit Profile</button>
+                <a class="btn secondary" href="dashboard.html"><i class="fas fa-gauge-high"></i> Open Dashboard</a>
+            </div>
+        </main>
+
+        <section class="card detail-grid">
+            <div class="detail-card">
+                <h3>Contact</h3>
+                <div class="detail-item"><span>Email</span><strong id="detailEmail">learner@swordinstitute.com</strong></div>
+                <div class="detail-item"><span>Phone</span><strong id="detailPhone">—</strong></div>
+                <div class="detail-item"><span>Country</span><strong id="detailCountry">Nigeria</strong></div>
+            </div>
+            <div class="detail-card">
+                <h3>Professional</h3>
+                <div class="detail-item"><span>Profession</span><strong id="detailProfession">Community Development Lead</strong></div>
+                <div class="detail-item"><span>Organization</span><strong id="detailOrganization">Bright Path Initiative</strong></div>
+                <div class="detail-item"><span>Updated</span><strong id="detailUpdated">Just now</strong></div>
+            </div>
+        </section>
+    </div>
+
+    <script type="module">
+        import { getCurrentUser } from './js/services/authService.js';
+        import { getProfileCenterRecord } from './js/services/profileCenterService.js';
+        import { loadProfileState, saveProfileState, mergeProfileState } from './js/utils/profilePageState.js';
+
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const profileBio = document.getElementById('profileBio');
+        const profileStatus = document.getElementById('profileStatus');
+        const profileRole = document.getElementById('profileRole');
+        const summaryStreak = document.getElementById('summaryStreak');
+        const summaryXp = document.getElementById('summaryXp');
+        const summaryCourses = document.getElementById('summaryCourses');
+        const detailEmail = document.getElementById('detailEmail');
+        const detailPhone = document.getElementById('detailPhone');
+        const detailCountry = document.getElementById('detailCountry');
+        const detailProfession = document.getElementById('detailProfession');
+        const detailOrganization = document.getElementById('detailOrganization');
+        const detailUpdated = document.getElementById('detailUpdated');
+
+        let profile = loadProfileState();
+
+        async function hydrateProfile() {
+            const user = getCurrentUser();
+            if (!user?.uid) {
+                profile = loadProfileState();
+                renderProfile();
+                return;
+            }
+
+            try {
+                const remoteProfile = await getProfileCenterRecord(user.uid);
+                profile = mergeProfileState(loadProfileState(), {
+                    ...remoteProfile,
+                    email: remoteProfile?.email || user.email || profile.email,
+                    fullName: remoteProfile?.fullName || user.displayName || profile.fullName,
+                });
+                saveProfileState(profile);
+            } catch (error) {
+                console.warn('Unable to hydrate profile from Firestore', error);
+                profile = loadProfileState();
+            }
+
+            renderProfile();
+        }
+
+        function formatUpdatedAt(value) {
+            try {
+                return new Date(value).toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (error) {
+                return 'Just now';
+            }
+        }
+
+        function renderProfile() {
+            profileAvatar.textContent = profile.avatarInitials || 'SU';
+            profileName.textContent = profile.fullName || 'Aisha Morgan';
+            profileBio.textContent = profile.bio || 'Learning with purpose, building practical skills for impact.';
+            profileStatus.textContent = profile.status || 'Online';
+            profileRole.textContent = profile.role || 'Student • Leadership';
+            summaryStreak.textContent = profile.streak || '0';
+            summaryXp.textContent = profile.xp || '0';
+            summaryCourses.textContent = profile.activeCourses || '1';
+            detailEmail.textContent = profile.email || 'learner@swordinstitute.com';
+            detailPhone.textContent = profile.phone || '—';
+            detailCountry.textContent = profile.country || 'Nigeria';
+            detailProfession.textContent = profile.profession || 'Community Development Lead';
+            detailOrganization.textContent = profile.organization || 'Bright Path Initiative';
+            detailUpdated.textContent = formatUpdatedAt(profile.updatedAt);
+        }
+
+        hydrateProfile();
+    </script>
 </body>
 </html>
